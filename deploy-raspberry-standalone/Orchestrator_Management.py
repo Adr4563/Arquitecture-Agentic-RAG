@@ -314,17 +314,21 @@ def _jugar_emociones(pregunta, persona_str, on_token=None):
 
     acerto = detectada == objetivo
     print(f"    [cámara] pedido={objetivo} detectado={detectada} (confianza {confianza:.0%}) -> {'OK' if acerto else 'MAL'}")
-    cara = elegir_cara_pregunta(pregunta, acerto) or ("happy" if acerto else "sad")
-    display.mostrar_cara(cara)
     # Veredicto hablado -- sin agente de comentario (LLM, sigue sin usarse):
     # solo la palabra fija según acerto/error. A diferencia del resto de
     # Trivia (que se queda callada, solo cara/música/desplazamiento), acá
     # hace falta: el usuario está posando frente a la cámara, no mirando la
     # pantalla, así que no ve la cara de veredicto sin este aviso por voz.
+    #
+    # Orden a propósito: la VOZ va primero y bloquea (tiene que terminar de
+    # decirse) -- recién después se disparan cara/música/desplazamiento
+    # juntos, en paralelo entre sí (ver _reaccionar_veredicto()). Si la cara
+    # cambiara antes de hablar, como era antes, el usuario vería el
+    # veredicto en pantalla un instante antes de escucharlo -- con la voz
+    # primero, los tres le llegan justo después de la palabra.
     voz_output.hablar("¡Correcto!" if acerto else "¡Incorrecto!")
-    time.sleep(PAUSA_ANTES_ACCION_FISICA)
-    expresar_musica(pregunta)
-    expresar_desplazamiento(pregunta)
+    cara = elegir_cara_pregunta(pregunta, acerto) or ("happy" if acerto else "sad")
+    _reaccionar_veredicto(cara, pregunta)
     display.mostrar_cara("speaking")
     return acerto
 
@@ -529,6 +533,30 @@ PAUSA_CAMBIO_CARA = 4  # segundos en 'content' antes de pasar a la cara que sigu
 PAUSA_ANTES_ACCION_FISICA = 1
 
 
+def _reaccionar_veredicto(cara, pregunta):
+    """Cara + música + desplazamiento del veredicto, EN PARALELO entre sí --
+    se disparan los tres seguidos, sin esperas entre uno y otro: música
+    (Popen) y desplazamiento (escritura serial ~instantánea, o hilo aparte
+    para 'Girar 360°') ya son fire-and-forget, y mostrar_cara() es un
+    request IPC corto a mpv, así que ninguno bloquea a los demás.
+
+    El único bloqueo real de esta función es el sleep del final -- no es
+    para "esperar" a música/desplazamiento (que ya corren solos), sino para
+    darle tiempo a la cara de terminar de cargar en pantalla antes de que el
+    próximo mostrar_cara("speaking") la tape (ver la nota de PAUSA_CAMBIO_CARA
+    más abajo en manejar_trivia()/_jugar_emociones(), bug real encontrado
+    2026-08-26: con solo 1s la cara de veredicto casi no se llegaba a ver).
+
+    La voz (si hay reacción hablada) va SIEMPRE ANTES de llamar a esto, no
+    acá adentro -- a pedido del usuario: primero la voz (bloqueante, tiene
+    que terminar de decirse), y recién después cara/música/desplazamiento
+    juntos. Ver _jugar_emociones(), el único caller con voz."""
+    display.mostrar_cara(cara)
+    expresar_musica(pregunta)
+    expresar_desplazamiento(pregunta)
+    time.sleep(PAUSA_CAMBIO_CARA)
+
+
 def _preguntar_siguiente(estado):
     """Saca la siguiente pregunta de la cola de la tanda actual y la imprime
     tal cual viene del dataset, sin pasarla por el modelo (si la reformulara,
@@ -644,12 +672,11 @@ def manejar_trivia(mensaje_usuario, estado, persona_str, on_token):
             cara = elegir_cara_pregunta(pendiente, acerto) or ("happy" if acerto else "sad")
             # A pedido del usuario: sin el agente de comentario
             # (comentar_resultado(), LLM) -- se sigue mostrando el veredicto
-            # (cara/música/desplazamiento, en paralelo entre sí) pero sin
-            # reacción hablada.
-            display.mostrar_cara(cara)
-            time.sleep(PAUSA_ANTES_ACCION_FISICA)
-            expresar_musica(pendiente)
-            expresar_desplazamiento(pendiente)
+            # (cara/música/desplazamiento, en paralelo entre sí, ver
+            # _reaccionar_veredicto()) pero sin reacción hablada -- no hay
+            # voz que deba ir "primero" acá, a diferencia de
+            # _jugar_emociones().
+            _reaccionar_veredicto(cara, pendiente)
             display.mostrar_cara("speaking")
         else:
             # Temas como Chistes o Reconocimiento Musical no tienen una
@@ -673,7 +700,9 @@ def manejar_trivia(mensaje_usuario, estado, persona_str, on_token):
 
     opciones = ", ".join(random.sample(TEMAS_CATALOGO, 5))
     estado["esperando_tema"] = True
-    print(f"Asistente: Puedes elegir entre: {opciones}.\n")
+    anuncio = f"Puedes elegir entre: {opciones}."
+    print(f"Asistente: {anuncio}\n")
+    voz_output.hablar(anuncio)
 
 
 def _reanudar_trivia(estado):
@@ -722,6 +751,49 @@ def manejar_chat_libre(mensaje_usuario, persona_str, on_token):
     display.mostrar_cara("content")  # cara de reposo hasta el próximo turno
 
 
+def _precargar_uno(modelo):
+    try:
+        generar_respuesta([{"role": "user", "content": "hola"}], max_tokens=1, modelo=modelo)
+    except Exception as e:
+        print(f"[warmup] no se pudo precargar {modelo}: {e}")
+
+
+def _precargar_secuencia(modelos):
+    for modelo in modelos:
+        _precargar_uno(modelo)
+
+
+def _precargar_modelos():
+    """Dispara un mensaje mínimo a cada modelo (CHAT_MODEL, TRIVIA_MODEL,
+    VERIFICADOR_MODEL) para que Ollama los cargue en RAM ANTES de que llegue
+    el primer mensaje real del usuario. Sin esto, la primera respuesta de la
+    sesión paga la carga completa desde disco (~15s medidos en esta Pi,
+    contra ~1s ya en caliente -- misma causa que el benchmark de
+    OLLAMA_KEEP_ALIVE en TODO-mantenimiento.md, pero acá aplica siempre, no
+    solo tras 5 min inactivo).
+
+    Dos hilos, no tres: CHAT_MODEL y VERIFICADOR_MODEL van SECUENCIALES en el
+    mismo hilo porque Chat libre/Búsqueda web (el turno más probable después
+    del saludo) los encadena a los dos en cada respuesta -- probado en esta
+    Pi que triplicar la carga en paralelo (los 3 modelos a la vez) hace que
+    Ollama los sirva compitiendo por CPU y VERIFICADOR_MODEL termina
+    cargando bastante después que los otros dos, justo el que hace falta
+    primero. TRIVIA_MODEL va en su propio hilo aparte porque solo se usa si
+    el usuario entra a Trivia -- no bloquea a los otros dos ni los otros dos
+    lo bloquean a él.
+
+    Ambos hilos daemon: no se esperan entre sí ni bloquean el saludo/lectura
+    del nombre de _main_loop(), que corre en paralelo y le da a esto varios
+    segundos de ventana antes de la primera pregunta real. Si Ollama no
+    responde (apagado, sin red), se loguea y se sigue -- la primera
+    respuesta real simplemente paga el costo de cargar como si no hubiera
+    warmup, no rompe nada."""
+    threading.Thread(
+        target=_precargar_secuencia, args=([CHAT_MODEL, VERIFICADOR_MODEL],), daemon=True
+    ).start()
+    threading.Thread(target=_precargar_uno, args=(TRIVIA_MODEL,), daemon=True).start()
+
+
 def main():
     # Carga el modelo de voz PRIMERO, en el hilo principal — cargar un
     # modelo ONNX desde un hilo secundario se cuelga silenciosamente en este
@@ -730,6 +802,8 @@ def main():
     # edge-tts cargar() ya no hace nada, pero se deja la llamada por si
     # algún día se vuelve a un motor local.
     voz_output.cargar()
+
+    _precargar_modelos()  # Ollama carga los 3 modelos en background mientras suena el saludo
 
     # Hilo que lee la terminal línea a línea y lo mete en _entrada_queue —
     # así _leer_entrada() puede bloquear en un solo lugar (la cola) sin
