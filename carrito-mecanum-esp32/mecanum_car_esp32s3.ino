@@ -77,16 +77,20 @@ void handleRoot() {
   String html = R"rawliteral(
   <html>
   <head>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
   <title>Mecanum Car</title>
   <style>
-    button {width:100px;height:60px;font-size:16px;margin:5px;}
+    body{font-family:sans-serif; text-align:center; margin-top:20px;}
+    button{width:80px; height:80px; font-size:28px; margin:4px;}
+    button.rotate{width:100px; font-size:20px;}
+    #stop{width:170px; height:50px; font-size:18px; margin-top:15px; color:red;}
   </style>
   <script>
-    function sendCmd(cmd){fetch(`/cmd?move=${cmd}`);}
+    function sendCmd(cmd){ fetch(`/cmd?move=${cmd}`); }
     function hold(btn,cmd){
       btn.addEventListener('mousedown',()=>sendCmd(cmd));
       btn.addEventListener('mouseup',()=>sendCmd('S'));
-      btn.addEventListener('touchstart',(e)=>{e.preventDefault();sendCmd(cmd);});
+      btn.addEventListener('touchstart',(e)=>{e.preventDefault(); sendCmd(cmd);});
       btn.addEventListener('touchend',()=>sendCmd('S'));
       btn.addEventListener('touchcancel',()=>sendCmd('S'));
     }
@@ -97,28 +101,28 @@ void handleRoot() {
     }
   </script>
   </head>
-  <body style='text-align:center;'>
-    <h2>Mecanum Wheel Robot Car</h2>
+  <body>
+    <h2>Mecanum Car</h2>
     <div>
-      <button id='FL'>F-L</button>
-      <button id='F'>F</button>
-      <button id='FR'>F-R</button>
+      <button id='FR'>&#8598;</button>
+      <button id='F'>&#8593;</button>
+      <button id='FL'>&#8599;</button>
     </div>
     <div>
-      <button id='SL'>S-L</button>
-      <button id='SR'>S-R</button>
+      <button id='SL'>&#8592;</button>
+      <button id='SR'>&#8594;</button>
     </div>
     <div>
-      <button id='BL'>B-L</button>
-      <button id='B'>B</button>
-      <button id='BR'>B-R</button>
+      <button id='BR'>&#8601;</button>
+      <button id='B'>&#8595;</button>
+      <button id='BL'>&#8600;</button>
     </div>
     <div>
-      <button id='RL'>R-L</button>
-      <button id='RR'>R-R</button>
+      <button class="rotate" id='RL'>&#8634; R-L</button>
+      <button class="rotate" id='RR'>&#8635; R-R</button>
     </div>
     <br>
-    <button onclick="sendCmd('S')">STOP</button>
+    <button id="stop" onclick="sendCmd('S')">STOP</button>
   </body></html>
   )rawliteral";
   server.send(200, "text/html", html);
