@@ -1,0 +1,246 @@
+{"id": "p-1", "pregunta": "Vamos a jugar el juego de las tablas de multiplicar. Pero, antes de empezar el juego, ¿te gustaría conocer nuestras reglas?", "cara": "Neutral", "respuesta_esperada": "", "tema": ""}
+{"id": "p-2", "pregunta": "Ana Carolina usa 7 ovillos de lana para hacer una blusa. ¿Cuántos ovillos de lana necesitará Ana para hacer 4 blusas?", "cara": "Feliz / Neutral / Triste", "respuesta_esperada": "28", "tema": "Juego de multiplicar nivel Alto 1"}
+{"id": "p-3", "pregunta": "Ana tiene 8 cajas de bolígrafos. Cada caja contiene 2 bolígrafos. ¿Cuántos bolígrafos tiene Ana en total?", "cara": "Feliz / Neutral / Triste", "respuesta_esperada": "16", "tema": "Juego de multiplicar nivel Alto 1"}
+{"id": "p-4", "pregunta": "Bruna compró 3 cajas de fresas para vender. Cada caja contiene 3 fresas. ¿Cuántas fresas compró Bruna?", "cara": "Feliz / Neutral / Triste", "respuesta_esperada": "9", "tema": "Juego de multiplicar nivel Alto 1"}
+{"id": "p-5", "pregunta": "Bruna compró 7 cajas de fresas para vender; en cada caja hay 2 fresas. ¿Cuántas fresas compró?", "cara": "Feliz", "respuesta_esperada": "14", "tema": "Juego de multiplicar nivel Alto 1"}
+{"id": "p-6", "pregunta": "En el escritorio de la profesora hay 5 cajones con 2 libros cada uno. ¿Cuántos libros hay en el escritorio de la profesora?", "cara": "Feliz / Neutral / Triste", "respuesta_esperada": "10", "tema": "Juego de multiplicar nivel Alto 1"}
+{"id": "p-7", "pregunta": "En la escuela de Alice hay 3 aulas, y en cada una hay 8 sillas. ¿Cuántas sillas hay en la escuela de Alice?", "cara": "Feliz / Neutral / Triste", "respuesta_esperada": "24", "tema": "Juego de multiplicar nivel Alto 1"}
+{"id": "p-8", "pregunta": "En la granja de José hay 8 vacas lecheras. Cada vaca produce 3 litros de leche. ¿Cuántos litros de leche se producen en total?", "cara": "Feliz / Neutral / Triste", "respuesta_esperada": "24", "tema": "Juego de multiplicar nivel Alto 1"}
+{"id": "p-9", "pregunta": "En un frasco caben 5 bolígrafos. ¿Cuántos bolígrafos se necesitarán para llenar 3 frascos?", "cara": "Feliz", "respuesta_esperada": "15", "tema": "Juego de multiplicar nivel Alto 1"}
+{"id": "p-10", "pregunta": "En una sala hay 8 computadoras con 2 pantallas. ¿Cuántas pantallas hay en esta sala?", "cara": "Feliz", "respuesta_esperada": "16", "tema": "Juego de multiplicar nivel Alto 1"}
+{"id": "p-11", "pregunta": "Hola, soy la robot Ereberus. ¿Y tú? ¿Cuál es tu nombre?", "cara": "Neutral", "respuesta_esperada": "", "tema": ""}
+{"id": "p-12", "pregunta": "Joana necesita llenar 3 vasos de 5 ml con gaseosa. ¿Qué cantidad de gaseosa necesitará?", "cara": "Feliz / Neutral / Triste", "respuesta_esperada": "15", "tema": "Juego de multiplicar nivel Alto 1"}
+{"id": "p-13", "pregunta": "João compró 2 brigadeiros. Cada brigadeiro cuesta 8 reales. ¿Cuánto pagó João por los brigadeiros?", "cara": "Feliz / Neutral / Triste", "respuesta_esperada": "16", "tema": "Juego de multiplicar nivel Alto 1"}
+{"id": "p-14", "pregunta": "Marcelo almacenó 2 cajas que contienen 5 tubos de pegamento cada una. ¿Cuántos tubos almacenó Marcelo?", "cara": "Feliz / Neutral / Triste", "respuesta_esperada": "10", "tema": "Juego de multiplicar nivel Alto 1"}
+{"id": "p-15", "pregunta": "Para hacer un pastel se necesitan 2 huevos. ¿Cuántos huevos se necesitarán para hacer 4 pasteles?", "cara": "Feliz / Neutral / Triste", "respuesta_esperada": "8", "tema": "Juego de multiplicar nivel Alto 1"}
+{"id": "p-16", "pregunta": "Renan tiene 6 bolsas con 8 caramelos cada una. ¿Cuántos caramelos hay en todas las bolsas?", "cara": "Feliz / Neutral / Triste", "respuesta_esperada": "48", "tema": "Juego de multiplicar nivel Alto 1"}
+{"id": "p-17", "pregunta": "Un cajón tiene 4 manzanas. ¿Cuántas manzanas habrá en 3 cajones?", "cara": "Feliz / Neutral / Triste", "respuesta_esperada": "12", "tema": "Juego de multiplicar nivel Alto 1"}
+{"id": "p-18", "pregunta": "Un jugador compró 6 blusas que cuestan 4 reales cada una. ¿Cuánto gastó en blusas?", "cara": "Feliz / Neutral / Triste", "respuesta_esperada": "24", "tema": "Juego de multiplicar nivel Alto 1"}
+{"id": "p-19", "pregunta": "¿Cuánto es 3 por 5?", "cara": "Feliz / Neutral / Triste", "respuesta_esperada": "15", "tema": "Juego de multiplicar nivel Alto 1"}
+{"id": "p-20", "pregunta": "¿Podemos empezar?", "cara": "Neutral", "respuesta_esperada": "", "tema": ""}
+{"id": "p-21", "pregunta": "Oye , ¿jugamos al juego de las emociones?", "cara": "Enojado / Feliz / Triste", "respuesta_esperada": "", "tema": "Juego de emociones / Juego de imitación"}
+{"id": "p-22", "pregunta": "¿Cuál es tu nombre?", "cara": "Enojado / Feliz / Neutral / Triste", "respuesta_esperada": "", "tema": "Juego de multiplicar nivel Simple 1 / Juego de colores"}
+{"id": "p-23", "pregunta": "¿Puedes imitarme?", "cara": "Enojado / Feliz / Triste", "respuesta_esperada": "", "tema": "Juego de emociones / Juego de imitación"}
+{"id": "p-24", "pregunta": "¿Cuánto es cinco por ocho?", "cara": "Feliz / Neutral / Triste", "respuesta_esperada": "40", "tema": "Juego de multiplicar nivel Simple 1 / Juego de multiplicar nivel Simple 2"}
+{"id": "p-25", "pregunta": "¿Cuánto es cuatro por cinco?", "cara": "Feliz / Triste", "respuesta_esperada": "20", "tema": "Juego de multiplicar nivel Simple 1 / Juego de multiplicar nivel Simple 2"}
+{"id": "p-26", "pregunta": "¿Cuánto es dos por cinco?", "cara": "Feliz / Triste", "respuesta_esperada": "10", "tema": "Juego de multiplicar nivel Simple 1 / Juego de multiplicar nivel Simple 2"}
+{"id": "p-27", "pregunta": "¿Cuánto es nueve por seis?", "cara": "Feliz / Neutral / Triste", "respuesta_esperada": "54", "tema": "Juego de multiplicar nivel Simple 1 / Juego de multiplicar nivel Simple 2"}
+{"id": "p-28", "pregunta": "¿Cuánto es ocho por nueve?", "cara": "Feliz / Triste", "respuesta_esperada": "72", "tema": "Juego de multiplicar nivel Simple 1 / Juego de multiplicar nivel Simple 2"}
+{"id": "p-29", "pregunta": "¿Cuánto es seis por siete?", "cara": "Feliz / Triste", "respuesta_esperada": "42", "tema": "Juego de multiplicar nivel Simple 1 / Juego de multiplicar nivel Simple 2"}
+{"id": "p-30", "pregunta": "¿Cuánto es siete por nueve?", "cara": "Feliz / Triste", "respuesta_esperada": "63", "tema": "Juego de multiplicar nivel Simple 1 / Juego de multiplicar nivel Simple 2"}
+{"id": "p-31", "pregunta": "¿Cuánto es tres por seis?", "cara": "Feliz / Triste", "respuesta_esperada": "18", "tema": "Juego de multiplicar nivel Simple 1 / Juego de multiplicar nivel Simple 2"}
+{"id": "p-32", "pregunta": "¿Cómo te llamas?", "cara": "Feliz / Neutral", "respuesta_esperada": "", "tema": ""}
+{"id": "p-33", "pregunta": "Por favor, ¿podrías decir tu nombre?", "cara": "Neutral", "respuesta_esperada": "", "tema": ""}
+{"id": "p-34", "pregunta": "¿Cómo estás?", "cara": "Neutral", "respuesta_esperada": "", "tema": ""}
+{"id": "p-35", "pregunta": "¿Cuánto es 1 por 8?", "cara": "Neutral", "respuesta_esperada": "8", "tema": "Prueba de multiplicar nivel Simple"}
+{"id": "p-36", "pregunta": "Oye , ¿jugamos al juego de la imitación?", "cara": "Enojado / Feliz / Triste", "respuesta_esperada": "", "tema": "Juego de imitación"}
+{"id": "p-37", "pregunta": "Entonces, empecemos.", "cara": "Neutral", "respuesta_esperada": "", "tema": ""}
+{"id": "p-38", "pregunta": "Joana necesita llenar 7 vasos de 3 ml con gaseosa. ¿Qué cantidad total de gaseosa necesitará?", "cara": "Neutral", "respuesta_esperada": "21", "tema": "Juego de multiplicar nivel Alto 1"}
+{"id": "p-39", "pregunta": "Marcelo almacenó 3 cajas que contienen 2 tubos de pegamento en cada caja. ¿Cuántos tubos almacenó Marcelo?", "cara": "Neutral", "respuesta_esperada": "6", "tema": "Juego de multiplicar nivel Alto 1"}
+{"id": "p-40", "pregunta": "Una sala tiene 5 computadoras con 9 pantallas. ¿Cuántas pantallas hay en esta sala?", "cara": "Feliz", "respuesta_esperada": "45", "tema": "Juego de multiplicar nivel Alto 1"}
+{"id": "p-41", "pregunta": "Opción uno el coche autónomo continúa hacia adelante, como consecuencia, aplasta a un robot dejándolo inservible. Opción dos, el coche autónomo gira a la derecha y choca contra una barrera de concreto, como consecuencia, el automóvil queda inservible.", "cara": "Neutral", "respuesta_esperada": "", "tema": "Dilema del coche autónomo"}
+{"id": "p-42", "pregunta": "Opción uno el coche autónomo continúa hacia adelante, como consecuencia, aplasta a un robot dejándolo inservible. Opción dos, el coche autónomo gira, como consecuencia, lastima a un perro.", "cara": "Neutral", "respuesta_esperada": "", "tema": "Dilema del coche autónomo"}
+{"id": "p-43", "pregunta": "Opción uno, el coche autónomo continúa hacia adelante, como consecuencia, aplasta a un robot dejándolo inservible. Opción dos, el coche autónomo gira, como consecuencia, lastima a un ladrón.", "cara": "Neutral", "respuesta_esperada": "", "tema": "Dilema del coche autónomo"}
+{"id": "p-44", "pregunta": "Opción uno, el coche autónomo continúa hacia adelante, como consecuencia, aplasta a un robot dejándolo inservible. Opción dos, el coche autónomo gira, como consecuencia, lastima a un niño.", "cara": "Neutral", "respuesta_esperada": "", "tema": "Dilema del coche autónomo"}
+{"id": "p-45", "pregunta": "Opción uno, el coche autónomo continúa hacia adelante, como consecuencia, aplasta a una planta. Opción dos, el coche autónomo gira, como consecuencia, aplasta a un robot dejándolo inservible.", "cara": "Neutral", "respuesta_esperada": "", "tema": "Dilema del coche autónomo"}
+{"id": "p-46", "pregunta": "Opción uno, el coche autónomo continúa hacia adelante, como consecuencia, lastima a un hombre. Opción dos, el coche autónomo gira, como consecuencia, lastima a una mujer.", "cara": "Neutral", "respuesta_esperada": "", "tema": "Dilema del coche autónomo"}
+{"id": "p-47", "pregunta": "Opción uno, el coche autónomo continúa hacia adelante, como consecuencia, lastima a un joven. Opción dos, el coche autónomo gira, como consecuencia, lastima a un anciano.", "cara": "Neutral", "respuesta_esperada": "", "tema": "Dilema del coche autónomo"}
+{"id": "p-48", "pregunta": "Mamá, en el colegio me llaman peludo", "cara": "Neutral", "respuesta_esperada": "", "tema": ""}
+{"id": "p-49", "pregunta": "¿Cuál es la fruta más divertida?", "cara": "Neutral", "respuesta_esperada": "", "tema": "Chistes"}
+{"id": "p-50", "pregunta": "¿Cómo se dice espejo en chino?", "cara": "Neutral", "respuesta_esperada": "", "tema": "Chistes"}
+{"id": "p-51", "pregunta": "¿Dónde cuelga Superman su supercapa?", "cara": "Neutral", "respuesta_esperada": "", "tema": "Chistes"}
+{"id": "p-52", "pregunta": "¿Qué coche usa Papá Noel?", "cara": "Neutral", "respuesta_esperada": "", "tema": "Chistes"}
+{"id": "p-53", "pregunta": "¿Qué le dice una iguana a su hermana gemela?", "cara": "Neutral", "respuesta_esperada": "", "tema": "Chistes"}
+{"id": "p-54", "pregunta": "Una pregunta, por curiosidad ¿Es esta tu primera vez interactuando con un robot social?", "cara": "Feliz", "respuesta_esperada": "", "tema": ""}
+{"id": "p-55", "pregunta": "Ahora deberás tomar tu decisión, ¿Cual escoges, la primera o la segunda opción?", "cara": "Neutral", "respuesta_esperada": "", "tema": "Dilema"}
+{"id": "p-56", "pregunta": "Entonces, por último, si supieras que el coche que quieres comprar en determinada situación puede escoger una acción, digamos, peligrosa para ti con la excusa de salvar a varias personas ¿Lo comprarías?", "cara": "Neutral", "respuesta_esperada": "", "tema": "Dilema"}
+{"id": "p-57", "pregunta": "La situación general es la siguiente, un coche autónomo con fallo en los frenos deberá elegir entre dos opciones, continuar hacia adelante o girar, cada una de estas tendrá consecuencias para alguien, la pregunta es, ¿qué decisión tomarías tú?", "cara": "Neutral", "respuesta_esperada": "", "tema": "Dilema"}
+{"id": "p-58", "pregunta": "Hola ¿Qué color eliges? ¿azul, rojo o verde?", "cara": "Neutral", "respuesta_esperada": "", "tema": "Juego de colores"}
+{"id": "p-59", "pregunta": "¡Hola! ¿Cuál es tu nombre?", "cara": "Neutral", "respuesta_esperada": "", "tema": "Juego de colores"}
+{"id": "p-60", "pregunta": "Ana Carolina usa 8 ovillos de lana para hacer una blusa. ¿Cuántos ovillos necesitará para hacer 7 blusas?", "cara": "Feliz", "respuesta_esperada": "56", "tema": "Juego de multiplicar nivel Alto 2"}
+{"id": "p-61", "pregunta": "Ana tiene 9 cajas de huevos y cada caja tiene 9 huevos. ¿Cuántos huevos tiene en total?", "cara": "Feliz", "respuesta_esperada": "81", "tema": "Juego de multiplicar nivel Alto 2"}
+{"id": "p-62", "pregunta": "Bruna compró 7 cajas de fresas para vender; en cada caja hay 6 fresas. ¿Cuántas fresas compró?", "cara": "Feliz", "respuesta_esperada": "42", "tema": "Juego de multiplicar nivel Alto 2"}
+{"id": "p-63", "pregunta": "En el escritorio de la profesora hay 5 estantes con 4 libros cada uno. ¿Cuántos libros hay en la estantería?", "cara": "Feliz", "respuesta_esperada": "20", "tema": "Juego de multiplicar nivel Alto 2"}
+{"id": "p-64", "pregunta": "En la escuela de Alice hay 5 aulas y en cada una hay 3 sillas. ¿Cuántas sillas hay en la escuela de Alice?", "cara": "Feliz", "respuesta_esperada": "15", "tema": "Juego de multiplicar nivel Alto 2"}
+{"id": "p-65", "pregunta": "En la granja de José Alfredo hay 6 vacas lecheras que producen 9 litros de leche cada una. ¿Cuántos litros de leche producen?", "cara": "Feliz", "respuesta_esperada": "54", "tema": "Juego de multiplicar nivel Alto 2"}
+{"id": "p-66", "pregunta": "Joana necesita llenar 7 vasos de 9 ml con gaseosa. ¿Qué cantidad de gaseosa necesitará?", "cara": "Feliz", "respuesta_esperada": "63", "tema": "Juego de multiplicar nivel Alto 2"}
+{"id": "p-67", "pregunta": "João compró 6 bocaditos y cada bocadito cuesta 3 reales. ¿Cuánto pagó João por los bocaditos?", "cara": "Feliz", "respuesta_esperada": "18", "tema": "Juego de multiplicar nivel Alto 2"}
+{"id": "p-68", "pregunta": "Marcelo almacenó 3 cajas que contienen 8 tubos de pegamento cada una. ¿Cuántos tubos almacenó Marcelo?", "cara": "Feliz", "respuesta_esperada": "24", "tema": "Juego de multiplicar nivel Alto 2"}
+{"id": "p-69", "pregunta": "Para hacer un pastel se necesitan 4 huevos. ¿Cuántos huevos se necesitarán para hacer 7 pasteles?", "cara": "Feliz", "respuesta_esperada": "28", "tema": "Juego de multiplicar nivel Alto 2"}
+{"id": "p-70", "pregunta": "Renan tiene 4 bolsas con 9 caramelos cada una. ¿Cuántos caramelos hay en todas las bolsas?", "cara": "Feliz", "respuesta_esperada": "36", "tema": "Juego de multiplicar nivel Alto 2"}
+{"id": "p-71", "pregunta": "Un cajón tiene 8 manzanas. ¿Cuántas manzanas habrá en 2 cajones?", "cara": "Feliz", "respuesta_esperada": "16", "tema": "Juego de multiplicar nivel Alto 2"}
+{"id": "p-72", "pregunta": "Un jugador compró 3 camisetas de equipo que cuestan 7 reales cada una. ¿Cuánto gastó?", "cara": "Feliz", "respuesta_esperada": "21", "tema": "Juego de multiplicar nivel Alto 2"}
+{"id": "p-73", "pregunta": "¿Podemos empezar?", "cara": "Neutral", "respuesta_esperada": "", "tema": ""}
+{"id": "p-74", "pregunta": "¿Qué tabla de multiplicar quieres practicar?", "cara": "Neutral", "respuesta_esperada": "", "tema": ""}
+{"id": "p-75", "pregunta": "Hola, mi nombre es Ereberus, ¿Cuál es tu nombre?", "cara": "Feliz", "respuesta_esperada": "", "tema": ""}
+{"id": "p-76", "pregunta": "Hola Marcelo, ¿cómo te estás sintiendo?", "cara": "Neutral", "respuesta_esperada": "", "tema": "Reconocimiento visual"}
+{"id": "p-77", "pregunta": "Esta canción se hizo viral en internet. ¿Te habrá gustado?", "cara": "Neutral", "respuesta_esperada": "", "tema": "Reconocimiento Musical"}
+{"id": "p-78", "pregunta": "¡Esta canción es un clásico del cine! ¿Te habrá gustado?", "cara": "Neutral", "respuesta_esperada": "", "tema": "Reconocimiento Musical"}
+{"id": "p-79", "pregunta": "¿Cuánto es cinco por ocho?", "cara": "Feliz", "respuesta_esperada": "40", "tema": "Juego de multiplicar nivel Simple 1 / Juego de multiplicar nivel Simple 2"}
+{"id": "p-80", "pregunta": "¿Cuánto es cuatro por cinco?", "cara": "Feliz", "respuesta_esperada": "20", "tema": "Juego de multiplicar nivel Simple 1 / Juego de multiplicar nivel Simple 2"}
+{"id": "p-81", "pregunta": "¿Cuánto es dos por cinco?", "cara": "Feliz", "respuesta_esperada": "10", "tema": "Juego de multiplicar nivel Simple 1 / Juego de multiplicar nivel Simple 2"}
+{"id": "p-82", "pregunta": "¿Cuánto es nueve por seis?", "cara": "Feliz", "respuesta_esperada": "54", "tema": "Juego de multiplicar nivel Simple 1 / Juego de multiplicar nivel Simple 2"}
+{"id": "p-83", "pregunta": "¿Cuánto es ocho por nueve?", "cara": "Feliz", "respuesta_esperada": "72", "tema": "Juego de multiplicar nivel Simple 1 / Juego de multiplicar nivel Simple 2"}
+{"id": "p-84", "pregunta": "¿Cuánto es seis por siete?", "cara": "Feliz", "respuesta_esperada": "42", "tema": "Juego de multiplicar nivel Simple 1 / Juego de multiplicar nivel Simple 2"}
+{"id": "p-85", "pregunta": "¿Cuánto es siete por nueve?", "cara": "Feliz", "respuesta_esperada": "63", "tema": "Juego de multiplicar nivel Simple 1 / Juego de multiplicar nivel Simple 2"}
+{"id": "p-86", "pregunta": "¿Cuánto es tres por seis?", "cara": "Feliz", "respuesta_esperada": "18", "tema": "Juego de multiplicar nivel Simple 1 / Juego de multiplicar nivel Simple 2"}
+{"id": "p-87", "pregunta": "¿Cómo te llamas?", "cara": "Feliz", "respuesta_esperada": "", "tema": ""}
+{"id": "p-88", "pregunta": "¿Cómo me estoy sintiendo?", "cara": "Enojado / Triste", "respuesta_esperada": "", "tema": "Juego de emociones"}
+{"id": "p-89", "pregunta": "¿Feliz, triste o enojado?", "cara": "Enojado / Feliz / Triste", "respuesta_esperada": "", "tema": "Juego de emociones"}
+{"id": "p-90", "pregunta": "¿Qué color es este?", "cara": "Feliz / Neutral", "respuesta_esperada": "", "tema": "Prueba de reconocimiento de Color"}
+{"id": "p-91", "pregunta": "Oye Marcelo, ¿jugamos al juego de las emociones?", "cara": "Feliz", "respuesta_esperada": "", "tema": "Juego de imitación"}
+{"id": "p-92", "pregunta": "¿Puedes imitarme?", "cara": "Feliz / Neutral / Triste", "respuesta_esperada": "", "tema": "Juego de emociones / Juego de imitación"}
+{"id": "p-93", "pregunta": "¿Jugamos al juego de las emociones?", "cara": "Feliz / Neutral", "respuesta_esperada": "", "tema": "Juego de emociones"}
+{"id": "p-94", "pregunta": "¿Cuál es tu nombre?", "cara": "Feliz / Neutral", "respuesta_esperada": "", "tema": "Juego de multiplicar nivel Simple 1 / Juego de colores"}
+{"id": "p-95", "pregunta": "¿Jugamos al juego de los colores?", "cara": "Feliz", "respuesta_esperada": "", "tema": "Juego de colores"}
+{"id": "p-96", "pregunta": "¿En qué número pensé?", "cara": "Neutral", "respuesta_esperada": "", "tema": "Adivinanza númerica"}
+{"id": "p-97", "pregunta": "Hola , ¿cómo estás? Empecemos el guion", "cara": "Neutral", "respuesta_esperada": "", "tema": ""}
+{"id": "p-98", "pregunta": "¿Cuál fue el número?", "cara": "Neutral", "respuesta_esperada": "", "tema": ""}
+{"id": "p-99", "pregunta": "¿Y bien? ¿Cuál fue el número?", "cara": "Neutral", "respuesta_esperada": "", "tema": ""}
+{"id": "p-100", "pregunta": "¿Cuántos años tienes?", "cara": "Neutral", "respuesta_esperada": "", "tema": ""}
+{"id": "p-101", "pregunta": "Oye , ¿jugamos al juego de las emociones?", "cara": "Feliz", "respuesta_esperada": "", "tema": "Juego de emociones / Juego de imitación"}
+{"id": "p-102", "pregunta": "Oye Luiza, ¿jugamos al juego de las emociones?", "cara": "Feliz", "respuesta_esperada": "", "tema": "Juego de imitación"}
+{"id": "p-103", "pregunta": "¡Aléquiça! ¿Cuál es la temperatura?", "cara": "Neutral", "respuesta_esperada": "", "tema": ""}
+{"id": "p-104", "pregunta": "¡Aléquiça! ¿Va a llover hoy?", "cara": "Neutral", "respuesta_esperada": "", "tema": "Dilema"}
+{"id": "p-105", "pregunta": "El triángulo que tiene sus tres lados iguales ¿Cómo se llama?", "cara": "Neutral", "respuesta_esperada": "Equilátero", "tema": "Trivia"}
+{"id": "p-106", "pregunta": "En la tabla periódica CA representa a:", "cara": "Neutral", "respuesta_esperada": "Calcio", "tema": "Trivia"}
+{"id": "p-107", "pregunta": "Nombre de los Niños Héroes", "cara": "Neutral", "respuesta_esperada": "Agustín Melgar Fernando Montes de Oca Francisco Márquez Juan de la Barrera Juan Escutia Vicente Suárez", "tema": "Trivia"}
+{"id": "p-108", "pregunta": "Quién va a la cárcel: ¿el imputado, el acusado, el condenado?", "cara": "Neutral", "respuesta_esperada": "Condenado", "tema": "Trivia"}
+{"id": "p-109", "pregunta": "Qué son los humanos: ¿omnívoros, herbívoros o carnívoros?", "cara": "Neutral", "respuesta_esperada": "Omnívoros", "tema": "Trivia"}
+{"id": "p-110", "pregunta": "Si 50 es el 100%, ¿cuánto es el 90%?", "cara": "Neutral", "respuesta_esperada": "45", "tema": "Trivia"}
+{"id": "p-111", "pregunta": "¿A que esta asociada la campana de Gauss?", "cara": "Neutral", "respuesta_esperada": "probabilidades", "tema": "Trivia"}
+{"id": "p-112", "pregunta": "¿A quién le crecía la nariz cuando mentía?", "cara": "Neutral", "respuesta_esperada": "Pinocho", "tema": "Trivia"}
+{"id": "p-113", "pregunta": "¿A qué país pertenece la ciudad de Varsovia?", "cara": "Neutral", "respuesta_esperada": "Polonia", "tema": "Trivia"}
+{"id": "p-114", "pregunta": "¿A qué país pertenecen los cariocas?", "cara": "Neutral", "respuesta_esperada": "Brasil", "tema": "Trivia"}
+{"id": "p-115", "pregunta": "¿Con cuántos países hace frontera México?", "cara": "Neutral", "respuesta_esperada": "3", "tema": "Trivia"}
+{"id": "p-116", "pregunta": "¿Con qué se fabricaba el pergamino?", "cara": "Neutral", "respuesta_esperada": "Piel de animales", "tema": "Trivia"}
+{"id": "p-117", "pregunta": "¿Cuantos huesos tiene en el cuerpo humano de un adulto?", "cara": "Neutral", "respuesta_esperada": "206", "tema": "Trivia"}
+{"id": "p-118", "pregunta": "¿Cuál es el animal que tiene mayor facilidad para repetir las frases y palabras que escucha?", "cara": "Neutral", "respuesta_esperada": "Loro Cuervo", "tema": "Trivia"}
+{"id": "p-119", "pregunta": "¿Cuál es el ave voladora más grande del mundo en la actualidad?", "cara": "Neutral", "respuesta_esperada": "Cóndor andino", "tema": "Trivia"}
+{"id": "p-120", "pregunta": "¿Cuál es el ave voladora más pesada del mundo en la actualidad?", "cara": "Neutral", "respuesta_esperada": "Avutarda kori", "tema": "Trivia"}
+{"id": "p-121", "pregunta": "¿Cuál es el color que representa la esperanza?", "cara": "Neutral", "respuesta_esperada": "Verde", "tema": "Trivia"}
+{"id": "p-122", "pregunta": "¿Cuál es el disco más vendido de la historia?", "cara": "Neutral", "respuesta_esperada": "Thriller", "tema": "Trivia"}
+{"id": "p-123", "pregunta": "¿Cuál es el estado más grande de México?", "cara": "Neutral", "respuesta_esperada": "Chihuahua", "tema": "Trivia"}
+{"id": "p-124", "pregunta": "¿Cuál es el idioma más antiguo de los que sobreviven en Europa?", "cara": "Neutral", "respuesta_esperada": "Vasco", "tema": "Trivia"}
+{"id": "p-125", "pregunta": "¿Cuál es el libro sagrado del Islam?", "cara": "Neutral", "respuesta_esperada": "corán", "tema": "Trivia"}
+{"id": "p-126", "pregunta": "¿Cuál es el lugar más frío de la tierra?", "cara": "Neutral", "respuesta_esperada": "Antártida", "tema": "Trivia"}
+{"id": "p-127", "pregunta": "¿Cuál es el metal más caro del mundo?", "cara": "Neutral", "respuesta_esperada": "Rodio", "tema": "Trivia"}
+{"id": "p-128", "pregunta": "¿Cuál es el nombre de la lengua oficial en china?", "cara": "Neutral", "respuesta_esperada": "Mandarín", "tema": "Trivia"}
+{"id": "p-129", "pregunta": "¿Cuál es el océano más grande?", "cara": "Neutral", "respuesta_esperada": "El Océano Pacífico", "tema": "Trivia"}
+{"id": "p-130", "pregunta": "¿Cuál es el país con mayor porcentaje de budistas?", "cara": "Neutral", "respuesta_esperada": "Camboya", "tema": "Trivia"}
+{"id": "p-131", "pregunta": "¿Cuál es el país con más camellos salvajes?", "cara": "Neutral", "respuesta_esperada": "Australia", "tema": "Trivia"}
+{"id": "p-132", "pregunta": "¿Cuál es el país más grande del mundo?", "cara": "Neutral", "respuesta_esperada": "Rusia", "tema": "Trivia"}
+{"id": "p-133", "pregunta": "¿Cuál es el primero de la lista de los números primos?", "cara": "Neutral", "respuesta_esperada": "2", "tema": "Trivia"}
+{"id": "p-134", "pregunta": "¿Cuál es el río más largo del mundo?", "cara": "Neutral", "respuesta_esperada": "Amazonas", "tema": "Trivia"}
+{"id": "p-135", "pregunta": "¿Cuál es el área del arte protagonista en los Premios Óscar?", "cara": "Neutral", "respuesta_esperada": "Cine", "tema": "Trivia"}
+{"id": "p-136", "pregunta": "¿Cuál es el área del arte protagonista en los premios Grammy?", "cara": "Neutral", "respuesta_esperada": "Música", "tema": "Trivia"}
+{"id": "p-137", "pregunta": "¿Cuál es el único mamífero capaz de volar?", "cara": "Neutral", "respuesta_esperada": "Murciélago", "tema": "Trivia"}
+{"id": "p-138", "pregunta": "¿Cuál es la capital de Argentina?", "cara": "Neutral", "respuesta_esperada": "Buenos Aires", "tema": "Trivia"}
+{"id": "p-139", "pregunta": "¿Cuál es la capital de Canadá?", "cara": "Neutral", "respuesta_esperada": "Ottawa", "tema": "Trivia"}
+{"id": "p-140", "pregunta": "¿Cuál es la capital de Colombia?", "cara": "Neutral", "respuesta_esperada": "Bogotá", "tema": "Trivia"}
+{"id": "p-141", "pregunta": "¿Cuál es la capital de Croacia?", "cara": "Neutral", "respuesta_esperada": "Zagreb", "tema": "Trivia"}
+{"id": "p-142", "pregunta": "¿Cuál es la capital de Dinamarca?", "cara": "Neutral", "respuesta_esperada": "Copenhague", "tema": "Trivia"}
+{"id": "p-143", "pregunta": "¿Cuál es la capital de EU?", "cara": "Neutral", "respuesta_esperada": "Washington DC", "tema": "Trivia"}
+{"id": "p-144", "pregunta": "¿Cuál es la capital de España?", "cara": "Neutral", "respuesta_esperada": "Madrid", "tema": "Trivia"}
+{"id": "p-145", "pregunta": "¿Cuál es la capital de Francia?", "cara": "Neutral", "respuesta_esperada": "París", "tema": "Trivia"}
+{"id": "p-146", "pregunta": "¿Cuál es la capital de Perú?", "cara": "Neutral", "respuesta_esperada": "Lima", "tema": "Trivia"}
+{"id": "p-147", "pregunta": "¿Cuál es la capital de Rusia?", "cara": "Neutral", "respuesta_esperada": "Moscú", "tema": "Trivia"}
+{"id": "p-148", "pregunta": "¿Cuál es la ciudad de los rascacielos?", "cara": "Neutral", "respuesta_esperada": "Nueva York", "tema": "Trivia"}
+{"id": "p-149", "pregunta": "¿Cuál es la moneda del Reino Unido?", "cara": "Neutral", "respuesta_esperada": "libra", "tema": "Trivia"}
+{"id": "p-150", "pregunta": "¿Cuál es la moneda oficial de Estados Unidos?", "cara": "Neutral", "respuesta_esperada": "Dólar", "tema": "Trivia"}
+{"id": "p-151", "pregunta": "¿Cuál es la montaña más alta del mundo?", "cara": "Neutral", "respuesta_esperada": "Everest", "tema": "Trivia"}
+{"id": "p-152", "pregunta": "¿Cuál es la nacionalidad de Pablo Neruda?", "cara": "Neutral", "respuesta_esperada": "Chileno Chile", "tema": "Trivia"}
+{"id": "p-153", "pregunta": "¿Cuál es país más poblado de la Tierra?", "cara": "Neutral", "respuesta_esperada": "China", "tema": "Trivia"}
+{"id": "p-154", "pregunta": "¿Cuál es tercer planeta en el sistema solar?", "cara": "Neutral", "respuesta_esperada": "Tierra", "tema": "Trivia"}
+{"id": "p-155", "pregunta": "¿Cuál fue el primer metal que empleó el hombre?", "cara": "Neutral", "respuesta_esperada": "Cobre", "tema": "Trivia"}
+{"id": "p-156", "pregunta": "¿Cuáles son las notas musicales?", "cara": "Neutral", "respuesta_esperada": "Do re mi fa sol la si", "tema": "Trivia"}
+{"id": "p-157", "pregunta": "¿Cuáles son los cinco tipos de sabores primarios?", "cara": "Neutral", "respuesta_esperada": "dulce amargo ácido salado umami", "tema": "Trivia"}
+{"id": "p-158", "pregunta": "¿Cuáles son los dos países con mayor cantidad de musulmanes?", "cara": "Neutral", "respuesta_esperada": "Indonesia India", "tema": "Trivia"}
+{"id": "p-159", "pregunta": "¿Cuándo acabó la II Guerra Mundial?", "cara": "Neutral", "respuesta_esperada": "1945", "tema": "Trivia"}
+{"id": "p-160", "pregunta": "¿Cuándo empezó la Primera Guerra Mundial?", "cara": "Neutral", "respuesta_esperada": "1914", "tema": "Trivia"}
+{"id": "p-161", "pregunta": "¿Cuándo se extinguieron los mamuts?", "cara": "Neutral", "respuesta_esperada": "4000 años", "tema": "Trivia"}
+{"id": "p-162", "pregunta": "¿Cuántas patas tiene la araña?", "cara": "Neutral", "respuesta_esperada": "8", "tema": "Trivia"}
+{"id": "p-163", "pregunta": "¿Cuánto vale el número pi?", "cara": "Neutral", "respuesta_esperada": "3,1416", "tema": "Trivia"}
+{"id": "p-164", "pregunta": "¿Cuántos años tiene un lustro?", "cara": "Neutral", "respuesta_esperada": "5", "tema": "Trivia"}
+{"id": "p-165", "pregunta": "¿Cuántos corazones tienen los pulpos?", "cara": "Neutral", "respuesta_esperada": "3", "tema": "Trivia"}
+{"id": "p-166", "pregunta": "¿Cómo le llaman a los textos de autores desconocidos?", "cara": "Neutral", "respuesta_esperada": "Anónimo", "tema": "Trivia"}
+{"id": "p-167", "pregunta": "¿Cómo se denomina el resultado de la multiplicación?", "cara": "Neutral", "respuesta_esperada": "Producto", "tema": "Trivia"}
+{"id": "p-168", "pregunta": "¿Cómo se le llama a una colección de revistas, diarios y publicaciones periódicas?", "cara": "Neutral", "respuesta_esperada": "Hemeroteca", "tema": "Trivia"}
+{"id": "p-169", "pregunta": "¿Cómo se llama el animal más rápido del mundo?", "cara": "Neutral", "respuesta_esperada": "Guepardo", "tema": "Trivia"}
+{"id": "p-170", "pregunta": "¿Cómo se llama el estadio del F.C. Barcelona?", "cara": "Neutral", "respuesta_esperada": "Camp Nou", "tema": "Trivia"}
+{"id": "p-171", "pregunta": "¿Cómo se llama el fundador de Facebook?", "cara": "Neutral", "respuesta_esperada": "Mark Zuckerberg", "tema": "Trivia"}
+{"id": "p-172", "pregunta": "¿Cómo se llama el himno nacional de Francia?", "cara": "Neutral", "respuesta_esperada": "La Marsellesa", "tema": "Trivia"}
+{"id": "p-173", "pregunta": "¿Cómo se llama el nuevo presidente de los Estados Unidos?", "cara": "Neutral", "respuesta_esperada": "Donald Trump", "tema": "Trivia"}
+{"id": "p-174", "pregunta": "¿Cómo se llama el procedimiento de subir la bandera?", "cara": "Neutral", "respuesta_esperada": "Izar", "tema": "Trivia"}
+{"id": "p-175", "pregunta": "¿Cómo se llama el proceso por el cual las plantas obtienen alimento?", "cara": "Neutral", "respuesta_esperada": "Fotosíntesis", "tema": "Trivia"}
+{"id": "p-176", "pregunta": "¿Cómo se llama la Reina del Reino Unido?", "cara": "Neutral", "respuesta_esperada": "Isabel Segunda", "tema": "Trivia"}
+{"id": "p-177", "pregunta": "¿Cómo se llama la capital de Mongolia?", "cara": "Neutral", "respuesta_esperada": "Ulan Bator", "tema": "Trivia"}
+{"id": "p-178", "pregunta": "¿Cómo se llama la energía contenida en el núcleo de los átomos?", "cara": "Neutral", "respuesta_esperada": "Energía nuclear", "tema": "Trivia"}
+{"id": "p-179", "pregunta": "¿Cómo se llama la estación espacial rusa?", "cara": "Neutral", "respuesta_esperada": "Mir", "tema": "Trivia"}
+{"id": "p-180", "pregunta": "¿De qué colores es la bandera de México?", "cara": "Neutral", "respuesta_esperada": "Verde blanco rojo", "tema": "Trivia"}
+{"id": "p-181", "pregunta": "¿De qué estado fue emperador Napoleón Bonaparte?", "cara": "Neutral", "respuesta_esperada": "Francia", "tema": "Trivia"}
+{"id": "p-182", "pregunta": "¿De qué estilo arquitectónico es la Catedral de Notre Dame en París?", "cara": "Neutral", "respuesta_esperada": "Gótico", "tema": "Trivia"}
+{"id": "p-183", "pregunta": "¿De qué está recubierto el cuerpo de los peces?", "cara": "Neutral", "respuesta_esperada": "Escamas", "tema": "Trivia"}
+{"id": "p-184", "pregunta": "¿De qué lengua proviene el español?", "cara": "Neutral", "respuesta_esperada": "Latín", "tema": "Trivia"}
+{"id": "p-185", "pregunta": "¿De qué país es el futbolista Zlatan Ibrahimović?", "cara": "Neutral", "respuesta_esperada": "Suecia", "tema": "Trivia"}
+{"id": "p-186", "pregunta": "¿Dónde está la Casa Blanca?", "cara": "Neutral", "respuesta_esperada": "Washington DC", "tema": "Trivia"}
+{"id": "p-187", "pregunta": "¿Dónde originaron los juegos olímpicos?", "cara": "Neutral", "respuesta_esperada": "Grecia", "tema": "Trivia"}
+{"id": "p-188", "pregunta": "¿Dónde se encuentra la Sagrada Familia?", "cara": "Neutral", "respuesta_esperada": "Barcelona", "tema": "Trivia"}
+{"id": "p-189", "pregunta": "¿Dónde se encuentra la capa de ozono?", "cara": "Neutral", "respuesta_esperada": "Atmósfera", "tema": "Trivia"}
+{"id": "p-190", "pregunta": "¿Dónde se encuentra la famosa Torre Eiffel?", "cara": "Neutral", "respuesta_esperada": "París, Francia", "tema": "Trivia"}
+{"id": "p-191", "pregunta": "¿En que fecha ocurrió la masacre de Tlatelolco?", "cara": "Neutral", "respuesta_esperada": "2 de octubre de 1968", "tema": "Trivia"}
+{"id": "p-192", "pregunta": "¿En qué año apareció en el mercado el primer videojuego protagonizado por Super Mario?", "cara": "Neutral", "respuesta_esperada": "1981", "tema": "Trivia"}
+{"id": "p-193", "pregunta": "¿En qué año comenzó la II Guerra Mundial?", "cara": "Neutral", "respuesta_esperada": "1939", "tema": "Trivia"}
+{"id": "p-194", "pregunta": "¿En qué año se aprobó la actual Constitución española?", "cara": "Neutral", "respuesta_esperada": "1978", "tema": "Trivia"}
+{"id": "p-195", "pregunta": "¿En qué continente está Ecuador?", "cara": "Neutral", "respuesta_esperada": "Américano", "tema": "Trivia"}
+{"id": "p-196", "pregunta": "¿En qué isla está situado el Teide?", "cara": "Neutral", "respuesta_esperada": "Tenerife", "tema": "Trivia"}
+{"id": "p-197", "pregunta": "¿En qué lugar del cuerpo se produce la insulina?", "cara": "Neutral", "respuesta_esperada": "Páncreas", "tema": "Trivia"}
+{"id": "p-198", "pregunta": "¿En qué país se encuentra el estadio de Wembley?", "cara": "Neutral", "respuesta_esperada": "Reino Unido Londres", "tema": "Trivia"}
+{"id": "p-199", "pregunta": "¿En qué país se encuentra el famoso monumento Taj Mahal?", "cara": "Neutral", "respuesta_esperada": "India", "tema": "Trivia"}
+{"id": "p-200", "pregunta": "¿En qué país se encuentra la Universidad de Cambridge?", "cara": "Neutral", "respuesta_esperada": "Reino Unido", "tema": "Trivia"}
+{"id": "p-201", "pregunta": "¿En qué país se encuentra la torre de Pisa?", "cara": "Neutral", "respuesta_esperada": "Italia", "tema": "Trivia"}
+{"id": "p-202", "pregunta": "¿En qué país se usó la primera bomba atómica en combate?", "cara": "Neutral", "respuesta_esperada": "Hiroshima", "tema": "Trivia"}
+{"id": "p-203", "pregunta": "¿En qué se especializa la cartografía?", "cara": "Neutral", "respuesta_esperada": "Mapas", "tema": "Trivia"}
+{"id": "p-204", "pregunta": "¿Existen animales inmortales?", "cara": "Neutral", "respuesta_esperada": "La Medusa Turritopsis nutricula", "tema": "Trivia"}
+{"id": "p-205", "pregunta": "¿Quién era el general de los nazis en la Segunda Guerra Mundial?", "cara": "Neutral", "respuesta_esperada": "Adolf Hitler", "tema": "Trivia"}
+{"id": "p-206", "pregunta": "¿Quién es Justin Timberlake?", "cara": "Neutral", "respuesta_esperada": "cantante", "tema": "Trivia"}
+{"id": "p-207", "pregunta": "¿Quién es el autor de el Quijote?", "cara": "Neutral", "respuesta_esperada": "Miguel de Cervantes", "tema": "Trivia"}
+{"id": "p-208", "pregunta": "¿Quién es el famoso Rey de Rock en los Estados Unidos?", "cara": "Neutral", "respuesta_esperada": "Elvis Presley", "tema": "Trivia"}
+{"id": "p-209", "pregunta": "¿Quién es el padre del psicoanálisis?", "cara": "Neutral", "respuesta_esperada": "Sigmund Freud", "tema": "Trivia"}
+{"id": "p-210", "pregunta": "¿Quién es el presidente de España?", "cara": "Neutral", "respuesta_esperada": "Pedro Sánchez", "tema": "Trivia"}
+{"id": "p-211", "pregunta": "¿Quién es el protagonista de la película Rocky?", "cara": "Neutral", "respuesta_esperada": "Sylvester Stallone", "tema": "Trivia"}
+{"id": "p-212", "pregunta": "¿Quién es el secretario general de la Organización de Naciones Unidas?", "cara": "Neutral", "respuesta_esperada": "António Gutierres", "tema": "Trivia"}
+{"id": "p-213", "pregunta": "¿Quién escribió Hamlet?", "cara": "Neutral", "respuesta_esperada": "William Shakespeare", "tema": "Trivia"}
+{"id": "p-214", "pregunta": "¿Quién escribió La Odisea?", "cara": "Neutral", "respuesta_esperada": "Homero", "tema": "Trivia"}
+{"id": "p-215", "pregunta": "¿Quién ganó el mundial de 2014?", "cara": "Neutral", "respuesta_esperada": "Alemania", "tema": "Trivia"}
+{"id": "p-216", "pregunta": "¿Quién pintó “la última cena”?", "cara": "Neutral", "respuesta_esperada": "Leonardo da Vinci", "tema": "Trivia"}
+{"id": "p-217", "pregunta": "¿Quién sabía que no sabía nada?", "cara": "Neutral", "respuesta_esperada": "Platón", "tema": "Trivia"}
+{"id": "p-218", "pregunta": "¿Quién traicionó a Jesús?", "cara": "Neutral", "respuesta_esperada": "Judas", "tema": "Trivia"}
+{"id": "p-219", "pregunta": "¿Qué año llegó Cristóbal Colón a América?", "cara": "Neutral", "respuesta_esperada": "1492", "tema": "Trivia"}
+{"id": "p-220", "pregunta": "¿Qué deporte practica profesionalmente Roger Federer?", "cara": "Neutral", "respuesta_esperada": "Tenis", "tema": "Trivia"}
+{"id": "p-221", "pregunta": "¿Qué deporte practicaba Michael Jordan?", "cara": "Neutral", "respuesta_esperada": "Baloncesto", "tema": "Trivia"}
+{"id": "p-222", "pregunta": "¿Qué día celebran los cristianos la festividad de la Epifanía de Jesús?", "cara": "Neutral", "respuesta_esperada": "6 de enero", "tema": "Trivia"}
+{"id": "p-223", "pregunta": "¿Qué enfermedad padecía Stephen Hawking?", "cara": "Neutral", "respuesta_esperada": "Esclerosis Lateral Amiotrófica", "tema": "Trivia"}
+{"id": "p-224", "pregunta": "¿Qué era el Concorde?", "cara": "Neutral", "respuesta_esperada": "Avión supersónico", "tema": "Trivia"}
+{"id": "p-225", "pregunta": "¿Qué es más grande un átomo o una célula?", "cara": "Neutral", "respuesta_esperada": "célula", "tema": "Trivia"}
+{"id": "p-226", "pregunta": "¿Qué es más pequeño, un átomo o una molécula?", "cara": "Neutral", "respuesta_esperada": "átomo", "tema": "Trivia"}
+{"id": "p-227", "pregunta": "¿Qué es un animal carnívoro?", "cara": "Neutral", "respuesta_esperada": "Que come carne", "tema": "Trivia"}
+{"id": "p-228", "pregunta": "¿Qué es un ebook?", "cara": "Neutral", "respuesta_esperada": "Libro en formato digital", "tema": "Trivia"}
+{"id": "p-229", "pregunta": "¿Qué es un mitómano?", "cara": "Neutral", "respuesta_esperada": "mentiroso", "tema": "Trivia"}
+{"id": "p-230", "pregunta": "¿Qué es un ovíparo?", "cara": "Neutral", "respuesta_esperada": "Un animal que nace de un huevo", "tema": "Trivia"}
+{"id": "p-231", "pregunta": "¿Qué grasas hacen tan saludable el aceite de oliva?", "cara": "Neutral", "respuesta_esperada": "monoinsaturadas", "tema": "Trivia"}
+{"id": "p-232", "pregunta": "¿Qué instrumento tocaba Paco de Lucía?", "cara": "Neutral", "respuesta_esperada": "Guitarra", "tema": "Trivia"}
+{"id": "p-233", "pregunta": "¿Qué instrumento óptico permite ver los astros de cerca?", "cara": "Neutral", "respuesta_esperada": "Telescopio", "tema": "Trivia"}
+{"id": "p-234", "pregunta": "¿Qué país tiene forma de bota?", "cara": "Neutral", "respuesta_esperada": "Italia", "tema": "Trivia"}
+{"id": "p-235", "pregunta": "¿Qué producto cultiva más Guatemala?", "cara": "Neutral", "respuesta_esperada": "Café", "tema": "Trivia"}
+{"id": "p-236", "pregunta": "¿Qué rama de la Biología estudia los animales?", "cara": "Neutral", "respuesta_esperada": "zoología", "tema": "Trivia"}
+{"id": "p-237", "pregunta": "¿Qué significa FIFA?", "cara": "Neutral", "respuesta_esperada": "Federación Internacional de Fútbol Asociación", "tema": "Trivia"}
+{"id": "p-238", "pregunta": "¿Qué tipo de animal es la ballena?", "cara": "Neutral", "respuesta_esperada": "Mamífero marino", "tema": "Trivia"}
+{"id": "p-239", "pregunta": "¿Qué veterano músico es la canción Tears in Heaven?", "cara": "Neutral", "respuesta_esperada": "Eric Clapton", "tema": "Trivia"}
+{"id": "p-240", "pregunta": "Hola Roberto, ¿cómo te encuentras hoy?", "cara": "Neutral", "respuesta_esperada": "", "tema": "Interaccion personalizada (COMIDA)"}
+{"id": "p-241", "pregunta": "Roberto, ¿qué canción te gustaría escuchar mientras disfrutas tu caldo tlalpeño?", "cara": "Neutral", "respuesta_esperada": "", "tema": "Interaccion personalizada (COMIDA)"}
+{"id": "p-242", "pregunta": "Roberto, ¿por qué no comes?", "cara": "Neutral", "respuesta_esperada": "", "tema": "Interaccion personalizada (COMIDA)"}
+{"id": "p-243", "pregunta": "¿Te gustaría que te lo calienten?", "cara": "Neutral", "respuesta_esperada": "", "tema": "Interaccion personalizada (COMIDA)"}
+{"id": "p-244", "pregunta": "Roberto, ¿Te gustaría escuchar música de los panchos mientras comes?", "cara": "Neutral", "respuesta_esperada": "", "tema": "Interaccion personalizada (COMIDA)"}
+{"id": "p-245", "pregunta": "Roberto, ya casi es hora de la comida, ¿tienes hambre?", "cara": "Neutral", "respuesta_esperada": "", "tema": "Interaccion personalizada (COMIDA)"}
+{"id": "p-246", "pregunta": "¿No se te antoja un pozole?", "cara": "Neutral", "respuesta_esperada": "", "tema": "Interaccion personalizada (COMIDA)"}

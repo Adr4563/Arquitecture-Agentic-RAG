@@ -1,0 +1,15 @@
+__pycache__/
+*.pyc
+.ipynb_checkpoints/
+.venv/
+venv/
+env/
+*.egg-info/
+.DS_Store
+WebScraping/
+models/
+*.gguf
+chroma_data/
+.claude/settings.local.json
+carrito-mecanum-esp32/credentials.h
+frontend/.current_face
