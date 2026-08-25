@@ -1,5 +1,4 @@
-flask
 requests
 httpx
-chromadb
 rank_bm25
+flask

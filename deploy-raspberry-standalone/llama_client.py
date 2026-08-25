@@ -1,11 +1,11 @@
 """
-Clientes HTTP hacia los servidores de modelos.
+Cliente HTTP hacia Ollama (generar_respuesta(), enrutar()).
 
-  - recuperar_contexto(): habla con embed_server.py (embeddings + ChromaDB)
-  - generar_respuesta():  habla con Ollama (API compatible con OpenAI)
-
-Los workers y el manager importan estas funciones, no hablan directo
-con los servidores.
+La recuperación de preguntas/contexto YA NO es HTTP: vive en preguntas.py,
+un módulo que corre en este mismo proceso (ver la nota en ese archivo sobre
+por qué acá no hace falta un servidor separado como en el despliegue
+dividido). Los workers y el manager importan generar_respuesta()/enrutar()
+de acá, y recuperar_contexto()/pregunta_aleatoria()/etc. de preguntas.py.
 """
 
 import json
@@ -13,46 +13,24 @@ import os
 
 import requests
 
-# ─── Servidores ──────────────────────────────────────────────
-# Backend (Ollama + embed_server.py) y frontend (chat.py) corren en máquinas
-# distintas en la misma LAN: el backend queda en la PC, chat.py corre en el
-# Raspberry Pi. Por default apuntan a localhost (para probar todo en una sola
-# máquina); en el Raspberry Pi hay que exportar estas dos variables de entorno
-# con la IP de la PC antes de correr chat.py, ej.:
-#   export EMBED_SERVER_HOST=http://192.168.1.44:8081
+# ─── Ollama ──────────────────────────────────────────────────
+# Por default apunta a localhost (todo corre en esta misma Raspberry Pi). Si
+# alguna vez hiciera falta correr Ollama en otra máquina, se puede
+# sobreescribir con la IP correspondiente:
 #   export CHAT_SERVER_HOST=http://192.168.1.44:11434
-EMBED_SERVER_HOST = os.environ.get("EMBED_SERVER_HOST", "http://localhost:8081")
 CHAT_SERVER_HOST = os.environ.get("CHAT_SERVER_HOST", "http://localhost:11434")
-CHAT_MODEL = "llama3.2:3b"  # nombre del modelo en `ollama list` — genera las respuestas reales
-# (no usar la variante -fp16: corre 100% en CPU sin VRAM y es extremadamente lenta.
-# llama3.2:3b ya viene cuantizado a Q4_K_M y es viable en CPU)
+# Configurable por env var (no solo hardcodeado) para poder bajar a un modelo más
+# liviano en hardware limitado (ej. Raspberry Pi) sin tocar código — ver
+# deploy-raspberry-standalone/README.md.
+CHAT_MODEL = os.environ.get("CHAT_MODEL", "llama3.2:3b-q4s")  # nombre del modelo en `ollama list` — genera las respuestas reales
+# (no usar la variante -fp16: corre 100% en CPU sin VRAM y es extremadamente lenta;
+# -q4s está cuantizado y es viable en CPU)
 
 # El router no necesita el modelo grande: es una clasificación de 3 etiquetas,
 # no generación de texto. qwen2.5:0.5b con few-shot + salida JSON forzada
 # clasifica igual de bien que llama3.2:1b en este caso y corre ~3x más rápido
 # (benchmark en rag-model-bench/: 5/5 aciertos, ~760ms promedio vs ~2.6s).
 ROUTER_MODEL = "qwen2.5:0.5b"
-
-
-SIN_CONTEXTO = None  # sentinel: no hubo resultados relevantes en la base de datos
-
-
-def recuperar_contexto(mensaje_usuario, n_results=2):
-    resp = requests.post(
-        f"{EMBED_SERVER_HOST}/pregunta",
-        json={"query": mensaje_usuario, "n_results": n_results},
-        timeout=60,
-    )
-    resp.raise_for_status()
-    resultados = resp.json()["preguntas"]
-    if not resultados:
-        return SIN_CONTEXTO
-    return "\n\n".join(
-        f"Pregunta: {p['pregunta']}\n"
-        f"Respuesta: {p['respuesta_esperada']}\n"
-        f"Cara: {p['cara']}"
-        for p in resultados
-    )
 
 
 def generar_respuesta(mensajes, temperature=0.3, max_tokens=100, on_token=None):
@@ -99,7 +77,7 @@ RUTAS_VALIDAS = {"TRIVIA", "BUSQUEDA_WEB", "CHAT_LIBRE"}
 # (confundía preguntas de precio/contrato con otras rutas). Con estos 6
 # ejemplos sube a 5/5 en el set de prueba — ver rag-model-bench/bench.mjs.
 _ROUTER_SYSTEM_PROMPT = """Eres un router. Clasifica el mensaje del usuario en UNA de estas rutas y responde SOLO con un JSON de la forma {"ruta": "..."}.
-- TRIVIA: quiere jugar, que le hagan preguntas, trivia, matemática, chistes, o cualquier minijuego.
+- TRIVIA: quiere jugar, que le hagan preguntas, trivia, matemática, chistes, o cualquier minijuego — incluye pedir seguir/retomar/continuar un juego de preguntas que ya había empezado.
 - BUSQUEDA_WEB: pregunta algo actual o reciente que no se puede saber de memoria (noticias, el clima, quién ganó algo hace poco, la fecha de hoy).
 - CHAT_LIBRE: charla general o cualquier otra pregunta que no sea ninguna de las anteriores.
 No agregues explicación ni texto fuera del JSON.
@@ -108,6 +86,12 @@ Ejemplos:
 Usuario: "quiero jugar trivia"
 {"ruta": "TRIVIA"}
 Usuario: "hazme una pregunta de matematica"
+{"ruta": "TRIVIA"}
+Usuario: "sigamos con la trivia"
+{"ruta": "TRIVIA"}
+Usuario: "continuemos con las preguntas"
+{"ruta": "TRIVIA"}
+Usuario: "volvamos al juego de preguntas"
 {"ruta": "TRIVIA"}
 Usuario: "que clima hace hoy en lima"
 {"ruta": "BUSQUEDA_WEB"}

@@ -1,9 +1,9 @@
 """
-Controla la carita que se muestra en pantalla (frontend/faces/*.gif: happy,
+Controla la carita que se muestra en pantalla (faces/*.gif: happy,
 sad, angry, content, speaking).
 
-Vive en el frontend a propósito: la pantalla es "hardware conectado a la
-máquina donde corre chat.py" (el Manager), no al servidor de embeddings/modelos.
+La pantalla es "hardware conectado a la máquina donde corre chat.py" (el
+Manager), por eso vive junto a él en vez de junto a preguntas.py.
 
 Dos backends, elegidos automáticamente según dónde se corre (mismo
 mostrar_cara/detener para los dos, así que el resto de chat.py no se entera

@@ -12,4 +12,4 @@ models/
 chroma_data/
 .claude/settings.local.json
 carrito-mecanum-esp32/credentials.h
-frontend/.current_face
+deploy-raspberry-standalone/.current_face

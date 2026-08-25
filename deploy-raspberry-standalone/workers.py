@@ -1,20 +1,25 @@
 """
 Workers: la lógica de cada modo (Trivia, Búsqueda Web, Chat libre).
 
-El manager (frontend/chat.py) solo decide a cuál mandar cada turno; toda la
+El manager (chat.py) solo decide a cuál mandar cada turno; toda la
 lógica de qué hacer una vez decidido vive acá.
 """
 
-import httpx
-import requests
+import difflib
 
-from llama_client import EMBED_SERVER_HOST, SIN_CONTEXTO, generar_respuesta, recuperar_contexto
+import httpx
+
+from llama_client import generar_respuesta
 from personalidad import obtener_system_prompt
+from preguntas import SIN_CONTEXTO, recuperar_contexto
+from preguntas import pregunta_aleatoria as _pregunta_aleatoria
+from preguntas import pregunta_por_tema as _pregunta_por_tema
+from preguntas import preguntas_por_tema as _preguntas_por_tema
 from verificador import verificar_y_corregir
 
 RESPUESTA_SIN_CONTEXTO = "No tengo información sobre eso en mi base de datos."
 
-# Saludos/mensajes triviales: no ameritan gastar tiempo en embedding + búsqueda en Chroma.
+# Saludos/mensajes triviales: no ameritan gastar tiempo en la búsqueda BM25.
 SALUDOS_TRIVIALES = {
     "hola", "buenas", "hey", "qué tal", "que tal", "hi", "hello",
     "buenos días", "buenas tardes", "buenas noches", "gracias", "ok", "vale",
@@ -80,7 +85,7 @@ def responder(mensaje_usuario, persona_str, n_results=2, on_token=None):
         return RESPUESTA_SIN_CONTEXTO, True  # "no tengo el dato" no es un momento feliz
 
     # Sin historial: cada turno es system (fijo, cacheado) + un único user con
-    # el contexto recuperado de Chroma/BM25 + la pregunta, nada más.
+    # el contexto recuperado por BM25 + la pregunta, nada más.
     #
     # En un saludo no hay contexto que mandar. Mandar el bloque <rag> vacío hace
     # que el modelo lo lea como "no hay datos" y conteste "no tengo el dato" a un
@@ -128,39 +133,21 @@ TEMAS_CATALOGO = [
 
 
 def obtener_pregunta(ya_usados):
-    """Pide al servidor una pregunta que no se haya hecho todavía."""
-    resp = requests.post(
-        f"{EMBED_SERVER_HOST}/pregunta_aleatoria",
-        json={"excluir": list(ya_usados)},
-        timeout=60,
-    )
-    resp.raise_for_status()
-    return resp.json()["pregunta"]
+    """Una pregunta que no se haya hecho todavía (preguntas.py, en memoria —
+    ya no es un request de red)."""
+    return _pregunta_aleatoria(ya_usados)
 
 
 def obtener_pregunta_por_tema(tema, ya_usados):
     """Como obtener_pregunta, pero acotado a una categoría puntual (columna
     Actividad/Tema del Excel). `tema` ya viene resuelto por resolver_tema()."""
-    resp = requests.post(
-        f"{EMBED_SERVER_HOST}/pregunta_por_tema",
-        json={"tema": tema, "excluir": list(ya_usados)},
-        timeout=60,
-    )
-    resp.raise_for_status()
-    return resp.json()["pregunta"]
+    return _pregunta_por_tema(tema, ya_usados)
 
 
 def obtener_preguntas_por_tema(tema, ya_usados, cantidad=5):
     """Como obtener_pregunta_por_tema, pero trae una tanda de `cantidad` de
-    una sola vez (un solo request), para encadenarlas sin ida y vuelta por
-    cada pregunta."""
-    resp = requests.post(
-        f"{EMBED_SERVER_HOST}/preguntas_por_tema",
-        json={"tema": tema, "excluir": list(ya_usados), "cantidad": cantidad},
-        timeout=60,
-    )
-    resp.raise_for_status()
-    return resp.json()["preguntas"]
+    una sola vez, para encadenarlas sin volver a filtrar por cada pregunta."""
+    return _preguntas_por_tema(tema, ya_usados, cantidad)
 
 
 def comentar_resultado(pregunta, esperada, respuesta_usuario, acerto, persona_str, on_token=None):
@@ -214,23 +201,26 @@ def reaccionar_libre(pregunta, respuesta_usuario, persona_str, on_token=None):
 
 def resolver_tema(eleccion_usuario):
     """El usuario elige la sesión con texto libre ('quiero chistes', 'algo de
-    colores', o directo 'Interacción'); se le pide al LLM que lo mapee a
-    EXACTAMENTE una categoría del catálogo, para poder filtrar por ella en el
-    backend. Si no hay relación clara, cae en Trivia (la sesión con más datos)."""
-    catalogo = "\n".join(f"- {t}" for t in TEMAS_CATALOGO)
-    mensajes = [
-        {"role": "system", "content": (
-            "Un usuario eligió qué actividad quiere hacer con un robot, con sus "
-            "propias palabras. Mapea su elección a EXACTAMENTE una de estas "
-            f"categorías (cópiala tal cual, sin cambiar nada):\n{catalogo}\n\n"
-            "Si no hay ninguna relación clara, responde: Trivia\n"
-            "Responde solo con el nombre exacto de la categoría, nada más."
-        )},
-        {"role": "user", "content": eleccion_usuario},
-    ]
-    # temperature=0: es una clasificación, no queremos variación entre corridas.
-    tema = generar_respuesta(mensajes, temperature=0, max_tokens=20).strip()
-    return tema if tema in TEMAS_CATALOGO else "Trivia"
+    colores', o directo 'Interaccion'); se mapea a EXACTAMENTE una categoría
+    del catálogo por texto, sin LLM de por medio — las opciones que se le
+    muestran ya son 5 strings literales sacados del propio catálogo (ver
+    chat.py), así que alcanza con match directo/difuso contra esa lista. Si no
+    hay relación clara, cae en Trivia (la sesión con más datos)."""
+    texto = eleccion_usuario.strip().lower()
+    catalogo_low = [t.lower() for t in TEMAS_CATALOGO]
+
+    # 1) match exacto o por substring en cualquier sentido (cubre "chistes" ->
+    #    "Chistes", "algo de colores" -> "Juego de colores").
+    for tema, tema_low in zip(TEMAS_CATALOGO, catalogo_low):
+        if texto == tema_low or tema_low in texto or texto in tema_low:
+            return tema
+
+    # 2) match difuso (typos, palabras de más/menos) contra el catálogo completo.
+    cercano = difflib.get_close_matches(texto, catalogo_low, n=1, cutoff=0.5)
+    if cercano:
+        return TEMAS_CATALOGO[catalogo_low.index(cercano[0])]
+
+    return "Trivia"
 
 
 # ─── Búsqueda web ──────────────────────────────────────────────

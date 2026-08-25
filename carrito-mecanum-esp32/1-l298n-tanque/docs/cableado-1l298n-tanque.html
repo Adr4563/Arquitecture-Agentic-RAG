@@ -1,0 +1,541 @@
+<title>Cableado Carrito Tanque — 1 L298N</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+<style>
+  :root {
+    --bg: #F5F7F8;
+    --surface: #FFFFFF;
+    --surface-2: #EBEFF1;
+    --text: #16212B;
+    --text-muted: #51626D;
+    --border: #CBD5DA;
+    --border-strong: #9FB0B8;
+
+    --net-signal: #0E7C86;
+    --net-signal-soft: #E1F1F1;
+    --net-power: #C0392B;
+    --net-power-soft: #FBE7E4;
+    --net-ground: #5C6E78;
+    --net-motor: #A66B10;
+    --net-motor-soft: #F7ECDA;
+
+    --font-display: 'IBM Plex Sans', system-ui, sans-serif;
+    --font-body: 'IBM Plex Sans', system-ui, sans-serif;
+    --font-mono: 'IBM Plex Mono', 'SFMono-Regular', Consolas, monospace;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #0C1216;
+      --surface: #131B21;
+      --surface-2: #1B252C;
+      --text: #E7EDF0;
+      --text-muted: #93A5AE;
+      --border: #2B3941;
+      --border-strong: #445560;
+
+      --net-signal: #4FD1DE;
+      --net-signal-soft: #133236;
+      --net-power: #FF6B5C;
+      --net-power-soft: #3A1D19;
+      --net-ground: #93A5AE;
+      --net-motor: #F0B429;
+      --net-motor-soft: #3A2C10;
+    }
+  }
+
+  :root[data-theme="dark"] {
+    --bg: #0C1216;
+    --surface: #131B21;
+    --surface-2: #1B252C;
+    --text: #E7EDF0;
+    --text-muted: #93A5AE;
+    --border: #2B3941;
+    --border-strong: #445560;
+
+    --net-signal: #4FD1DE;
+    --net-signal-soft: #133236;
+    --net-power: #FF6B5C;
+    --net-power-soft: #3A1D19;
+    --net-ground: #93A5AE;
+    --net-motor: #F0B429;
+    --net-motor-soft: #3A2C10;
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--font-body);
+    line-height: 1.5;
+  }
+
+  .page {
+    max-width: 1080px;
+    margin: 0 auto;
+    padding: 48px 24px 80px;
+    display: flex;
+    flex-direction: column;
+    gap: 40px;
+  }
+
+  header.top {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 28px;
+  }
+
+  .eyebrow {
+    font-family: var(--font-mono);
+    font-size: 12.5px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--net-signal);
+    font-weight: 500;
+  }
+
+  h1 {
+    font-family: var(--font-display);
+    font-size: clamp(28px, 4vw, 38px);
+    font-weight: 700;
+    margin: 0;
+    text-wrap: balance;
+    letter-spacing: -0.01em;
+  }
+
+  .lede {
+    max-width: 66ch;
+    color: var(--text-muted);
+    font-size: 16px;
+    margin: 0;
+  }
+
+  .lede code {
+    font-family: var(--font-mono);
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 1px 5px;
+    font-size: 0.9em;
+    color: var(--text);
+  }
+
+  figure.diagram {
+    margin: 0;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 20px;
+  }
+
+  .diagram-scroll {
+    overflow-x: auto;
+  }
+
+  figure.diagram svg {
+    width: 100%;
+    height: auto;
+    min-width: 820px;
+    display: block;
+    color: var(--text);
+  }
+
+  figcaption {
+    margin-top: 16px;
+    font-size: 14px;
+    color: var(--text-muted);
+    max-width: 74ch;
+  }
+
+  .legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+
+  .legend-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-family: var(--font-mono);
+    font-size: 12.5px;
+    color: var(--text-muted);
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    padding: 6px 12px 6px 10px;
+  }
+
+  .swatch {
+    width: 22px;
+    height: 3px;
+    border-radius: 2px;
+    flex: none;
+  }
+
+  .swatch.dashed {
+    background: repeating-linear-gradient(90deg, var(--net-ground) 0 5px, transparent 5px 9px);
+    height: 2px;
+  }
+
+  section.tables {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 20px;
+  }
+
+  .table-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    overflow: hidden;
+  }
+
+  .table-card h2 {
+    font-family: var(--font-display);
+    font-size: 14px;
+    font-weight: 600;
+    margin: 0;
+    padding: 14px 16px 12px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .table-card h2 .dot {
+    width: 9px;
+    height: 9px;
+    border-radius: 50%;
+    flex: none;
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13.5px;
+  }
+
+  th, td {
+    text-align: left;
+    padding: 8px 16px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  th {
+    color: var(--text-muted);
+    font-weight: 500;
+    font-size: 11.5px;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+  }
+
+  td.pin, th.pin {
+    font-family: var(--font-mono);
+    white-space: nowrap;
+  }
+
+  tr:last-child td { border-bottom: none; }
+
+  .notes {
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 18px 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .notes h2 {
+    font-family: var(--font-display);
+    font-size: 14px;
+    margin: 0;
+    font-weight: 600;
+  }
+
+  .notes ul {
+    margin: 0;
+    padding-left: 20px;
+    color: var(--text-muted);
+    font-size: 14px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .notes li strong { color: var(--text); font-weight: 600; }
+
+  .notes code {
+    font-family: var(--font-mono);
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 1px 5px;
+    font-size: 0.92em;
+    color: var(--text);
+  }
+
+  a { color: var(--net-signal); }
+
+  :focus-visible {
+    outline: 2px solid var(--net-signal);
+    outline-offset: 2px;
+  }
+
+  /* SVG diagram styling */
+  .board-fill { fill: var(--surface-2); stroke: var(--border-strong); stroke-width: 1.5; }
+  .board-title { font-family: var(--font-display); font-weight: 600; font-size: 13.5px; fill: var(--text); }
+  .board-sub { font-family: var(--font-mono); font-size: 10.5px; fill: var(--text-muted); }
+  .pin-tick { stroke: var(--text-muted); stroke-width: 1.5; }
+  .pin-label { font-family: var(--font-mono); font-size: 11px; fill: var(--text); }
+  .pin-label-muted { font-family: var(--font-mono); font-size: 10px; fill: var(--text-muted); }
+  .motor-fill { fill: var(--surface); stroke: var(--border-strong); stroke-width: 1.5; }
+  .motor-label { font-family: var(--font-display); font-weight: 600; font-size: 12.5px; fill: var(--text); }
+  .group-fill { fill: var(--net-motor-soft); stroke: var(--net-motor); stroke-width: 1.25; stroke-dasharray: 4 4; }
+
+  .wire-signal { stroke: var(--net-signal); stroke-width: 3; fill: none; stroke-linecap: round; stroke-linejoin: round; }
+  .wire-power  { stroke: var(--net-power);  stroke-width: 3; fill: none; stroke-linecap: round; stroke-linejoin: round; }
+  .wire-motor  { stroke: var(--net-motor);  stroke-width: 3; fill: none; stroke-linecap: round; stroke-linejoin: round; }
+  .wire-motor-thin { stroke: var(--net-motor); stroke-width: 2.25; fill: none; stroke-linecap: round; }
+  .wire-ground { stroke: var(--net-ground); stroke-width: 2.25; fill: none; stroke-dasharray: 6 5; stroke-linecap: round; }
+  .cell-fill { fill: var(--surface); stroke: var(--border-strong); stroke-width: 1.5; }
+  .ic-fill { fill: var(--surface); stroke: var(--border-strong); stroke-width: 1.5; }
+
+  .arrow-signal-fill { fill: var(--net-signal); }
+  .arrow-power-fill  { fill: var(--net-power); }
+  .arrow-motor-fill  { fill: var(--net-motor); }
+
+  .junction { fill: var(--net-ground); }
+  .junction-motor { fill: var(--net-motor); }
+</style>
+
+<div class="page">
+  <header class="top">
+    <span class="eyebrow">ESP32-S3-DevKitC-1 · Carrito Tanque · 1 L298N</span>
+    <h1>Cableado — Variante con 1 solo L298N</h1>
+    <p class="lede">
+      Diagrama de conexión entre el ESP32-S3 y un único driver L298N para
+      <code>carrito_tanque_1l298n_esp32s3.ino</code>. Con 2 canales en vez de 4,
+      los motores <strong>FL+BL</strong> comparten el canal A y <strong>FR+BR</strong>
+      comparten el canal B — quedan cableados en paralelo, mismo lado del chasis.
+    </p>
+  </header>
+
+  <main style="display:flex; flex-direction:column; gap:32px;">
+    <figure class="diagram">
+      <div class="diagram-scroll">
+        <svg viewBox="0 0 1100 460" role="img" aria-label="Diagrama de cableado: el ESP32-S3 envia 4 señales de control a un unico driver L298N, la bateria alimenta el L298N y devuelve 5V regulados al ESP32, una tierra comun conecta bateria, ESP32 y L298N, y cada uno de los 2 canales de salida del L298N alimenta 2 motores en paralelo del mismo lado del chasis (canal A: FL+BL, canal B: FR+BR).">
+          <defs>
+            <marker id="arrow-signal" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+              <path class="arrow-signal-fill" d="M0,0 L8,4 L0,8 Z" />
+            </marker>
+            <marker id="arrow-power" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+              <path class="arrow-power-fill" d="M0,0 L8,4 L0,8 Z" />
+            </marker>
+          </defs>
+
+          <!-- Ground bus (dashed trunk) -->
+          <path class="wire-ground" d="M210,85 L300,85 L300,315" />
+          <path class="wire-ground" d="M300,235 L420,235" />
+          <path class="wire-ground" d="M300,315 L210,315" />
+          <circle class="junction" cx="300" cy="85" r="2.5" />
+          <circle class="junction" cx="300" cy="235" r="2.5" />
+          <circle class="junction" cx="300" cy="315" r="2.5" />
+
+          <!-- VCC: battery + -> L298N VCC -->
+          <path class="wire-power" d="M210,45 L360,45 L360,205 L420,205" marker-end="url(#arrow-power)" />
+
+          <!-- 5V regulated out: L298N -> ESP32 -->
+          <path class="wire-power" d="M420,265 L330,265 L330,285 L210,285" marker-end="url(#arrow-power)" />
+
+          <!-- Signal wires: ESP32 -> L298N -->
+          <path class="wire-signal" d="M210,175 L240,175 L240,95 L420,95" marker-end="url(#arrow-signal)" />
+          <path class="wire-signal" d="M210,199 L255,199 L255,119 L420,119" marker-end="url(#arrow-signal)" />
+          <path class="wire-signal" d="M210,223 L270,223 L270,143 L420,143" marker-end="url(#arrow-signal)" />
+          <path class="wire-signal" d="M210,247 L285,247 L285,167 L420,167" marker-end="url(#arrow-signal)" />
+
+          <!-- Battery -->
+          <rect class="board-fill" x="20" y="20" width="190" height="90" rx="8" />
+          <text class="board-title" x="34" y="38">Batería</text>
+          <rect class="cell-fill" x="34" y="52" width="142" height="16" rx="8" />
+          <rect x="172" y="56" width="8" height="8" fill="var(--text-muted)" />
+          <rect class="cell-fill" x="34" y="76" width="142" height="16" rx="8" />
+          <rect x="172" y="80" width="8" height="8" fill="var(--text-muted)" />
+          <line class="pin-tick" x1="200" y1="45" x2="210" y2="45" />
+          <text class="pin-label" x="196" y="49" text-anchor="end">+</text>
+          <line class="pin-tick" x1="200" y1="85" x2="210" y2="85" />
+          <text class="pin-label" x="196" y="89" text-anchor="end">–</text>
+
+          <!-- ESP32-S3 -->
+          <rect class="board-fill" x="20" y="140" width="190" height="280" rx="8" />
+          <text class="board-title" x="34" y="165">ESP32-S3</text>
+          <text class="board-sub" x="34" y="181">DevKitC-1</text>
+
+          <g>
+            <line class="pin-tick" x1="210" y1="175" x2="220" y2="175" /><text class="pin-label" x="216" y="172" text-anchor="end">GPIO4</text>
+            <line class="pin-tick" x1="210" y1="199" x2="220" y2="199" /><text class="pin-label" x="216" y="196" text-anchor="end">GPIO5</text>
+            <line class="pin-tick" x1="210" y1="223" x2="220" y2="223" /><text class="pin-label" x="216" y="220" text-anchor="end">GPIO6</text>
+            <line class="pin-tick" x1="210" y1="247" x2="220" y2="247" /><text class="pin-label" x="216" y="244" text-anchor="end">GPIO7</text>
+            <line class="pin-tick" x1="210" y1="285" x2="220" y2="285" /><text class="pin-label" x="216" y="282" text-anchor="end">5V</text>
+            <line class="pin-tick" x1="210" y1="315" x2="220" y2="315" /><text class="pin-label" x="216" y="312" text-anchor="end">GND</text>
+          </g>
+          <text class="pin-label-muted" x="34" y="360">control de 2 canales:</text>
+          <text class="pin-label-muted" x="34" y="375">lado izquierdo / lado derecho</text>
+
+          <!-- L298N (unico) -->
+          <rect class="board-fill" x="420" y="60" width="210" height="330" rx="8" />
+          <text class="board-title" x="434" y="82">L298N</text>
+          <text class="board-sub" x="434" y="98">único driver</text>
+          <rect class="ic-fill" x="470" y="200" width="70" height="50" rx="4" />
+          <text class="pin-label" x="505" y="229" text-anchor="middle">IC</text>
+          <g>
+            <line class="pin-tick" x1="410" y1="95" x2="420" y2="95" /><text class="pin-label" x="406" y="98" text-anchor="end">IN1</text>
+            <line class="pin-tick" x1="410" y1="119" x2="420" y2="119" /><text class="pin-label" x="406" y="122" text-anchor="end">IN2</text>
+            <line class="pin-tick" x1="410" y1="143" x2="420" y2="143" /><text class="pin-label" x="406" y="146" text-anchor="end">IN3</text>
+            <line class="pin-tick" x1="410" y1="167" x2="420" y2="167" /><text class="pin-label" x="406" y="170" text-anchor="end">IN4</text>
+            <line class="pin-tick" x1="410" y1="205" x2="420" y2="205" /><text class="pin-label" x="406" y="208" text-anchor="end">VCC</text>
+            <line class="pin-tick" x1="410" y1="235" x2="420" y2="235" /><text class="pin-label" x="406" y="238" text-anchor="end">GND</text>
+            <line class="pin-tick" x1="410" y1="265" x2="420" y2="265" /><text class="pin-label" x="406" y="268" text-anchor="end">5V OUT</text>
+          </g>
+          <g>
+            <line class="pin-tick" x1="630" y1="100" x2="640" y2="100" /><text class="pin-label" x="644" y="103">OUT1</text>
+            <line class="pin-tick" x1="630" y1="150" x2="640" y2="150" /><text class="pin-label" x="644" y="153">OUT2</text>
+            <line class="pin-tick" x1="630" y1="310" x2="640" y2="310" /><text class="pin-label" x="644" y="313">OUT3</text>
+            <line class="pin-tick" x1="630" y1="350" x2="640" y2="350" /><text class="pin-label" x="644" y="353">OUT4</text>
+          </g>
+          <text class="pin-label-muted" x="434" y="115">canal A → OUT1/OUT2</text>
+          <text class="pin-label-muted" x="434" y="330">canal B → OUT3/OUT4</text>
+
+          <!-- Channel A rail: OUT1/OUT2 -> FL + BL en paralelo -->
+          <rect class="group-fill" x="770" y="68" width="300" height="120" rx="10" />
+          <text class="board-title" x="784" y="86">Canal A → lado IZQUIERDO</text>
+          <text class="board-sub" x="784" y="100">FL + BL en paralelo</text>
+
+          <path class="wire-motor" d="M630,100 L1050,100" />
+          <path class="wire-motor" d="M630,150 L1050,150" />
+
+          <path class="wire-motor-thin" d="M860,100 L860,108" />
+          <path class="wire-motor-thin" d="M860,142 L860,150" />
+          <circle class="junction-motor" cx="860" cy="100" r="2.5" />
+          <circle class="junction-motor" cx="860" cy="150" r="2.5" />
+          <rect class="motor-fill" x="830" y="108" width="60" height="34" rx="5" />
+          <text class="motor-label" x="860" y="130" text-anchor="middle">FL</text>
+
+          <path class="wire-motor-thin" d="M990,100 L990,108" />
+          <path class="wire-motor-thin" d="M990,142 L990,150" />
+          <circle class="junction-motor" cx="990" cy="100" r="2.5" />
+          <circle class="junction-motor" cx="990" cy="150" r="2.5" />
+          <rect class="motor-fill" x="960" y="108" width="60" height="34" rx="5" />
+          <text class="motor-label" x="990" y="130" text-anchor="middle">BL</text>
+
+          <!-- Channel B rail: OUT3/OUT4 -> FR + BR en paralelo -->
+          <rect class="group-fill" x="770" y="268" width="300" height="100" rx="10" />
+          <text class="board-title" x="784" y="286">Canal B → lado DERECHO</text>
+          <text class="board-sub" x="784" y="300">FR + BR en paralelo</text>
+
+          <path class="wire-motor" d="M630,310 L1050,310" />
+          <path class="wire-motor" d="M630,350 L1050,350" />
+
+          <path class="wire-motor-thin" d="M860,310 L860,313" />
+          <path class="wire-motor-thin" d="M860,347 L860,350" />
+          <circle class="junction-motor" cx="860" cy="310" r="2.5" />
+          <circle class="junction-motor" cx="860" cy="350" r="2.5" />
+          <rect class="motor-fill" x="830" y="313" width="60" height="34" rx="5" />
+          <text class="motor-label" x="860" y="335" text-anchor="middle">FR</text>
+
+          <path class="wire-motor-thin" d="M990,310 L990,313" />
+          <path class="wire-motor-thin" d="M990,347 L990,350" />
+          <circle class="junction-motor" cx="990" cy="310" r="2.5" />
+          <circle class="junction-motor" cx="990" cy="350" r="2.5" />
+          <rect class="motor-fill" x="960" y="313" width="60" height="34" rx="5" />
+          <text class="motor-label" x="990" y="335" text-anchor="middle">BR</text>
+        </svg>
+      </div>
+      <figcaption>
+        Los 4 GPIO de control (teal) van del ESP32-S3 al único L298N. La batería (rojo)
+        lo alimenta y su 5V regulado vuelve al ESP32. Una tierra común (gris, discontinua)
+        enlaza batería, ESP32 y L298N. Cada canal de salida (ámbar) es un <em>bus</em> del
+        que cuelgan 2 motores en paralelo (recuadro punteado): así se pierde la independencia
+        entre el motor delantero y el trasero de un mismo lado.
+      </figcaption>
+    </figure>
+
+    <div class="legend">
+      <span class="legend-item"><span class="swatch" style="background:var(--net-signal)"></span>Señal de control (GPIO)</span>
+      <span class="legend-item"><span class="swatch" style="background:var(--net-power)"></span>Alimentación (batería / 5V)</span>
+      <span class="legend-item"><span class="swatch" style="background:var(--net-motor)"></span>Salida a motores (bus por canal)</span>
+      <span class="legend-item"><span class="swatch dashed"></span>Tierra común</span>
+    </div>
+
+    <section class="tables">
+      <div class="table-card">
+        <h2><span class="dot" style="background:var(--net-signal)"></span>Señales de control</h2>
+        <table>
+          <thead><tr><th class="pin">ESP32-S3</th><th>Destino</th></tr></thead>
+          <tbody>
+            <tr><td class="pin">GPIO4</td><td>L298N · IN1</td></tr>
+            <tr><td class="pin">GPIO5</td><td>L298N · IN2</td></tr>
+            <tr><td class="pin">GPIO6</td><td>L298N · IN3</td></tr>
+            <tr><td class="pin">GPIO7</td><td>L298N · IN4</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="table-card">
+        <h2><span class="dot" style="background:var(--net-power)"></span>Alimentación y tierra</h2>
+        <table>
+          <thead><tr><th class="pin">Origen</th><th>Destino</th></tr></thead>
+          <tbody>
+            <tr><td class="pin">Batería +</td><td>L298N · VCC</td></tr>
+            <tr><td class="pin">Batería –</td><td>Bus GND común</td></tr>
+            <tr><td class="pin">L298N · 5V OUT</td><td>ESP32-S3 · 5V</td></tr>
+            <tr><td class="pin">Bus GND</td><td>ESP32-S3 · GND, L298N · GND</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="table-card">
+        <h2><span class="dot" style="background:var(--net-motor)"></span>Salidas a motores (en paralelo)</h2>
+        <table>
+          <thead><tr><th class="pin">L298N</th><th>Motores</th></tr></thead>
+          <tbody>
+            <tr><td class="pin">Canal A · OUT1 / OUT2</td><td>FL + BL (lado izquierdo)</td></tr>
+            <tr><td class="pin">Canal B · OUT3 / OUT4</td><td>FR + BR (lado derecho)</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <aside class="notes">
+      <h2>Por qué no hay strafe ni diagonales en esta variante</h2>
+      <ul>
+        <li><strong>FL y BL comparten el mismo canal</strong> (igual FR y BR): eléctricamente giran siempre idénticos, no hay forma de que uno vaya adelante y el otro atrás al mismo tiempo — y eso es justo lo que <code>strafeLeft/Right()</code> y las 4 diagonales necesitan.</li>
+        <li><strong>Lo que sí queda:</strong> avanzar, retroceder y girar en el sitio tipo tanque (un lado adelante, el otro atrás) — ver <code>forward()</code>, <code>backward()</code>, <code>rotateLeft/Right()</code> en el <code>.ino</code> de esta carpeta.</li>
+        <li>Si más adelante consigues un segundo L298N, la versión completa con las 9 funciones de movimiento está en <code>../2-l298n-mecanum/</code> — no hay que rediseñar nada, solo cablear cada motor a su propio canal.</li>
+      </ul>
+    </aside>
+
+    <aside class="notes">
+      <h2>⚠️ Corriente: 2 motores por canal</h2>
+      <ul>
+        <li><strong>Cada canal entrega la corriente de 2 motores a la vez.</strong> Un L298N típico ronda ~2 A por canal (menos en continuo, por calentamiento del chip) — revisa la corriente de arranque (stall current) de tus motores ×2 antes de energizar.</li>
+        <li>Si te acercas al límite: agrega un disipador al L298N, baja el voltaje de alimentación, o vuelve a la versión de 2 L298N (<code>../2-l298n-mecanum/</code>), donde cada motor tiene su propio canal y no hay que compartir corriente.</li>
+      </ul>
+    </aside>
+
+    <aside class="notes">
+      <h2>Antes de energizar</h2>
+      <ul>
+        <li><strong>Tierra común obligatoria:</strong> si el GND del ESP32 no queda unido al GND del L298N, las señales de control pueden leerse erráticas o no funcionar.</li>
+        <li><strong>No uses el pin 5V del USB como fuente de los motores:</strong> los motores tiran de la batería a través del L298N; el USB solo debe alimentar el ESP32 mientras programas.</li>
+        <li><strong>Quita el jumper de 5V del L298N</strong> si vas a alimentar el ESP32 desde otra fuente al mismo tiempo, para no tener dos reguladores compitiendo en la misma línea de 5V.</li>
+        <li><strong>Pines evitados en el S3:</strong> strapping (<code>0</code>, <code>3</code>, <code>45</code>, <code>46</code>), USB nativo (<code>19</code>, <code>20</code>), UART consola (<code>43</code>, <code>44</code>) y flash/PSRAM (<code>26</code>–<code>32</code>) — por eso este esquema usa <code>4, 5, 6, 7</code>.</li>
+      </ul>
+    </aside>
+  </main>
+</div>
