@@ -1,15 +1,17 @@
 #!/usr/bin/env bash
 # Levanta el stack de Arquitecture-RAG en esta misma Raspberry Pi, con todo
-# el código (chat.py, preguntas.py, workers.py, etc.) viviendo junto en
-# esta misma carpeta — ver README.md para el detalle de cada archivo.
+# el código (Orchestrator_Management.py, preguntas.py, Agents/, Clients/,
+# etc.) viviendo junto en esta misma carpeta — ver README.md para el detalle
+# de cada archivo.
 #
 # Uso:
 #   chmod +x start-all.sh
 #   ./start-all.sh
 #
-# chat.py es el único proceso propio que hace falta levantar: preguntas.py
-# (búsqueda BM25 sobre preguntas.jsonl) ya no es un servidor aparte, corre en
-# el mismo proceso — solo queda Ollama como servicio externo.
+# Orchestrator_Management.py es el único proceso propio que hace falta
+# levantar: preguntas.py (búsqueda BM25 sobre preguntas.jsonl) ya no es un
+# servidor aparte, corre en el mismo proceso — solo queda Ollama como
+# servicio externo.
 
 set -euo pipefail
 
@@ -35,6 +37,6 @@ if [ "$MODELOS_FALTANTES" -eq 1 ]; then
 fi
 echo "OK — Ollama arriba y los modelos necesarios están descargados."
 
-echo "== 2/2: arrancando chat.py =="
+echo "== 2/2: arrancando Orchestrator_Management.py =="
 cd "$HERE"
-python3 chat.py
+python3 Orchestrator_Management.py

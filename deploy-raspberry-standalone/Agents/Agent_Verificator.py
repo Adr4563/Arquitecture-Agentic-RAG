@@ -3,20 +3,21 @@ Agente verificador: revisa el texto que generó otro worker antes de
 mostrárselo al usuario — para Chat libre y Búsqueda Web.
 
 Trivia no lo necesita: ya tiene su propio veredicto objetivo en
-corrector.py (evaluar_respuesta, acierto/error contra una respuesta_esperada
-conocida). Acá no hay una "respuesta correcta" contra la cual comparar —
-solo coherencia: que la respuesta generada de verdad conteste lo que se le
-preguntó, sin desviarse a algo incoherente o fuera de tema.
+Agent_Corrector.py (evaluar_respuesta, acierto/error contra una
+respuesta_esperada conocida). Acá no hay una "respuesta correcta" contra la
+cual comparar — solo coherencia: que la respuesta generada de verdad
+conteste lo que se le preguntó, sin desviarse a algo incoherente o fuera de
+tema.
 
 Devuelve también si tuvo que corregir algo (fue_corregida): ese veredicto
-es lo único que necesita cara_agente.elegir_cara() para elegir happy vs
-sad/angry — no hace falta una llamada aparte al modelo para eso, el
-verificador ya sabe si la respuesta estaba bien o mal.
+es lo único que necesita Agent_Behavior.elegir_cara_por_calidad() para
+elegir happy vs sad/angry — no hace falta una llamada aparte al modelo para
+eso, el verificador ya sabe si la respuesta estaba bien o mal.
 """
 
 import re
 
-from llama_client import generar_respuesta
+from Clients.Llama_Client import generar_respuesta
 
 
 def verificar_y_corregir(pregunta_original, respuesta_generada):

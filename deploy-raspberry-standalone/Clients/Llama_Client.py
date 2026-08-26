@@ -4,8 +4,8 @@ Cliente HTTP hacia Ollama (generar_respuesta(), enrutar()).
 La recuperación de preguntas/contexto YA NO es HTTP: vive en preguntas.py,
 un módulo que corre en este mismo proceso (ver la nota en ese archivo sobre
 por qué acá no hace falta un servidor separado como en el despliegue
-dividido). Los workers y el manager importan generar_respuesta()/enrutar()
-de acá, y recuperar_contexto()/pregunta_aleatoria()/etc. de preguntas.py.
+dividido). Orchestrator_Management.py y los Agents importan generar_respuesta()/
+enrutar() de acá, y recuperar_contexto()/pregunta_aleatoria()/etc. de preguntas.py.
 """
 
 import json

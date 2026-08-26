@@ -5,13 +5,13 @@ no una reacción con personalidad. Corre con temperature=0 porque calificar
 debe ser determinista, no creativo.
 
 Qué cara le corresponde a ese veredicto ya NO se decide acá: eso lo resuelve
-reactor.py (sin LLM, a partir de las columnas cara_respuesta_buena/
+Agent_Behavior.py (sin LLM, a partir de las columnas cara_respuesta_buena/
 cara_respuesta_mala de la pregunta) — separado a propósito, porque elegir
 una cara no necesita al modelo, y este archivo es el único punto del sistema
 que sí lo necesita para emitir el veredicto.
 """
 
-from llama_client import generar_respuesta
+from Clients.Llama_Client import generar_respuesta
 
 
 def evaluar_respuesta(pregunta, esperada, respuesta_usuario):
