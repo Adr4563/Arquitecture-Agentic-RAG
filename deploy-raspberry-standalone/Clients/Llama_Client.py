@@ -56,11 +56,16 @@ CHAT_MODEL = os.environ.get("CHAT_MODEL", "qwen2.5:0.5b")  # nombre del modelo e
 ROUTER_MODEL = "qwen2.5:0.5b"
 
 
-def generar_respuesta(mensajes, temperature=0.3, max_tokens=100, on_token=None):
+def generar_respuesta(mensajes, temperature=0.3, max_tokens=50, on_token=None):
     """Llama al modelo con streaming. Si se pasa on_token(chunk), se invoca por cada
     pedazo de texto a medida que llega (para imprimirlo en vivo); igual devuelve el
     texto completo al final. No baja el tiempo total, pero se percibe mucho más
-    rápido porque el usuario ve la respuesta aparecer en vez de esperar en blanco."""
+    rápido porque el usuario ve la respuesta aparecer en vez de esperar en blanco.
+
+    max_tokens=50 (antes 100): el system prompt (personalidad.py) ya limita toda
+    respuesta a ~25 palabras, así que 50 tokens da margen de sobra sin recortar
+    nada — solo corta el peor caso en que el modelo no respeta esa regla y sigue
+    generando de más, que es puro costo de CPU desperdiciado en esta Pi."""
     resp = requests.post(
         f"{CHAT_SERVER_HOST}/v1/chat/completions",
         json={

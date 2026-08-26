@@ -1,6 +1,7 @@
 """
-Controla la carita que se muestra en pantalla (faces/*.gif: happy,
-sad, angry, content, speaking).
+Controla la carita que se muestra en pantalla (faces/{happy,sad,angry,
+content,speaking}.{mp4,gif} — mp4 para el backend DRM, con hwdec por
+hardware; gif para el backend Tkinter, que no lee mp4. Ver mostrar_cara()).
 
 La pantalla es "hardware conectado a la máquina donde corre chat.py" (el
 Manager), por eso vive junto a él en vez de junto a preguntas.py.
@@ -79,6 +80,13 @@ def _asegurar_visor_drm(ruta_gif_inicial):
         [
             "mpv", "--fs", "--vo=drm", "--idle=yes", "--loop-file=inf",
             "--no-osc", "--no-input-default-bindings", "--really-quiet",
+            # Las caras acá son .mp4 (H.264), no .gif: con --hwdec=auto mpv
+            # decodifica con el v4l2m2m de la Pi (drmprime, zero-copy al
+            # framebuffer) en vez de por software — se midió ~100-137% CPU
+            # (más de un núcleo) por software vs ~10-23% por hardware para
+            # estas mismas animaciones. GIF no tiene decodificador de
+            # hardware en ningún lado, por eso se convirtieron a video.
+            "--hwdec=auto",
             f"--input-ipc-server={MPV_SOCKET}", ruta_gif_inicial,
         ],
         stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL,
@@ -151,21 +159,28 @@ def _detener_tk():
 # ─── Interfaz pública (no cambia según el backend) ───────────────────────
 
 def mostrar_cara(nombre):
-    """Muestra faces/<nombre>.gif en loop, en la ventana/pantalla ya abierta
-    (o recién abierta si es la primera vez)."""
+    """Muestra faces/<nombre> en loop, en la ventana/pantalla ya abierta
+    (o recién abierta si es la primera vez).
+
+    Extensión según backend: DRM usa faces/<nombre>.mp4 (H.264 + --hwdec=auto
+    en _asegurar_visor_drm, decodificado por el v4l2m2m de la Pi — ver la nota
+    ahí sobre por qué se convirtió desde .gif, que no tiene hwdec en ningún
+    lado). Tkinter (demo en PC) sigue con faces/<nombre>.gif, porque
+    face_viewer.py anima con tk.PhotoImage(format="gif ..."), que no lee mp4."""
     if nombre not in CARAS_VALIDAS:
         print(f"[display] Cara desconocida: {nombre!r} (válidas: {sorted(CARAS_VALIDAS)})")
         return
 
-    ruta_gif = os.path.join(FACES_DIR, f"{nombre}.gif")
-    if not os.path.isfile(ruta_gif):
-        print(f"[display] No existe {ruta_gif}")
+    extension = "mp4" if USA_DRM else "gif"
+    ruta = os.path.join(FACES_DIR, f"{nombre}.{extension}")
+    if not os.path.isfile(ruta):
+        print(f"[display] No existe {ruta}")
         return
 
     if USA_DRM:
-        _mostrar_cara_drm(ruta_gif)
+        _mostrar_cara_drm(ruta)
     else:
-        _mostrar_cara_tk(ruta_gif)
+        _mostrar_cara_tk(ruta)
 
 
 def detener():
