@@ -10,6 +10,10 @@ corre en este mismo proceso (ver la nota en ese archivo). Orchestrator_
 Management.py y los Agents importan generar_respuesta() de acá,
 recuperar_contexto()/pregunta_aleatoria()/etc. de preguntas.py, y enrutar()
 de Agent_Router.
+
+Dos modelos posibles, uno por rol (ver TRIVIA_MODEL más abajo) -- cuál se
+usa en cada llamada lo decide el caller pasando `modelo=` a
+generar_respuesta(); si no se pasa nada, usa CHAT_MODEL.
 """
 
 import json
@@ -51,16 +55,30 @@ CHAT_MODEL = os.environ.get("CHAT_MODEL", "qwen2.5:0.5b")  # nombre del modelo e
 # (no usar una variante -fp16: corre 100% en CPU sin VRAM y es extremadamente lenta;
 # los modelos cuantizados -q4_K_*/-q4s son los viables en CPU)
 
+# Modelo separado SOLO para las reacciones de Trivia (comentar_resultado()/
+# reaccionar_libre() en Orchestrator_Management.py) -- a pedido del usuario,
+# distinto del que atiende Chat libre/Búsqueda web (CHAT_MODEL, sin tocar).
+# Por default ereberus-personalidad (ver personalidad_training/): entrenado
+# específicamente con destilación sobre ejemplos de trivia/chat, y en las
+# pruebas comparativas resultó más confiable que qwen2.5:0.5b + prompt
+# completo (0/8 vs 3/8 en "repite la instrucción en vez de reaccionar",
+# ver README "Personalidad horneada en el modelo").
+TRIVIA_MODEL = os.environ.get("TRIVIA_MODEL", "ereberus-personalidad")
 
-def generar_respuesta(mensajes, temperature=0.3, max_tokens=100, on_token=None):
+
+def generar_respuesta(mensajes, temperature=0.3, max_tokens=100, on_token=None, modelo=None):
     """Llama al modelo con streaming. Si se pasa on_token(chunk), se invoca por cada
     pedazo de texto a medida que llega (para imprimirlo en vivo); igual devuelve el
     texto completo al final. No baja el tiempo total, pero se percibe mucho más
-    rápido porque el usuario ve la respuesta aparecer en vez de esperar en blanco."""
+    rápido porque el usuario ve la respuesta aparecer en vez de esperar en blanco.
+
+    `modelo`: qué modelo de Ollama usar para ESTA llamada puntual -- si no se
+    pasa, CHAT_MODEL (el default general). Los callers de Trivia pasan
+    TRIVIA_MODEL explícito (ver Orchestrator_Management.py)."""
     resp = requests.post(
         f"{CHAT_SERVER_HOST}/v1/chat/completions",
         json={
-            "model": CHAT_MODEL,
+            "model": modelo or CHAT_MODEL,
             "messages": mensajes,
             "temperature": temperature,
             "max_tokens": max_tokens,

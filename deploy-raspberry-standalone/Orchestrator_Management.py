@@ -35,7 +35,7 @@ from Agents.Agent_Corrector import evaluar_respuesta
 from Agents.Agent_Router import enrutar  # router sin LLM (TF-IDF + regresión logística)
 from Agents.Agent_Verificator import verificar_y_corregir
 from Clients import Voice_Output_Client as voz_output  # Ereberus habla en voz alta (edge-tts + mpv)
-from Clients.Llama_Client import generar_respuesta
+from Clients.Llama_Client import CHAT_MODEL, TRIVIA_MODEL, generar_respuesta
 from personalidad import construir_personalidad, obtener_system_prompt
 from preguntas import SIN_CONTEXTO, recuperar_contexto
 from preguntas import pregunta_aleatoria as _pregunta_aleatoria
@@ -67,12 +67,16 @@ def _es_mensaje_trivial(mensaje):
     return mensaje.strip().lower().strip("¡!¿?.,") in SALUDOS_TRIVIALES
 
 
-def _mensajes_con_personalidad(persona_str, contenido_usuario):
+def _mensajes_con_personalidad(persona_str, contenido_usuario, modelo=CHAT_MODEL):
     """Arma la lista de mensajes para generar_respuesta(): system (si
-    obtener_system_prompt devuelve algo -- viene vacío cuando CHAT_MODEL es
+    obtener_system_prompt devuelve algo -- viene vacío cuando `modelo` es
     ereberus-personalidad, que ya trae la personalidad horneada, ver
-    personalidad.py) + el mensaje del usuario."""
-    system_prompt = obtener_system_prompt(persona_str)
+    personalidad.py) + el mensaje del usuario.
+
+    `modelo` default a CHAT_MODEL (Chat libre/Búsqueda web); comentar_resultado()
+    y reaccionar_libre() (Trivia) pasan TRIVIA_MODEL explícito -- son modelos
+    distintos a propósito, ver Clients/Llama_Client.py."""
+    system_prompt = obtener_system_prompt(persona_str, modelo=modelo)
     mensajes = []
     if system_prompt:
         mensajes.append({"role": "system", "content": system_prompt})
@@ -203,6 +207,9 @@ def obtener_preguntas_por_tema(tema, ya_usados, cantidad=5):
 def comentar_resultado(pregunta, esperada, respuesta_usuario, acerto, persona_str, on_token=None):
     """Reacción hablada del robot tras corregir, con su personalidad.
 
+    Usa TRIVIA_MODEL, no CHAT_MODEL -- Trivia tiene su propio modelo aparte
+    (ereberus-personalidad por default, ver Clients/Llama_Client.py).
+
     El veredicto (acerto) ya viene resuelto por evaluar_respuesta() — acá NO
     se le pide al modelo que vuelva a resolver la pregunta, solo que
     reaccione. Sin ser explícito con esto, un modelo chico tiende a
@@ -225,22 +232,24 @@ def comentar_resultado(pregunta, esperada, respuesta_usuario, acerto, persona_st
         f"{instruccion} No vuelvas a resolver la pregunta ni expliques el cálculo: "
         "el veredicto ya está decidido, tu única tarea es reaccionar a él. "
         "No hagas otra pregunta."
-    ))
-    return generar_respuesta(mensajes, on_token=on_token).strip()
+    ), modelo=TRIVIA_MODEL)
+    return generar_respuesta(mensajes, on_token=on_token, modelo=TRIVIA_MODEL).strip()
 
 
 def reaccionar_libre(pregunta, respuesta_usuario, persona_str, on_token=None):
-    """Para preguntas sin respuesta_esperada (Chistes, Reconocimiento Musical,
-    Juego de colores...): no hay nada que corregir, así que en vez de
-    evaluar_respuesta/comentar_resultado el robot solo reacciona."""
+    """Para preguntas sin respuesta_esperada (Reconocimiento Musical, Juego
+    de colores...): no hay nada que corregir, así que en vez de
+    evaluar_respuesta/comentar_resultado el robot solo reacciona.
+
+    Usa TRIVIA_MODEL, no CHAT_MODEL -- mismo criterio que comentar_resultado()."""
     mensajes = _mensajes_con_personalidad(persona_str, (
         f"Pregunta: {pregunta}\n"
         f"Respuesta del usuario: {respuesta_usuario}\n\n"
         "Reacciona en una frase corta. No hay respuesta correcta acá: no "
         "corrijas ni evalúes, solo reacciona con tu personalidad. No hagas "
         "otra pregunta."
-    ))
-    return generar_respuesta(mensajes, on_token=on_token).strip()
+    ), modelo=TRIVIA_MODEL)
+    return generar_respuesta(mensajes, on_token=on_token, modelo=TRIVIA_MODEL).strip()
 
 
 def resolver_tema(eleccion_usuario):
