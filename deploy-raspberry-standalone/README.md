@@ -59,6 +59,31 @@ otra ruta, se reentrena editando `router_training/dataset_router.jsonl` y
 corriendo `python router_training/entrenar_router.py` — no hace falta tocar
 `Agent_Router.py`.
 
+### Corrector de Trivia sin LLM
+
+Corregir una respuesta de Trivia contra `respuesta_esperada` tampoco
+necesita un LLM: el 74% de las `respuesta_esperada` del dataset son UNA sola
+palabra, y otro ~27% son puramente numéricas (los juegos de multiplicar).
+`Agents/Agent_Corrector.py` compara directo: si `respuesta_esperada` es un
+número, extrae el/los número(s) de la respuesta del usuario y los compara
+matemáticamente (nada de ambigüedad de texto); si es palabra/frase, normaliza
+(sin tildes/mayúsculas/artículos) y compara por substring + solapamiento de
+palabras clave + fuzzy para typos.
+
+| | Corrector con LLM (antes) | Corrector sin LLM (ahora) |
+|---|---|---|
+| Tiempo por corrección | 1–3s (llamada a Ollama) | microsegundos |
+| Accuracy (187 preguntas reales del dataset, variantes correctas parafraseadas/con typo + incorrectas) | No medida formalmente | **98.4%** |
+| Recall en incorrectas (nunca acredita una mal) | No medida | **100%** |
+| Bug real encontrado | Llegó a leer "7 por 8" como "7/8" y decir que la respuesta era 0.875 | No aplica — comparación matemática directa, sin ese riesgo |
+
+`Agent_Verificator.py` (Chat libre/Búsqueda Web) sigue usando LLM: a
+diferencia del router y el corrector, a veces tiene que REESCRIBIR la
+respuesta cuando la encuentra incoherente, no solo clasificarla — eso es
+generación de texto, no clasificación, así que no tiene el mismo reemplazo
+directo. Ya se beneficia igual del modelo más liviano (`qwen2.5:0.5b`, ver
+arriba).
+
 ## 1. Instalar Ollama en la Pi
 
 ```bash
@@ -192,8 +217,8 @@ deploy-raspberry-standalone/
 | `display.py`, `face_viewer.py`, `faces/` | Carita en pantalla (LCD/HDMI en la Pi, o Tkinter en PC). |
 | `voz_server.py` | Página web de texto (ver arriba) — entrada por voz todavía deshabilitada. |
 | `Agents/Agent_Router.py` | Sin LLM: clasifica cada turno en TRIVIA/BUSQUEDA_WEB/CHAT_LIBRE (TF-IDF + regresión logística sobre `router_modelo.joblib`, ver "Router sin LLM" arriba). |
-| `Agents/Agent_Corrector.py` | Veredicto CORRECTO/INCORRECTO de una respuesta de Trivia (único punto que usa el LLM para eso). |
-| `Agents/Agent_Verificator.py` | Revisa coherencia de las respuestas de Chat libre/Búsqueda Web antes de mostrarlas. |
+| `Agents/Agent_Corrector.py` | Sin LLM: veredicto CORRECTO/INCORRECTO de una respuesta de Trivia (número exacto o normalización+substring+fuzzy contra `respuesta_esperada`, ver "Corrector de Trivia sin LLM" arriba). |
+| `Agents/Agent_Verificator.py` | Único Agent que sigue usando LLM (`CHAT_MODEL`): revisa coherencia de las respuestas de Chat libre/Búsqueda Web y las reescribe si hace falta -- eso es generación de texto, no clasificación, ver la nota en "Corrector de Trivia sin LLM" arriba. |
 | `Agents/Agent_Behavior.py` | Sin LLM: elige la cara de acierto/error de cada pregunta de Trivia (de las columnas del dataset) y dispara música/desplazamiento; también la cara genérica de Chat libre/Búsqueda Web. Fusión de lo que antes eran `reactor.py` + `cara_agente.py`. |
 | `Clients/Llama_Client.py` | Cliente HTTP hacia Ollama (`generar_respuesta()` — genera texto, ya no enruta). |
 | `Clients/Carrito_Client.py` | Cliente HTTP hacia el carrito mecanum (ver `../carrito-mecanum-esp32/`) para los comandos de `desplazamiento`. |
