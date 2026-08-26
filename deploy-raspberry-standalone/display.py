@@ -68,9 +68,34 @@ def _mpv_enviar(comando):
         s.sendall((json.dumps({"command": comando}) + "\n").encode())
 
 
+def _mpv_huerfano_vivo():
+    """True si YA hay un mpv escuchando en MPV_SOCKET que no es el de este
+    proceso (`_proceso` es None acá, o ya murió) -- típicamente un huérfano
+    de una corrida anterior que no cerró limpio (crash, kill -9, Ctrl+C sin
+    pasar por detener()). DRM solo permite un master a la vez: si se lanza
+    un mpv nuevo mientras ese huérfano sigue vivo, el nuevo no puede tomar
+    la pantalla real y la cara queda pegada en lo último que mostró el
+    huérfano -- bug real encontrado 2026-08-26 (ver también el try/finally
+    en Orchestrator_Management.py::main() que evita que esto se produzca de
+    entrada)."""
+    try:
+        with socket.socket(socket.AF_UNIX, socket.SOCK_STREAM) as s:
+            s.settimeout(0.5)
+            s.connect(MPV_SOCKET)
+        return True
+    except OSError:
+        return False
+
+
 def _asegurar_visor_drm(ruta_gif_inicial):
     global _proceso
     if _proceso is not None and _proceso.poll() is None:
+        return
+    if _mpv_huerfano_vivo():
+        # Reusar el que ya está vivo (le llega el loadfile de todos modos,
+        # vía _mpv_enviar) en vez de lanzar uno nuevo que competiría por la
+        # pantalla sin poder ganarla.
+        print("[display] mpv huérfano de otra corrida sigue vivo -- lo reuso en vez de lanzar uno nuevo")
         return
     try:
         os.remove(MPV_SOCKET)

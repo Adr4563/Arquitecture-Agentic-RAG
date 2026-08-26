@@ -44,8 +44,11 @@ MODELO_EMOCION = os.path.join(HERE, "modelos", "emotion-ferplus-8.onnx")
 MODELO_CARA = os.path.join(HERE, "modelos", "face_detection_yunet_2023mar.onnx")
 
 ETIQUETAS = ["neutral", "felicidad", "sorpresa", "tristeza", "enojo", "asco", "miedo", "desprecio"]
-# Las 3 que importan para el dataset de trivia (columna 'cara': Feliz/Triste/Enojado).
-ETIQUETAS_RELEVANTES = {"felicidad": "Feliz", "tristeza": "Triste", "enojo": "Enojado"}
+# Las 4 que importan para el dataset de trivia (columna 'cara': Feliz/Triste/
+# Enojado/Neutral -- las cuatro aparecen como opción en preguntas del "Juego
+# de emociones"/"Juego de imitación", ver deploy-raspberry-standalone/
+# Orchestrator_Management.py::_jugar_emociones()).
+ETIQUETAS_RELEVANTES = {"felicidad": "Feliz", "tristeza": "Triste", "enojo": "Enojado", "neutral": "Neutral"}
 
 _sess_emocion = ort.InferenceSession(MODELO_EMOCION)
 _input_name = _sess_emocion.get_inputs()[0].name

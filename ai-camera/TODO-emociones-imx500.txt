@@ -1,6 +1,7 @@
-PENDIENTE: Juego de Imitación / Juego de Emociones con reconocimiento real
-===========================================================================
-(dejado por Claude, sesión del 2026-08-26, para retomar más adelante)
+RESUELTO (parcialmente): Juego de Imitación / Juego de Emociones con reconocimiento real
+=========================================================================================
+(dejado por Claude, sesión del 2026-08-26; actualizado la MISMA sesión tras
+conectar la cámara real y hacer la integración -- ver ACTUALIZACIÓN al final)
 
 OBJETIVO
 --------
@@ -95,3 +96,82 @@ CONTEXTO DE HARDWARE (confirmado en esta sesión)
 - Modelo actual instalado: solo
   `imx500_network_ssd_mobilenetv2_fpnlite_320x320_pp.rpk` (detección COCO).
 - picamera2 instalado y funcionando en esta Pi.
+
+ACTUALIZACIÓN (misma sesión, 2026-08-26, ya con la cámara conectada)
+---------------------------------------------------------------------
+Se validó `reconocer_emocion.py` en vivo contra esta cámara (lo que arriba
+quedó pendiente de probar): de frente y con luz, detecta cara y clasifica
+bien (ej. "neutral", 75.67% de confianza). De perfil o casi sin luz no
+encuentra cara -- esperable para un detector liviano tipo YuNet, no es bug.
+
+Se resolvió también la ambigüedad de "cuál cara de la lista pedir" (punto 2
+de arriba): al no haber una respuesta ya definida por quien mantiene el
+Excel, se optó por el criterio más simple -- el robot elige AL AZAR una de
+las opciones que trae `cara` para esa pregunta (ej. una de "Enojado / Feliz
+/ Triste"), se lo pide en voz al usuario, y verifica con la cámara. Queda
+anotado por si en algún momento se prefiere un criterio distinto (ej. fijo,
+o ciclando sin repetir).
+
+Con eso, SÍ quedó conectado al flujo de Trivia (Orchestrator_Management.py):
+- `Clients/Camara_Client.py` (nuevo, en deploy-raspberry-standalone/):
+  puente perezoso hacia este módulo (import de acá adentro de una función,
+  no al tope) -- así Orchestrator_Management.py sigue arrancando igual en
+  una Pi sin cámara/onnxruntime/opencv/picamera2 instalados, mismo criterio
+  que Carrito_Client.py/Musica_Client.py con su hardware.
+- `ETIQUETAS_RELEVANTES` en este archivo ahora mapea las 4 (se agregó
+  "neutral": "Neutral" -- antes solo tenía las 3 de felicidad/tristeza/enojo,
+  pero el dataset también pide "Neutral" como cara a imitar en algunas filas
+  del Juego de emociones, ej. p-92/p-93).
+- `Orchestrator_Management.py::_jugar_emociones()` (nuevo): pide la cara al
+  azar, llama a Camara_Client.detectar_emocion(), y reacciona con
+  Agent_Behavior.reaccionar()/comentar_resultado_emocion() -- mismo patrón
+  que la rama con respuesta_esperada de manejar_trivia(), pero el veredicto
+  sale de la cámara en vez de Agent_Corrector.
+
+ACTUALIZACIÓN 2: integración probada end-to-end + benchmark real de cuello de botella
+----------------------------------------------------------------------------------------
+Se corrió la integración completa DENTRO de Orchestrator_Management.py (no
+solo Camara_Client.detectar_emocion() suelto): arrancar desde el menú de
+Trivia, elegir "Juego de emociones", contestar, y llegar a un veredicto real
+por cámara -- funcionó de punta a punta, incluyendo el caso acierto y el
+caso error, y el marcador general de Trivia cuenta bien la ronda.
+
+De paso salió un bug real y aparte (no relacionado a esta feature): un
+crash por TRIVIA_MODEL apuntando a un modelo no importado (ereberus-
+personalidad) dejaba un `mpv` HUÉRFANO corriendo (display.py), que como DRM
+solo permite un master de pantalla a la vez, hacía que la cara se quedara
+pegada en lo último que mostró el huérfano en corridas siguientes. Arreglado
+en deploy-raspberry-standalone/Orchestrator_Management.py (try/finally en
+main() que siempre llama a display.detener()) y display.py
+(_mpv_huerfano_vivo(), reusa un huérfano vivo en vez de competir por la
+pantalla). Validado con IPC real (mpv sí cambia de cara ahora).
+
+Sobre el "no medido" de arriba -- SÍ se midió, con benchmark real (cronometrado
+fase por fase, no solo CPU% instantáneo), un turno completo del Juego de
+emociones:
+
+  cámara (captura+detección): 8.72s (52%)
+  voz (edge-tts + mpv):        4.78s (28.5%)
+  LLM (reacción, TRIVIA_MODEL): 3.25s (19.4%)
+  TOTAL:                      16.76s
+
+En tiempo de RELOJ la cámara "tarda más" (el loop de reintento de
+_capturar_y_detectar, hasta 15 intentos × ~0.2s+0.11s, se agota entero
+cuando no hay cara -- ~4.7s solo ahí, más el sleep(2) fijo de asentado AE/
+AWB). Se consideró bajar esos 15 reintentos a 8 para cortar ese peor caso a
+la mitad, pero se decidió NO tocarlo: en CPU real consumida (no reloj), el
+verdadero peso es Ollama, no la cámara --
+
+  cámara (peor caso, onnxruntime incl.): 5.40s de reloj -> 3.86s de CPU real (~0.7 cores)
+  LLM (una sola reacción, llama-server): 3.89s de reloj -> 12.66s de CPU real (~3.25 de los 4 cores)
+
+Es decir: una sola reacción del LLM satura más de 3 de los 4 cores de esta
+Pi durante ~4s, contra menos de 1 core de la cámara incluso en su peor caso.
+`llama-server` además mantiene ~545MB de RAM residente todo el tiempo que el
+modelo esté cargado -- el proceso más pesado del sistema. Optimizar los
+reintentos de la cámara no habría atacado el cuello de botella real.
+Pendiente (no investigado todavía): si se puede limitar cuántos threads/
+cores usa Ollama por request (dejarle margen al resto del sistema), y si
+vale la pena dado que hoy el código es secuencial (cámara y LLM no corren
+al mismo tiempo, se turnan) -- el riesgo de contención real solo aparecería
+si en algún momento se paraleliza alguna de las dos partes.

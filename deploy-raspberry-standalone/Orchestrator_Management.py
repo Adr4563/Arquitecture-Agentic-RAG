@@ -34,6 +34,7 @@ from Agents.Agent_Behavior import elegir_cara_por_calidad, reaccionar as reaccio
 from Agents.Agent_Corrector import evaluar_respuesta
 from Agents.Agent_Router import enrutar  # router sin LLM (TF-IDF + regresión logística)
 from Agents.Agent_Verificator import verificar_y_corregir
+from Clients import Camara_Client
 from Clients import Voice_Output_Client as voz_output  # Ereberus habla en voz alta (edge-tts + mpv)
 from Clients.Llama_Client import CHAT_MODEL, TRIVIA_MODEL, generar_respuesta
 from personalidad import construir_personalidad, obtener_system_prompt
@@ -185,6 +186,12 @@ TEMAS_CATALOGO = [
     "Reconocimiento visual", "Trivia",
 ]
 
+# Los dos únicos temas del catálogo con veredicto real vía cámara en vez de
+# texto (ver _jugar_emociones() más abajo) -- ninguna pregunta de estos temas
+# trae respuesta_esperada, así que sin este caso especial caerían en
+# reaccionar_libre() (conversación sin verificar nada).
+TEMAS_JUEGO_EMOCIONES = {"Juego de emociones", "Juego de imitación"}
+
 
 def obtener_pregunta(ya_usados):
     """Una pregunta que no se haya hecho todavía (preguntas.py, en memoria —
@@ -234,6 +241,70 @@ def comentar_resultado(pregunta, esperada, respuesta_usuario, acerto, persona_st
         "No hagas otra pregunta."
     ), modelo=TRIVIA_MODEL)
     return generar_respuesta(mensajes, on_token=on_token, modelo=TRIVIA_MODEL).strip()
+
+
+def comentar_resultado_emocion(objetivo, detectada, acerto, persona_str, on_token=None):
+    """Como comentar_resultado(), pero para el Juego de emociones/imitación:
+    el veredicto no sale de comparar texto (Agent_Corrector) sino de la
+    cámara (Clients/Camara_Client.py) contra la cara que se le pidió al
+    usuario que hiciera -- ver _jugar_emociones(). Usa TRIVIA_MODEL, mismo
+    criterio que comentar_resultado()."""
+    if acerto:
+        instruccion = (
+            f"Le pediste al usuario que pusiera cara de {objetivo.lower()} y la cámara "
+            f"detectó justo esa cara. Celébraselo en una frase corta."
+        )
+    else:
+        instruccion = (
+            f"Le pediste al usuario que pusiera cara de {objetivo.lower()} pero la cámara "
+            f"detectó cara de {detectada.lower()}. Dile en una frase corta que no era esa, "
+            "con humor, sin ser pesado."
+        )
+    mensajes = _mensajes_con_personalidad(persona_str, (
+        f"{instruccion} No vuelvas a pedir otra cara ni hagas otra pregunta."
+    ), modelo=TRIVIA_MODEL)
+    return generar_respuesta(mensajes, on_token=on_token, modelo=TRIVIA_MODEL).strip()
+
+
+def _jugar_emociones(pregunta, persona_str, on_token=None):
+    """Ronda del Juego de emociones/imitación: elige al azar una cara entre
+    las que trae la columna 'cara' de ESTA pregunta (ej. entre Enojado/
+    Feliz/Triste), se la pide al usuario en voz alta, y la verifica con la
+    cámara real (Clients/Camara_Client.py) -- mismo patrón que la rama CON
+    respuesta_esperada de manejar_trivia(), pero el veredicto sale de la
+    cámara en vez de Agent_Corrector.
+
+    Devuelve el bool acerto/error, o None si no se pudo evaluar (cámara no
+    disponible o sin cara detectada) -- en ese caso no cuenta para el
+    marcador, se reacciona igual que reaccionar_libre() (sin veredicto)."""
+    opciones = [o.strip() for o in pregunta["cara"].split("/") if o.strip()]
+    if not opciones:
+        opciones = ["Feliz"]  # fallback: nunca debería pasar, pero sin esto no habría qué pedir
+    objetivo = random.choice(opciones)
+    pedido = f"¡Hazme una cara de {objetivo.lower()}!"
+    print(f"Asistente: {pedido}")
+    voz_output.hablar(pedido)
+    time.sleep(1)  # un segundo para que el usuario pose antes de capturar
+    detectada, confianza = Camara_Client.detectar_emocion()
+
+    if detectada is None:
+        reaccionar_expresion(pregunta)
+        display.mostrar_cara("speaking")
+        voz_output.hablar(reaccionar_libre(pregunta["pregunta"], pedido, persona_str, on_token=on_token))
+        return None
+
+    acerto = detectada == objetivo
+    print(f"    [cámara] pedido={objetivo} detectado={detectada} (confianza {confianza:.0%}) -> {'OK' if acerto else 'MAL'}")
+    expresion = reaccionar_expresion(pregunta, acerto)
+    cara = expresion["cara"] or ("happy" if acerto else "sad")
+    display.mostrar_cara("content")
+    time.sleep(PAUSA_CAMBIO_CARA)
+    display.mostrar_cara(cara)
+    reaccion = comentar_resultado_emocion(objetivo, detectada, acerto, persona_str, on_token=on_token)
+    voz_output.hablar(reaccion)
+    time.sleep(PAUSA_CAMBIO_CARA)
+    display.mostrar_cara("speaking")
+    return acerto
 
 
 def reaccionar_libre(pregunta, respuesta_usuario, persona_str, on_token=None):
@@ -466,6 +537,7 @@ def manejar_trivia(mensaje_usuario, estado, persona_str, on_token):
     if estado["esperando_tema"]:
         estado["esperando_tema"] = False
         tema = resolver_tema(mensaje_usuario)
+        estado["tema_actual"] = tema
         anuncio = f"Vamos con {tema}. Van {PREGUNTAS_POR_TANDA} preguntas seguidas."
         print(f"Asistente: {anuncio}")
         voz_output.hablar(anuncio)
@@ -503,6 +575,13 @@ def manejar_trivia(mensaje_usuario, estado, persona_str, on_token):
             # vuelve a "hablar" antes de eso, no queda pegado en la emoción.
             time.sleep(PAUSA_CAMBIO_CARA)
             display.mostrar_cara("speaking")
+        elif estado["tema_actual"] in TEMAS_JUEGO_EMOCIONES:
+            # Único caso con veredicto real fuera de respuesta_esperada: la
+            # cámara reemplaza a Agent_Corrector -- ver _jugar_emociones().
+            acerto = _jugar_emociones(pendiente, persona_str, on_token=on_token)
+            if acerto is not None:
+                estado["total"] += 1
+                estado["aciertos"] += acerto
         else:
             # Temas como Chistes o Reconocimiento Musical no tienen una
             # respuesta correcta que corregir: no hay veredicto, así que
@@ -603,6 +682,22 @@ def main():
     threading.Thread(target=_hilo_stdin, daemon=True).start()
     voz_server.iniciar(_entrada_queue)
 
+    # try/finally alrededor de TODO lo que sigue: si algo de acá adentro tira
+    # una excepción sin atrapar (ej. Ollama/un modelo caído, ver el 404 real
+    # que pasó con TRIVIA_MODEL apuntando a un modelo no importado), display.
+    # detener() igual se llama -- si no, el mpv/tk que abrió display.py queda
+    # huérfano corriendo, y como DRM solo permite un master de pantalla a la
+    # vez, la próxima corrida no puede tomar control y la cara queda pegada
+    # en lo último que mostró el huérfano. Bug real encontrado 2026-08-26
+    # (ver también display._mpv_huerfano_vivo(), que además evita competir
+    # por la pantalla si un huérfano de éstos ya quedó vivo).
+    try:
+        _main_loop()
+    finally:
+        display.detener()
+
+
+def _main_loop():
     display.mostrar_cara("content")  # arranca en reposo...
     time.sleep(PAUSA_CAMBIO_CARA)
     display.mostrar_cara("speaking")  # ...y recién ahora la IA "habla" (saluda, por defecto)
@@ -633,10 +728,14 @@ def main():
     # en_trivia: controla si el próximo mensaje se fuerza a manejar_trivia
     # (sin pasar por el Router) o no — se puede apagar a mitad de una pregunta
     # (_quiere_salir_trivia) SIN perder pregunta_pendiente/cola_preguntas, que
-    # quedan "congeladas" para poder retomar la tanda más adelante.
+    # quedan "congeladas" para poder retomar la tanda más adelante. tema_actual:
+    # el tema exacto (uno de TEMAS_CATALOGO) de la tanda en curso -- lo único
+    # que usa hoy es manejar_trivia() para saber si toca veredicto por cámara
+    # (TEMAS_JUEGO_EMOCIONES) en vez de reaccionar_libre().
     estado = {
         "pregunta_pendiente": None, "esperando_tema": False, "en_trivia": False,
         "cola_preguntas": [], "ya_usados": set(), "aciertos": 0, "total": 0,
+        "tema_actual": None,
     }
 
     while True:
@@ -673,7 +772,8 @@ def main():
     if estado["total"]:
         print(f"\nAsistente: Terminamos. Acertaste {estado['aciertos']} de {estado['total']}.")
     print("Asistente: ¡Hasta luego!")
-    display.detener()
+    # display.detener() ya no va acá -- lo maneja el finally de main(), que
+    # cubre también la salida por excepción, no solo esta salida normal.
 
 
 if __name__ == "__main__":
