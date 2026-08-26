@@ -58,12 +58,14 @@ CHAT_MODEL = os.environ.get("CHAT_MODEL", "qwen2.5:0.5b")  # nombre del modelo e
 # Modelo separado SOLO para las reacciones de Trivia (comentar_resultado()/
 # reaccionar_libre() en Orchestrator_Management.py) -- a pedido del usuario,
 # distinto del que atiende Chat libre/Búsqueda web (CHAT_MODEL, sin tocar).
-# Por default ereberus-personalidad (ver personalidad_training/): entrenado
-# específicamente con destilación sobre ejemplos de trivia/chat, y en las
-# pruebas comparativas resultó más confiable que qwen2.5:0.5b + prompt
-# completo (0/8 vs 3/8 en "repite la instrucción en vez de reaccionar",
-# ver README "Personalidad horneada en el modelo").
-TRIVIA_MODEL = os.environ.get("TRIVIA_MODEL", "ereberus-personalidad")
+# Por default ereberus-trivia (ver trivia_training/): fine-tuning LoRA
+# entrenado SOLO con los 121 ejemplos de trivia (a diferencia de
+# ereberus-personalidad, que entrena sobre las 4 categorías mezcladas) --
+# más especializado en este rol puntual. Antecesor (ereberus-personalidad)
+# ya había resultado más confiable que qwen2.5:0.5b + prompt completo (0/8
+# vs 3/8 en "repite la instrucción en vez de reaccionar", ver README
+# "Personalidad horneada en el modelo").
+TRIVIA_MODEL = os.environ.get("TRIVIA_MODEL", "ereberus-trivia")
 
 def generar_respuesta(mensajes, temperature=0.3, max_tokens=50, on_token=None, modelo=None):
     """Llama al modelo con streaming. Si se pasa on_token(chunk), se invoca por cada

@@ -4,13 +4,16 @@ Personalidad Big Five (OCEAN) y el system prompt que de ella depende.
 
 import os
 
-# "ereberus-personalidad" (ver README "Personalidad horneada en el modelo")
-# ya tiene la personalidad y las reglas de estilo entrenadas en los pesos
-# (fine-tuning LoRA, ver personalidad_training/) -- mandarle este system
-# prompt de nuevo sería redundante (y le costaría tokens de más en cada
-# turno, justo lo que ese modelo existe para evitar). Con cualquier otro
-# modelo (qwen2.5:0.5b, el de 3B, etc.) el prompt se manda como siempre.
-_NOMBRE_MODELO_HORNEADO = "ereberus-personalidad"
+# Modelos que ya tienen la personalidad y las reglas de estilo entrenadas en
+# los pesos (fine-tuning LoRA, ver README "Personalidad horneada en el
+# modelo"): "ereberus-personalidad" (general, las 4 categorías),
+# "ereberus-trivia" (solo trivia_training/, especializado en Trivia) y
+# "ereberus-chat" (solo chat_training/, especializado en Chat libre/
+# Búsqueda web) -- mandarles este system prompt de nuevo sería redundante
+# (y les costaría tokens de más en cada turno, justo lo que existen para
+# evitar). Con cualquier otro modelo (qwen2.5:0.5b, el de 3B, etc.) el
+# prompt se manda como siempre.
+_MODELOS_CON_PERSONALIDAD_HORNEADA = {"ereberus-personalidad", "ereberus-trivia", "ereberus-chat"}
 
 # ─── Personalidad Big Five (OCEAN) ───────────────────────────
 BIG_FIVE_TRAITS = [
@@ -65,15 +68,16 @@ def obtener_system_prompt(persona_str, modelo=None):
     """Instrucciones fijas (personalidad + reglas de estilo): no cambian turno a
     turno, así que se construyen una sola vez por sesión, no en cada mensaje.
 
-    `modelo`: qué modelo va a recibir este prompt -- si es
-    "ereberus-personalidad" devuelve "" (ese modelo ya trae la personalidad
-    horneada, mandarla de nuevo sería redundante). Si no se pasa nada, cae en
-    CHAT_MODEL (compatibilidad con callers viejos que no distinguen modelo).
+    `modelo`: qué modelo va a recibir este prompt -- si está en
+    _MODELOS_CON_PERSONALIDAD_HORNEADA devuelve "" (ese modelo ya trae la
+    personalidad horneada, mandarla de nuevo sería redundante). Si no se
+    pasa nada, cae en CHAT_MODEL (compatibilidad con callers viejos que no
+    distinguen modelo).
     El caller decide qué hacer con un system prompt vacío (ver
     Orchestrator_Management._mensajes_con_personalidad)."""
     if modelo is None:
         modelo = os.environ.get("CHAT_MODEL", "qwen2.5:0.5b")
-    if modelo == _NOMBRE_MODELO_HORNEADO:
+    if modelo in _MODELOS_CON_PERSONALIDAD_HORNEADA:
         return ""
     global _system_prompt_cache
     if _system_prompt_cache is None:
