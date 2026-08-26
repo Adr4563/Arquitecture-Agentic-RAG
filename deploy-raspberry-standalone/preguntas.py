@@ -83,7 +83,7 @@ def pregunta_aleatoria(excluir=()):
     """Una pregunta al azar para que el robot se la haga al usuario.
 
     Solo entrega las que tienen respuesta_esperada: sin ella no hay forma de
-    corregir al usuario, y son casi la mitad del dataset (111 de 246). El
+    corregir al usuario, y son ~75% del dataset (187 de 248). El
     caller manda los ids ya preguntados para no repetir dentro de la sesión.
     Devuelve None si no queda ninguna disponible."""
     ya_usados = set(excluir)

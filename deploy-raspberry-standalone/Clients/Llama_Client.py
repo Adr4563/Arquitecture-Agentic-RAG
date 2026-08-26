@@ -27,12 +27,12 @@ CHAT_SERVER_HOST = os.environ.get("CHAT_SERVER_HOST", "http://localhost:11434")
 # grande si el hardware lo banca, sin tocar código — ver
 # deploy-raspberry-standalone/README.md.
 #
-# qwen2.5:0.5b (0.5B, Alibaba) por default — no llama3.2:3b-q4s (3B, Meta), que
+# qwen2.5:0.5b (0.5B, Alibaba) por default — no llama3.2:3b (3B, Meta), que
 # era el default anterior. Benchmark propio (bench_modelos.py, 7 candidatos x 5
 # prompts representativos de este proyecto, con el system prompt real de
 # personalidad.py, corridos varias veces para chequear consistencia):
 #   - qwen2.5:0.5b: 484MB residente en Ollama (`ollama ps`) vs 2.5GB de
-#     llama3.2:3b-q4s -- ~5x menos RAM. Respuestas 1-3s en caliente vs 7-12s.
+#     llama3.2:3b -- ~5x menos RAM. Respuestas 1-3s en caliente vs 7-12s.
 #     Calidad: 5/5 corridas correctas, coherentes, en español, sin fugas de
 #     formato ni frases prohibidas.
 #   - llama3.2:1b (1.5GB) se probó como alternativa "liviana" obvia y perdió:
@@ -46,7 +46,7 @@ CHAT_SERVER_HOST = os.environ.get("CHAT_SERVER_HOST", "http://localhost:11434")
 # Bonus: como el router (Agent_Router.py) ya no llama a Ollama para nada,
 # este es el ÚNICO modelo que Ollama mantiene cargado en RAM -- antes eran 2
 # (este + ROUTER_MODEL). Si hace falta más calidad de prosa y el hardware lo
-# permite, sobreescribir con `export CHAT_MODEL=llama3.2:3b-q4s`.
+# permite, sobreescribir con `export CHAT_MODEL=llama3.2:3b`.
 CHAT_MODEL = os.environ.get("CHAT_MODEL", "qwen2.5:0.5b")  # nombre del modelo en `ollama list` — genera las respuestas reales
 # (no usar una variante -fp16: corre 100% en CPU sin VRAM y es extremadamente lenta;
 # los modelos cuantizados -q4_K_*/-q4s son los viables en CPU)

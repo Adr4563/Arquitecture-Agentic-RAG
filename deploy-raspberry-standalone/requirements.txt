@@ -4,5 +4,5 @@ rank_bm25
 flask
 edge-tts
 pyserial
-scikit-learn
+scikit-learn==1.9.0
 joblib

@@ -16,7 +16,7 @@ mantiene cargado en RAM: genera todas las respuestas (chat libre, búsqueda
 web, reacciones de trivia, corrector, verificador). El router YA NO usa
 Ollama para nada — ver "Router sin LLM" más abajo.
 
-Se eligió `qwen2.5:0.5b` sobre `llama3.2:3b-q4s` (el default anterior) tras
+Se eligió `qwen2.5:0.5b` sobre `llama3.2:3b` (el default anterior) tras
 benchmarquear 7 modelos livianos (Meta/Facebook y HuggingFace, ver
 `Clients/Llama_Client.py` para el detalle y los números) con los prompts
 reales de este proyecto:
@@ -24,7 +24,7 @@ reales de este proyecto:
 | Modelo | RAM residente (`ollama ps`) | Respuesta en caliente | Calidad en las 5 corridas |
 |---|---|---|---|
 | **qwen2.5:0.5b (default)** | **484 MB** | **1–3s** | 5/5 correctas, sin fugas ni frases prohibidas |
-| llama3.2:3b-q4s (default anterior) | 2.5 GB | 7–12s | 5/5 correctas, prosa más elaborada |
+| llama3.2:3b (default anterior) | 2.5 GB | 7–12s | 5/5 correctas, prosa más elaborada |
 | llama3.2:1b (Meta) | 1.5 GB | 4–7s | Falló: se negó a confirmar una respuesta correcta en 2/3 corridas, filtró `<rag>` crudo en 3/3 |
 | smollm2:1.7b (HuggingFace) | 2.7 GB | 10–14s | Más pesado que el default anterior — sin sentido como "liviano" |
 | tinyllama, qwen3:0.6b, smollm2:360m | 0.7–1 GB | — | No siguen el system prompt (lo repiten, o texto vacío) |
@@ -103,7 +103,7 @@ systemctl status ollama
 ollama pull qwen2.5:0.5b   # router de intención Y generación de respuestas por default
 ```
 
-`llama3.2:3b-q4s` NO hace falta descargarlo salvo que se quiera pasar a él
+`llama3.2:3b` NO hace falta descargarlo salvo que se quiera pasar a él
 después (ver "Subir a un modelo más grande" más abajo) — con el default no
 se usa.
 
@@ -136,12 +136,12 @@ corre en la misma máquina.
 
 `CHAT_MODEL` se puede sobreescribir por variable de entorno sin tocar código.
 Si el hardware tiene margen y se prefiere una prosa más elaborada que la de
-`qwen2.5:0.5b`, `llama3.2:3b-q4s` (el default de este proyecto hasta el
+`qwen2.5:0.5b`, `llama3.2:3b` (el default de este proyecto hasta el
 benchmark de más arriba) sigue siendo una opción válida — ya viene probado:
 
 ```bash
-ollama pull llama3.2:3b-q4s   # si no está descargado todavía
-export CHAT_MODEL=llama3.2:3b-q4s
+ollama pull llama3.2:3b   # si no está descargado todavía
+export CHAT_MODEL=llama3.2:3b
 ./start-all.sh
 ```
 
