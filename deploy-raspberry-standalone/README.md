@@ -94,7 +94,7 @@ modelo generativo, no hay forma de sacarlo por completo. Pero sí se puede
 fine-tuning LoRA, para no tener que repetirlas en texto cada vez.
 
 `ereberus-personalidad` es un fine-tuning LoRA de `qwen2.5:0.5b` entrenado
-sobre 251 ejemplos (generados por destilación: `llama3.2:3b-q4s` con el
+sobre 251 ejemplos (generados por destilación: `llama3.2:3b` con el
 prompt completo genera la respuesta objetivo, y se entrena el modelo chico
 a reproducirla con un system prompt mucho más corto). Pipeline completo,
 reproducible, en `personalidad_training/`.
