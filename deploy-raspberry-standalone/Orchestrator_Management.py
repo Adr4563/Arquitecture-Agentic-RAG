@@ -177,23 +177,76 @@ def responder(mensaje_usuario, persona_str, n_results=2, on_token=None):
 # Catálogo de temas/actividades (columna "Actividad / Tema" del Excel, campo
 # "tema" en preguntas.jsonl). resolver_tema() clasifica contra esta lista.
 TEMAS_CATALOGO = [
-    # "númerica" así, mal tildada, porque es el texto tal cual viene del Excel
-    # (columna Actividad/Tema) — tiene que calzar exacto con preguntas.jsonl.
-    # "Chistes" se sacó del catálogo (y del dataset) a pedido del usuario.
-    "Adivinanza númerica", "Dilema", "Dilema del coche autónomo",
-    "Interaccion personalizada (COMIDA)", "Juego de colores", "Juego de emociones",
-    "Juego de imitación", "Juego de multiplicar nivel Alto 1",
-    "Juego de multiplicar nivel Alto 2", "Juego de multiplicar nivel Simple 1",
-    "Juego de multiplicar nivel Simple 2", "Prueba de multiplicar nivel Simple",
-    "Prueba de reconocimiento de Color", "Reconocimiento Musical",
-    "Reconocimiento visual", "Trivia",
+    # Cada entrada es una actividad/sesión con su nivel (bloque de ~5 preguntas):
+    # tiene que calzar EXACTO con el campo "tema" de preguntas.jsonl (columna
+    # "Actividad / Tema" del Excel). Si agregas/renombras temas en el dataset,
+    # actualiza esta lista también.
+    "Adivinanza numérica - Nivel 1",
+    "Arte, música y cultura - Nivel 1",
+    "Arte, música y cultura - Nivel 2",
+    "Arte, música y cultura - Nivel 3",
+    "Arte, música y cultura - Nivel 4",
+    "Arte, música y cultura - Nivel 5",
+    "Arte, música y cultura - Nivel 6",
+    "Arte, música y cultura - Nivel 7",
+    "Ciencia y naturaleza - Nivel 1",
+    "Ciencia y naturaleza - Nivel 2",
+    "Ciencia y naturaleza - Nivel 3",
+    "Ciencia y naturaleza - Nivel 4",
+    "Ciencia y naturaleza - Nivel 5",
+    "Ciencia y naturaleza - Nivel 6",
+    "Ciencia y naturaleza - Nivel 7",
+    "Cultura general - Nivel 1",
+    "Cultura general - Nivel 2",
+    "Deporte y entretenimiento - Nivel 1",
+    "Deporte y entretenimiento - Nivel 2",
+    "Dilema del coche autónomo - Nivel 1",
+    "Dilema del coche autónomo - Nivel 2",
+    "Dilema del coche autónomo - Nivel 3",
+    "Geografía - Nivel 1",
+    "Geografía - Nivel 2",
+    "Geografía - Nivel 3",
+    "Geografía - Nivel 4",
+    "Geografía - Nivel 5",
+    "Geografía - Nivel 6",
+    "Geografía - Nivel 7",
+    "Geografía - Nivel 8",
+    "Geografía - Nivel 9",
+    "Historia - Nivel 1",
+    "Historia - Nivel 2",
+    "Historia - Nivel 3",
+    "Interacción personalizada (comida) - Nivel 1",
+    "Interacción personalizada (comida) - Nivel 2",
+    "Juego de colores - Nivel 1",
+    "Juego de emociones - Nivel 1",
+    "Juego de imitación - Nivel 1",
+    "Juego de imitación - Nivel 2",
+    "Matemática: multiplicación - Nivel 1",
+    "Matemática: multiplicación - Nivel 2",
+    "Matemática: multiplicación - Nivel 3",
+    "Matemática: multiplicación - Nivel 4",
+    "Razonamiento matemático - Nivel 1",
+    "Razonamiento matemático - Nivel 2",
+    "Razonamiento matemático - Nivel 3",
+    "Razonamiento matemático - Nivel 4",
+    "Razonamiento matemático - Nivel 5",
+    "Razonamiento matemático - Nivel 6",
+    "Razonamiento matemático - Nivel 7",
+    "Reconocimiento musical - Nivel 1",
+    "Reconocimiento musical - Nivel 2",
+    "Reconocimiento visual - Nivel 1",
+    "Socialización / presentación - Nivel 1",
 ]
 
 # Los dos únicos temas del catálogo con veredicto real vía cámara en vez de
 # texto (ver _jugar_emociones() más abajo) -- ninguna pregunta de estos temas
 # trae respuesta_esperada, así que sin este caso especial caerían en
 # reaccionar_libre() (conversación sin verificar nada).
-TEMAS_JUEGO_EMOCIONES = {"Juego de emociones", "Juego de imitación"}
+TEMAS_JUEGO_EMOCIONES = {
+    "Juego de emociones - Nivel 1",
+    "Juego de imitación - Nivel 1",
+    "Juego de imitación - Nivel 2",
+}
 
 
 def obtener_pregunta(ya_usados):
