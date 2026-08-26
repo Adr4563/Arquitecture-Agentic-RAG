@@ -26,7 +26,7 @@ if ! curl -sf -m 5 http://localhost:11434/api/tags >/dev/null; then
 fi
 
 MODELOS_FALTANTES=0
-for modelo in "${CHAT_MODEL:-llama3.2:3b-q4s}" qwen2.5:0.5b; do
+for modelo in "${CHAT_MODEL:-qwen2.5:0.5b}" qwen2.5:0.5b; do
   if ! ollama list | grep -q "^${modelo}"; then
     echo "[!] Falta el modelo '$modelo' — corre: ollama pull $modelo"
     MODELOS_FALTANTES=1

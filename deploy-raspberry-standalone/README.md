@@ -16,7 +16,7 @@ mantiene cargado en RAM: genera todas las respuestas (chat libre, búsqueda
 web, reacciones de trivia, corrector, verificador). El router YA NO usa
 Ollama para nada — ver "Router sin LLM" más abajo.
 
-Se eligió `qwen2.5:0.5b` sobre `llama3.2:3b-q4s` (el default anterior) tras
+Se eligió `qwen2.5:0.5b` sobre `llama3.2:3b` (el default anterior) tras
 benchmarquear 7 modelos livianos (Meta/Facebook y HuggingFace, ver
 `Clients/Llama_Client.py` para el detalle y los números) con los prompts
 reales de este proyecto:
@@ -24,7 +24,7 @@ reales de este proyecto:
 | Modelo | RAM residente (`ollama ps`) | Respuesta en caliente | Calidad en las 5 corridas |
 |---|---|---|---|
 | **qwen2.5:0.5b (default)** | **484 MB** | **1–3s** | 5/5 correctas, sin fugas ni frases prohibidas |
-| llama3.2:3b-q4s (default anterior) | 2.5 GB | 7–12s | 5/5 correctas, prosa más elaborada |
+| llama3.2:3b (default anterior) | 2.5 GB | 7–12s | 5/5 correctas, prosa más elaborada |
 | llama3.2:1b (Meta) | 1.5 GB | 4–7s | Falló: se negó a confirmar una respuesta correcta en 2/3 corridas, filtró `<rag>` crudo en 3/3 |
 | smollm2:1.7b (HuggingFace) | 2.7 GB | 10–14s | Más pesado que el default anterior — sin sentido como "liviano" |
 | tinyllama, qwen3:0.6b, smollm2:360m | 0.7–1 GB | — | No siguen el system prompt (lo repiten, o texto vacío) |
@@ -94,7 +94,7 @@ modelo generativo, no hay forma de sacarlo por completo. Pero sí se puede
 fine-tuning LoRA, para no tener que repetirlas en texto cada vez.
 
 `ereberus-personalidad` es un fine-tuning LoRA de `qwen2.5:0.5b` entrenado
-sobre 251 ejemplos (generados por destilación: `llama3.2:3b-q4s` con el
+sobre 251 ejemplos (generados por destilación: `llama3.2:3b` con el
 prompt completo genera la respuesta objetivo, y se entrena el modelo chico
 a reproducirla con un system prompt mucho más corto). Pipeline completo,
 reproducible, en `personalidad_training/`.
@@ -145,7 +145,7 @@ systemctl status ollama
 ollama pull qwen2.5:0.5b   # router de intención Y generación de respuestas por default
 ```
 
-`llama3.2:3b-q4s` NO hace falta descargarlo salvo que se quiera pasar a él
+`llama3.2:3b` NO hace falta descargarlo salvo que se quiera pasar a él
 después (ver "Subir a un modelo más grande" más abajo) — con el default no
 se usa.
 
@@ -178,12 +178,12 @@ corre en la misma máquina.
 
 `CHAT_MODEL` se puede sobreescribir por variable de entorno sin tocar código.
 Si el hardware tiene margen y se prefiere una prosa más elaborada que la de
-`qwen2.5:0.5b`, `llama3.2:3b-q4s` (el default de este proyecto hasta el
+`qwen2.5:0.5b`, `llama3.2:3b` (el default de este proyecto hasta el
 benchmark de más arriba) sigue siendo una opción válida — ya viene probado:
 
 ```bash
-ollama pull llama3.2:3b-q4s   # si no está descargado todavía
-export CHAT_MODEL=llama3.2:3b-q4s
+ollama pull llama3.2:3b   # si no está descargado todavía
+export CHAT_MODEL=llama3.2:3b
 ./start-all.sh
 ```
 
@@ -212,6 +212,24 @@ La voz de SALIDA (lo que dice Ereberus) sí está activa: usa `edge-tts`
 la entrada, esto necesita internet (servicio en la nube de Microsoft, gratis
 y sin API key). Si la Pi se queda sin WiFi, se loguea el error y el chat
 sigue funcionando solo con texto.
+
+## Carrito mecanum (movimiento)
+
+`Clients/Carrito_Client.py` habla con el ESP32 del carrito (ver
+`../carrito-mecanum-esp32/2-l298n-mecanum/`) por **Serial (USB)**, no por
+WiFi/HTTP — el ESP32 va conectado por cable directo a esta misma Pi.
+
+Por default usa `/dev/ttyACM0`; si el puerto es otro (`ls /dev/ttyACM*
+/dev/ttyUSB*` para verlo), sobreescribilo:
+
+```bash
+export CARRITO_PORT=/dev/ttyUSB0
+```
+
+Sin el ESP32 conectado (cable desconectado, apagado, etc.) no hace falta
+configurar nada — `mover()`/`mover_360()` loguean `[carrito] no se pudo
+abrir ...` y siguen sin cortar el flujo de trivia, igual que antes cuando
+faltaba `CARRITO_HOST`.
 
 ## Carita en pantalla
 
@@ -268,7 +286,7 @@ deploy-raspberry-standalone/
 | `Agents/Agent_Verificator.py` | Único Agent que sigue usando LLM (`CHAT_MODEL`): revisa coherencia de las respuestas de Chat libre/Búsqueda Web y las reescribe si hace falta -- eso es generación de texto, no clasificación, ver la nota en "Corrector de Trivia sin LLM" arriba. |
 | `Agents/Agent_Behavior.py` | Sin LLM: elige la cara de acierto/error de cada pregunta de Trivia (de las columnas del dataset) y dispara música/desplazamiento; también la cara genérica de Chat libre/Búsqueda Web. Fusión de lo que antes eran `reactor.py` + `cara_agente.py`. |
 | `Clients/Llama_Client.py` | Cliente HTTP hacia Ollama (`generar_respuesta()` — genera texto, ya no enruta). |
-| `Clients/Carrito_Client.py` | Cliente HTTP hacia el carrito mecanum (ver `../carrito-mecanum-esp32/`) para los comandos de `desplazamiento`. |
+| `Clients/Carrito_Client.py` | Cliente Serial (USB) hacia el carrito mecanum (ver `../carrito-mecanum-esp32/`) para los comandos de `desplazamiento`. |
 | `Clients/Musica_Client.py` | Reproduce (con `mpv`) el archivo de `musica/` que indique la columna `musical`, recortado a 20s. |
 | `Clients/Voice_Output_Client.py` | Ereberus habla en voz alta con `edge-tts` (voz `es-AR-ElenaNeural`) + `mpv`. |
 | `router_training/` | Dataset + script para reentrenar `Agent_Router.py` si hace falta (ver "Router sin LLM" arriba). |

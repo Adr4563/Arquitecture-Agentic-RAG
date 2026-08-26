@@ -51,7 +51,7 @@ def verificar_y_corregir(pregunta_original, respuesta_generada):
     # otra línea no vacía (pelándole el "etiqueta:" que traiga adelante) por
     # el otro, así no se pierde la corrección solo por el nombre de la etiqueta.
     fue_corregida = True
-    texto_final = respuesta_generada
+    lineas_texto = []
     for linea in salida.splitlines():
         linea = linea.strip()
         if not linea:
@@ -59,6 +59,15 @@ def verificar_y_corregir(pregunta_original, respuesta_generada):
         if linea.upper().startswith("VEREDICTO"):
             fue_corregida = "MALA" in linea.upper()
             continue
-        texto_final = re.sub(r"^[A-ZÁÉÍÓÚÑ ]+:\s*", "", linea, flags=re.IGNORECASE) or texto_final
+        # La etiqueta ("TEXTO:", "CORRECCIÓN:", etc.) solo puede venir pegada a
+        # la primera línea de la corrección — a las siguientes no hay que
+        # pelarles nada, o se recortaría contenido real que arranca en
+        # mayúsculas seguido de ":".
+        if not lineas_texto:
+            linea = re.sub(r"^[A-ZÁÉÍÓÚÑ ]+:\s*", "", linea, flags=re.IGNORECASE)
+        lineas_texto.append(linea)
 
+    # Si el modelo no devolvió ninguna línea de texto (solo el VEREDICTO,
+    # o salida vacía), se cae de vuelta al borrador original en vez de perderlo.
+    texto_final = "\n".join(lineas_texto) if lineas_texto else respuesta_generada
     return texto_final, fue_corregida

@@ -3,5 +3,6 @@ httpx
 rank_bm25
 flask
 edge-tts
-scikit-learn
+pyserial
+scikit-learn==1.9.0
 joblib
