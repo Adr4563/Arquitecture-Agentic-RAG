@@ -4,17 +4,11 @@
 //   1. Pines remapeados: el original usa GPIO 26-33, reservados/no expuestos en ESP32-S3.
 //   2. Corregidas forwardLeft/forwardRight/backLeft/backRight (estaban cruzadas izq/der).
 //   3. Watchdog: si no llega ningun comando en 500ms, detiene motores (evita carrito descontrolado
-//      si se pierde WiFi o no llega el evento touchend/mouseup).
-
-#include <WiFi.h>
-#include <WebServer.h>
-#include "credentials.h" // define WIFI_SSID y WIFI_PASSWORD (no se sube a git, ver README)
-
-// Se conecta a tu red de casa (modo estación) en vez de crear su propio AP.
-const char* ssid = WIFI_SSID;
-const char* password = WIFI_PASSWORD;
-
-WebServer server(80);
+//      si se corta el cable o el proceso del otro lado se cuelga).
+//   4. Control por Serial (USB) en vez de WiFi/HTTP: el ESP32 va conectado por cable directo
+//      a la Raspberry Pi, así que no hace falta radio de por medio — un comando por línea,
+//      mismo protocolo de texto (F/B/SL/SR/RL/RR/FL/FR/BL/BR/S) que antes viajaba como
+//      ?move=<código> por HTTP. Ver Clients/Carrito_Client.py en deploy-raspberry-standalone/.
 
 // Motor pins (ESP32-S3-DevKitC-1: evita 0,3,19,20,26-32,43-46)
 int IN1 = 4,  IN2 = 5;   // Front Left
@@ -33,106 +27,35 @@ void setup() {
   pinMode(IN5, OUTPUT); pinMode(IN6, OUTPUT);
   pinMode(IN7, OUTPUT); pinMode(IN8, OUTPUT);
 
-  // Baja un poco la potencia de TX: reduce el pico de corriente al conectar
-  // (mitiga brownouts, pero el arreglo real es de alimentación, ver notas).
-  WiFi.mode(WIFI_STA);
-  WiFi.setTxPower(WIFI_POWER_8_5dBm);
-  WiFi.begin(ssid, password);
-
-  Serial.print("Conectando a ");
-  Serial.println(ssid);
-  unsigned long start = millis();
-  while (WiFi.status() != WL_CONNECTED && millis() - start < 20000) {
-    delay(300);
-    Serial.print(".");
-  }
-
-  if (WiFi.status() == WL_CONNECTED) {
-    Serial.println();
-    Serial.print("Conectado. IP: ");
-    Serial.println(WiFi.localIP());
-  } else {
-    Serial.println();
-    Serial.println("No se pudo conectar al WiFi. Revisa SSID/password.");
-  }
-
-  server.on("/", handleRoot);
-  server.on("/cmd", handleCommand);
-  server.begin();
-
+  stopCar();
   lastCmdTime = millis();
+
+  Serial.println("Listo. Comandos por Serial: F/B/SL/SR/RL/RR/FL/FR/BL/BR/S, uno por línea.");
 }
 
 void loop() {
-  server.handleClient();
+  // Un comando por línea (terminada en '\n'), igual que antes era un query
+  // param por request — se lee de a línea completa, no byte a byte, para no
+  // ejecutar un comando a medio escribir.
+  if (Serial.available()) {
+    String linea = Serial.readStringUntil('\n');
+    linea.trim();
+    if (linea.length() > 0) {
+      ejecutarComando(linea);
+      lastCmdTime = millis();
+    }
+  }
 
   // Watchdog de seguridad: si no llega comando reciente, detener motores
+  // (mismo timeout que antes; ahora protege contra un cable desconectado o
+  // el proceso Python del otro lado colgado, no contra WiFi caído).
   if (millis() - lastCmdTime > CMD_TIMEOUT) {
     stopCar();
   }
 }
 
-// ===== HTML PAGE =====
-void handleRoot() {
-  String html = R"rawliteral(
-  <html>
-  <head>
-  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
-  <title>Mecanum Car</title>
-  <style>
-    body{font-family:sans-serif; text-align:center; margin-top:20px;}
-    button{width:80px; height:80px; font-size:28px; margin:4px;}
-    button.rotate{width:100px; font-size:20px;}
-    #stop{width:170px; height:50px; font-size:18px; margin-top:15px; color:red;}
-  </style>
-  <script>
-    function sendCmd(cmd){ fetch(`/cmd?move=${cmd}`); }
-    function hold(btn,cmd){
-      btn.addEventListener('mousedown',()=>sendCmd(cmd));
-      btn.addEventListener('mouseup',()=>sendCmd('S'));
-      btn.addEventListener('touchstart',(e)=>{e.preventDefault(); sendCmd(cmd);});
-      btn.addEventListener('touchend',()=>sendCmd('S'));
-      btn.addEventListener('touchcancel',()=>sendCmd('S'));
-    }
-    window.onload=()=>{
-      ['F','B','SL','SR','RL','RR','FL','FR','BL','BR'].forEach(id=>{
-        hold(document.getElementById(id),id);
-      });
-    }
-  </script>
-  </head>
-  <body>
-    <h2>Mecanum Car</h2>
-    <div>
-      <button id='FR'>&#8598;</button>
-      <button id='F'>&#8593;</button>
-      <button id='FL'>&#8599;</button>
-    </div>
-    <div>
-      <button id='SL'>&#8592;</button>
-      <button id='SR'>&#8594;</button>
-    </div>
-    <div>
-      <button id='BR'>&#8601;</button>
-      <button id='B'>&#8595;</button>
-      <button id='BL'>&#8600;</button>
-    </div>
-    <div>
-      <button class="rotate" id='RL'>&#8634; R-L</button>
-      <button class="rotate" id='RR'>&#8635; R-R</button>
-    </div>
-    <br>
-    <button id="stop" onclick="sendCmd('S')">STOP</button>
-  </body></html>
-  )rawliteral";
-  server.send(200, "text/html", html);
-}
-
-// ===== Handle Commands =====
-void handleCommand() {
-  lastCmdTime = millis();
-
-  String move = server.arg("move");
+// ===== Interpretar comando =====
+void ejecutarComando(const String& move) {
   if (move == "F") forward();
   else if (move == "B") backward();
   else if (move == "SL") strafeLeft();
@@ -143,9 +66,7 @@ void handleCommand() {
   else if (move == "FR") forwardRight();
   else if (move == "BL") backLeft();
   else if (move == "BR") backRight();
-  else stopCar();
-
-  server.send(200, "text/plain", "OK");
+  else stopCar(); // incluye "S" y cualquier texto no reconocido
 }
 
 // ===== Motor Control Logic =====

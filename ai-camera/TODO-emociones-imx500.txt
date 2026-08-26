@@ -1,0 +1,97 @@
+PENDIENTE: Juego de Imitación / Juego de Emociones con reconocimiento real
+===========================================================================
+(dejado por Claude, sesión del 2026-08-26, para retomar más adelante)
+
+OBJETIVO
+--------
+El dataset de trivia (deploy-raspberry-standalone/base_datos/preguntas.jsonl)
+tiene dos temas que hoy son solo conversación, sin verificación real:
+
+  - "Juego de imitación"  (ej. p-36, p-91, p-102: "¿jugamos al juego de la
+    imitación?")
+  - "Juego de emociones"  (ej. p-88, p-89, p-93: "¿Cómo me estoy sintiendo?",
+    "¿Feliz, triste o enojado?")
+
+Se pidió: que el robot muestre/pida una emoción (feliz/triste/enojado), el
+usuario la imite con la cara, y el sistema reconozca automáticamente qué
+emoción puso — usando la Raspberry Pi AI Camera (sensor Sony IMX500) que ya
+está conectada y detectada en esta Pi (ver ai-camera/README.md).
+
+QUÉ SE INVESTIGÓ Y POR QUÉ QUEDÓ PENDIENTE
+-------------------------------------------
+El IMX500 corre los modelos EN el propio sensor (NPU integrada, sin gastar
+CPU de la Pi) — así funciona hoy la detección de objetos de
+snapshot_deteccion.py / live_stream.py / hdmi_live.py, con el modelo COCO
+que ya está instalado (/usr/share/imx500-models/).
+
+Para hacer lo mismo con emociones haría falta un modelo de reconocimiento
+de expresión facial convertido al formato propietario .rpk del IMX500.
+Se revisó el model zoo OFICIAL de Sony/Raspberry Pi:
+
+    https://github.com/raspberrypi/imx500-models
+
+y NO hay ningún modelo de emociones/expresión facial ahí — solo detección
+de objetos (YOLO, SSD, NanoDet...), clasificación ImageNet genérica
+(EfficientNet, MobileNet, ResNet...), segmentación (DeepLabv3Plus) y pose
+estimation (HigherHRNet). Nadie publicó uno de emociones para el IMX500
+todavía (revisado 2026-08-26).
+
+Para tener uno propio harían falta DOS pasos, ninguno posible desde esta
+Raspberry Pi (ARM):
+
+  1. Conseguir o entrenar un modelo de clasificación de emociones (ej.
+     sobre FER2013 u otro dataset de expresión facial) en un formato de
+     entrada (ONNX/TensorFlow/Keras) que el conversor de Sony acepte.
+
+  2. Convertirlo a .rpk con el "IMX500 Converter" (paquete de Sony/
+     Raspberry Pi) — esa herramienta corre en Linux x86_64, no en ARM,
+     y típicamente pide registro. Ver la documentación oficial:
+     https://www.raspberrypi.com/documentation/accessories/ai-camera.html
+     (sección de conversión de modelos) para el detalle actualizado del
+     proceso — puede haber cambiado desde esta nota.
+
+CAMINO ALTERNATIVO (más simple, se descartó por ahora)
+-------------------------------------------------------
+Correr un modelo de emociones en la CPU de la Pi en vez de en el sensor
+(ej. librería `fer` de Python, o un modelo Keras/TFLite chico de
+clasificación de expresión facial vía OpenCV) — viable HOY sin conversión
+de por medio, pero:
+  - compite por CPU con el LLM (Ollama) durante los segundos que dure la
+    clasificación,
+  - las dependencias (TensorFlow/Keras) pueden pesar varios cientos de MB.
+Se dejó de lado a propósito porque se prefirió el camino NPU (sensor), pero
+queda como opción de respaldo si conseguir/convertir el modelo del sensor
+sale muy largo.
+
+DÓNDE ENGANCHARÍA EN EL CÓDIGO (una vez exista el modelo)
+------------------------------------------------------------
+- ai-camera/: agregar un script nuevo (ej. reconocer_emocion.py) siguiendo
+  el patrón de snapshot_deteccion.py, pero con el modelo de emociones y
+  devolviendo la emoción detectada en vez de dibujar cajas.
+- deploy-raspberry-standalone/Orchestrator_Management.py: las preguntas de
+  "Juego de imitación"/"Juego de emociones" hoy no tienen
+  `respuesta_esperada` (dataset), así que van por `reaccionar_libre()` sin
+  veredicto (ver manejar_trivia(), rama `else` cuando `pendiente["respuesta_
+  esperada"]` está vacío). Para dar veredicto real habría que:
+    1. Cuando el tema sea uno de estos dos, en vez de leer la respuesta de
+       texto del usuario, llamar a la cámara para capturar+clasificar la
+       emoción actual de la cara.
+    2. Comparar contra la emoción que pidió la pregunta (la columna `cara`
+       del dataset ya trae algo como "Enojado / Feliz / Triste" — definir
+       cuál de esas es "la pedida" por pregunta, hoy es ambiguo/no está
+       modelado explícito en el dataset — revisar con quien mantiene el
+       Excel fuente antes de implementar).
+    3. Usar ese resultado como el `acerto` que hoy view Agent_Corrector
+       para trivia con texto (ver evaluar_respuesta() en
+       Agents/Agent_Corrector.py como referencia de patrón, aunque ahí es
+       vía LLM sobre texto, no vía cámara).
+  Esto es diseño nuevo, no solo enchufar un modelo — pensarlo con calma
+  antes de tocar el flujo de trivia.
+
+CONTEXTO DE HARDWARE (confirmado en esta sesión)
+--------------------------------------------------
+- Cámara: sí detectada — `Picamera2.global_camera_info()` devuelve
+  `imx500` en `/base/soc/i2c0mux/i2c@1/imx500@1a`.
+- Modelo actual instalado: solo
+  `imx500_network_ssd_mobilenetv2_fpnlite_320x320_pp.rpk` (detección COCO).
+- picamera2 instalado y funcionando en esta Pi.

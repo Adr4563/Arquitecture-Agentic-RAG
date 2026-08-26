@@ -126,6 +126,24 @@ la entrada, esto necesita internet (servicio en la nube de Microsoft, gratis
 y sin API key). Si la Pi se queda sin WiFi, se loguea el error y el chat
 sigue funcionando solo con texto.
 
+## Carrito mecanum (movimiento)
+
+`Clients/Carrito_Client.py` habla con el ESP32 del carrito (ver
+`../carrito-mecanum-esp32/2-l298n-mecanum/`) por **Serial (USB)**, no por
+WiFi/HTTP — el ESP32 va conectado por cable directo a esta misma Pi.
+
+Por default usa `/dev/ttyACM0`; si el puerto es otro (`ls /dev/ttyACM*
+/dev/ttyUSB*` para verlo), sobreescribilo:
+
+```bash
+export CARRITO_PORT=/dev/ttyUSB0
+```
+
+Sin el ESP32 conectado (cable desconectado, apagado, etc.) no hace falta
+configurar nada — `mover()`/`mover_360()` loguean `[carrito] no se pudo
+abrir ...` y siguen sin cortar el flujo de trivia, igual que antes cuando
+faltaba `CARRITO_HOST`.
+
 ## Carita en pantalla
 
 `display.py` detecta solo si hay sesión gráfica: con la Pi headless y una
@@ -170,7 +188,7 @@ deploy-raspberry-standalone/
 | `Agents/Agent_Verificator.py` | Revisa coherencia de las respuestas de Chat libre/Búsqueda Web antes de mostrarlas. |
 | `Agents/Agent_Behavior.py` | Sin LLM: elige la cara de acierto/error de cada pregunta de Trivia (de las columnas del dataset) y dispara música/desplazamiento; también la cara genérica de Chat libre/Búsqueda Web. Fusión de lo que antes eran `reactor.py` + `cara_agente.py`. |
 | `Clients/Llama_Client.py` | Cliente HTTP hacia Ollama (`generar_respuesta()`, `enrutar()`). |
-| `Clients/Carrito_Client.py` | Cliente HTTP hacia el carrito mecanum (ver `../carrito-mecanum-esp32/`) para los comandos de `desplazamiento`. |
+| `Clients/Carrito_Client.py` | Cliente Serial (USB) hacia el carrito mecanum (ver `../carrito-mecanum-esp32/`) para los comandos de `desplazamiento`. |
 | `Clients/Musica_Client.py` | Reproduce (con `mpv`) el archivo de `musica/` que indique la columna `musical`, recortado a 20s. |
 | `Clients/Voice_Output_Client.py` | Ereberus habla en voz alta con `edge-tts` (voz `es-AR-ElenaNeural`) + `mpv`. |
 | `musica/` | Archivos de audio para la columna `musical` del dataset (ver su propio README). |

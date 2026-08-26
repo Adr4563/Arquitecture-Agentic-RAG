@@ -1,7 +1,7 @@
 # Carrito Mecanum — ESP32-S3
 
-Carrito con 4 ruedas mecanum controlado por WiFi desde un navegador, sobre
-placa **ESP32-S3-DevKitC-1**. Basado en el proyecto de
+Carrito con 4 ruedas mecanum sobre placa **ESP32-S3-DevKitC-1**. Basado en
+el proyecto de
 [robotlk.com](https://robotlk.com/web-controlled-mecanum-wheel-robot-car-using-esp32/),
 adaptado para el S3 (el original es para ESP32 clásico).
 
@@ -11,10 +11,10 @@ de cableado y scripts de compilar/subir:
 
 ## Versiones
 
-| Carpeta | Drivers L298N | Movimientos disponibles |
-|---|---|---|
-| [`2-l298n-mecanum/`](2-l298n-mecanum/) | 2 (4 canales) | Las 9: adelante, atrás, strafe izq/der, rotar izq/der, 4 diagonales |
-| [`1-l298n-tanque/`](1-l298n-tanque/) | 1 (2 canales) | Solo 4: adelante, atrás, rotar izq/der (modo tanque — sin strafe ni diagonales) |
+| Carpeta | Drivers L298N | Movimientos disponibles | Control |
+|---|---|---|---|
+| [`2-l298n-mecanum/`](2-l298n-mecanum/) | 2 (4 canales) | Las 9: adelante, atrás, strafe izq/der, rotar izq/der, 4 diagonales | **Serial (USB) directo** contra la Raspberry Pi — ver el README de esa carpeta |
+| [`1-l298n-tanque/`](1-l298n-tanque/) | 1 (2 canales) | Solo 4: adelante, atrás, rotar izq/der (modo tanque — sin strafe ni diagonales) | WiFi/HTTP desde un navegador |
 
 `1-l298n-tanque/` existe porque con 1 solo L298N (2 canales) los motores
 quedan agrupados en paralelo por lado del chasis (FL+BL en un canal, FR+BR
@@ -32,7 +32,8 @@ y colócalo ahí como `arduino-cli.exe`.
 
 ## Cómo compilar y flashear (cualquiera de las 2 versiones)
 
-Desde la carpeta de la versión que quieras usar:
+**Desde Windows**, con `compilar.bat`/`subir.bat` de la carpeta de la
+versión que quieras usar:
 
 ```
 compilar.bat
@@ -44,9 +45,46 @@ defecto. Ambos scripts copian el sketch a una carpeta `.build\` temporal
 antes de compilar, porque `arduino-cli` exige que el nombre de la carpeta
 coincida exactamente con el del `.ino`; `.build\` está en `.gitignore`.)
 
-Antes de compilar, asegúrate de tener `credentials.h` en esa misma carpeta
-(copia `credentials.example.h` y pon tu SSID/contraseña real — cada versión
-tiene su propio `credentials.h` independiente, ninguno se sube a git).
+**Desde Linux** (ej. la propia Raspberry Pi):
+
+Primero, instalar `arduino-cli` y el core `esp32:esp32` — **no vienen con
+el repo, hay que instalarlos una vez por máquina**:
+
+```bash
+# 1. arduino-cli (deja el binario en ~/.local/bin/arduino-cli)
+mkdir -p ~/.local/bin
+curl -fsSL https://raw.githubusercontent.com/arduino/arduino-cli/master/install.sh \
+  | BINDIR=~/.local/bin sh
+export PATH="$HOME/.local/bin:$PATH"   # agregalo a ~/.bashrc para que persista
+
+# 2. Core del ESP32 (~7GB en ~/.arduino15/, toolchains incluidas — tarda
+#    varios minutos la primera vez)
+arduino-cli config init
+arduino-cli config set board_manager.additional_urls \
+  https://raw.githubusercontent.com/espressif/arduino-esp32/gh-pages/package_esp32_index.json
+arduino-cli core update-index --additional-urls \
+  https://raw.githubusercontent.com/espressif/arduino-esp32/gh-pages/package_esp32_index.json
+arduino-cli core install esp32:esp32
+```
+
+También hace falta estar en el grupo `dialout` para poder escribir al
+puerto serial: `sudo usermod -aG dialout $USER` (reiniciar sesión para que
+aplique).
+
+Con eso instalado, compilar y flashear:
+
+```
+arduino-cli compile --fqbn esp32:esp32:esp32s3 .
+arduino-cli upload -p /dev/ttyACM0 --fqbn esp32:esp32:esp32s3 .
+```
+
+(desde la carpeta de la versión que quieras usar; ajustá el puerto si no es
+`/dev/ttyACM0` — `ls /dev/ttyACM* /dev/ttyUSB*` para verlo).
+
+`credentials.h` (copiado desde `credentials.example.h`, con tu SSID/
+contraseña real) solo hace falta para **`1-l298n-tanque/`**, que sigue por
+WiFi — `2-l298n-mecanum/` ya no lo usa (ver su propio README, sección
+"Control: Serial (USB), no WiFi").
 
 ## Placa
 

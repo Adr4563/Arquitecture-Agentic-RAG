@@ -1,35 +1,36 @@
 """
-Cliente HTTP hacia el carrito mecanum (firmware en
+Cliente Serial hacia el carrito mecanum (firmware en
 ../carrito-mecanum-esp32/2-l298n-mecanum/mecanum_car_esp32s3.ino).
 
-Protocolo del firmware: GET /cmd?move=<código>, uno de F/B/SL/SR/RL/RR/FL/
-FR/BL/BR — el propio ESP32 tiene un watchdog de 500ms: si no le llega OTRO
-comando antes de que pasen esos 500ms, frena los motores solo. Por eso una
-sola llamada ya es un gesto seguro y breve — no hace falta mandar un STOP
-explícito después.
+El ESP32 va conectado por cable USB directo a esta misma Raspberry Pi (antes
+era WiFi/HTTP — ver el propio .ino, que documenta el cambio) — más simple y
+sin depender de la LAN ni de que el ESP32 tenga IP. Protocolo: un comando de
+texto por línea (F/B/SL/SR/RL/RR/FL/FR/BL/BR/S), igual que antes viajaba como
+?move=<código> por HTTP. El ESP32 tiene el mismo watchdog de 500ms que ya
+tenía: si no le llega OTRO comando antes de que pasen esos 500ms, frena los
+motores solo — una sola llamada ya es un gesto seguro y breve.
 
-El ESP32 no tiene IP fija ni mDNS (ver el propio .ino: la IP se imprime por
-Serial al conectar y puede cambiar con el DHCP del router) — hay que
-exportar CARRITO_HOST a mano con la IP del momento:
-    export CARRITO_HOST=http://192.168.1.50
+CARRITO_PORT configurable por env var si el puerto no es el default:
+    export CARRITO_PORT=/dev/ttyUSB0
 
-Sin esa variable configurada, mover()/mover_360() no lanzan excepción — solo
-loguean y no hacen nada, para no cortar el flujo de trivia por un carrito
-que no está prendido/conectado en este momento.
+Sin el puerto disponible (cable desconectado, ESP32 apagado, etc.),
+mover()/mover_360() no lanzan excepción — solo loguean y no hacen nada, para
+no cortar el flujo de trivia por un carrito que no está conectado.
 """
 
 import os
 import time
 
-import requests
+import serial
 
-CARRITO_HOST = os.environ.get("CARRITO_HOST", "")  # ej. http://192.168.1.50
-TIMEOUT = 2.0  # está en la misma LAN; si no responde rápido, no está conectado.
+CARRITO_PORT = os.environ.get("CARRITO_PORT", "/dev/ttyACM0")
+BAUDRATE = 115200
+TIMEOUT = 2.0  # cable directo: si no responde rápido, no está conectado/andando.
 
 # Traduce el texto en español de la columna 'desplazamiento' del dataset al
-# código que entiende server.arg("move") en el firmware. SL/SR (strafe) y no
-# RL/RR (rotar) para izquierda/derecha: las ruedas mecanum se pueden mover de
-# costado sin girar, que es lo que "desplazamiento" sugiere frente a "girar".
+# código que entiende el firmware. SL/SR (strafe) y no RL/RR (rotar) para
+# izquierda/derecha: las ruedas mecanum se pueden mover de costado sin girar,
+# que es lo que "desplazamiento" sugiere frente a "girar".
 _DIRECCION_A_COMANDO = {
     "adelante": "F",
     "atrás": "B",
@@ -38,25 +39,60 @@ _DIRECCION_A_COMANDO = {
     "derecha": "SR",
 }
 
+# Conexión persistente a nivel de módulo: abrir el puerto reinicia el ESP32
+# (toggle de DTR, comportamiento normal de Arduino/ESP32 por USB), así que no
+# conviene abrir/cerrar en cada mover() — se abre una sola vez y se reutiliza.
+# Si se desconecta el cable, _conexion queda con un objeto muerto y el
+# próximo intento de escribir falla y dispara una reconexión (ver _puerto()).
+_conexion = None
+
+
+def _puerto():
+    """Devuelve la conexión serial abierta, reconectando si hace falta (primera
+    vez, o si la anterior murió por desconexión). None si no se pudo abrir."""
+    global _conexion
+    if _conexion is not None and _conexion.is_open:
+        return _conexion
+    try:
+        _conexion = serial.Serial(CARRITO_PORT, BAUDRATE, timeout=TIMEOUT)
+        # Abrir el puerto reinicia el ESP32 (DTR); setup() tarda un instante
+        # en volver a dejarlo listo para recibir comandos — sin esta espera,
+        # el primer mover() de la sesión se puede perder en el reinicio.
+        time.sleep(2.0)
+        return _conexion
+    except serial.SerialException as e:
+        print(f"    [carrito] no se pudo abrir {CARRITO_PORT}: {e}")
+        _conexion = None
+        return None
+
+
+def _mandar(comando):
+    conexion = _puerto()
+    if conexion is None:
+        return False
+    try:
+        conexion.write(f"{comando}\n".encode())
+        return True
+    except serial.SerialException as e:
+        print(f"    [carrito] no se pudo mandar {comando!r}: {e}")
+        global _conexion
+        _conexion = None  # forzar reconexión en el próximo intento
+        return False
+
 
 def mover(direccion):
     """Manda UN comando de movimiento — el watchdog del firmware lo frena
     solo a los 500ms si no llega nada más detrás. Devuelve True si el
-    carrito respondió, False si no se pudo mandar (sin CARRITO_HOST, carrito
-    apagado/fuera de red, lo que sea) — nunca lanza."""
+    comando se pudo escribir al puerto, False si no (sin ESP32
+    conectado/apagado, cable desconectado, lo que sea) — nunca lanza."""
     comando = _DIRECCION_A_COMANDO.get((direccion or "").strip().lower())
     if not comando:
         print(f"    [carrito] dirección sin comando mapeado: {direccion!r}, se ignora")
         return False
-    if not CARRITO_HOST:
-        print(f"    [carrito] CARRITO_HOST no configurado, no se manda {direccion!r}")
+    if not _mandar(comando):
+        print(f"    [carrito] no se pudo mandar {direccion!r} ({comando})")
         return False
-    try:
-        requests.get(f"{CARRITO_HOST}/cmd", params={"move": comando}, timeout=TIMEOUT)
-        return True
-    except requests.RequestException as e:
-        print(f"    [carrito] no se pudo mandar {direccion!r} ({comando}): {e}")
-        return False
+    return True
 
 
 def mover_360(repeticiones=6, pausa=0.4):
@@ -67,15 +103,10 @@ def mover_360(repeticiones=6, pausa=0.4):
     carrito real: no hay forma de saber cuántos grados gira por pulso sin
     probarlo con el hardware delante. Ajustalos viendo el carrito girar.
     """
-    if not CARRITO_HOST:
-        print("    [carrito] CARRITO_HOST no configurado, no se manda 'Girar 360°'")
-        return False
     ok = True
     for _ in range(repeticiones):
-        try:
-            requests.get(f"{CARRITO_HOST}/cmd", params={"move": "RR"}, timeout=TIMEOUT)
-        except requests.RequestException as e:
-            print(f"    [carrito] no se pudo mandar 'Girar 360°': {e}")
+        if not _mandar("RR"):
+            print("    [carrito] no se pudo mandar 'Girar 360°'")
             ok = False
             break
         time.sleep(pausa)
