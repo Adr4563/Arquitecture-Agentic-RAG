@@ -1,0 +1,707 @@
+{"frase": "quiero jugar trivia", "ruta": "TRIVIA"}
+{"frase": "hazme una pregunta de matematica", "ruta": "TRIVIA"}
+{"frase": "sigamos con la trivia", "ruta": "TRIVIA"}
+{"frase": "continuemos con las preguntas", "ruta": "TRIVIA"}
+{"frase": "volvamos al juego de preguntas", "ruta": "TRIVIA"}
+{"frase": "que clima hace hoy en lima", "ruta": "BUSQUEDA_WEB"}
+{"frase": "quien gano el partido de anoche", "ruta": "BUSQUEDA_WEB"}
+{"frase": "hola como estas", "ruta": "CHAT_LIBRE"}
+{"frase": "cuentame un chiste", "ruta": "CHAT_LIBRE"}
+{"frase": "¿Puedes hacerme una pregunta, qué tal?", "ruta": "TRIVIA"}
+{"frase": "Empezar un juego de preguntas, por favor.", "ruta": "TRIVIA"}
+{"frase": "Quiero jugar un juego matemático, ¿qué me ofreces?", "ruta": "TRIVIA"}
+{"frase": "¿Crees que podrías hacerme una adivinanza?", "ruta": "TRIVIA"}
+{"frase": "Puedes hacerme un juego de colores y colores?", "ruta": "TRIVIA"}
+{"frase": "¿Cuál emociones harás para él?", "ruta": "TRIVIA"}
+{"frase": "Quiero imitar a un robot, ¿dónde debemos empezar?", "ruta": "TRIVIA"}
+{"frase": "¿Hay un dilema matemático para resolver?", "ruta": "TRIVIA"}
+{"frase": "Puedes hacerme la rima tonta o la matemática difícil?", "ruta": "TRIVIA"}
+{"frase": "¿Puedes hacer un juego de palabras?", "ruta": "TRIVIA"}
+{"frase": "¿Puedes hacerme una pregunta musical?", "ruta": "TRIVIA"}
+{"frase": "Quiero seguir jugando después de la merienda", "ruta": "TRIVIA"}
+{"frase": "¿Puedes seguiste el juego después de que me salí?", "ruta": "TRIVIA"}
+{"frase": "Empezar un juego de reconocimiento visual, por favor.", "ruta": "TRIVIA"}
+{"frase": "Quiero jugar un juego de emociones, ¿qué me ofreces?", "ruta": "TRIVIA"}
+{"frase": "¿Puedes hacerte el robot y seguir jugando?", "ruta": "TRIVIA"}
+{"frase": "Puedes hacerme un juego de adivinanzas, ¿qué tipo de adivinanzas?", "ruta": "TRIVIA"}
+{"frase": "¿Puedes hacerme un juego de matemáticas, por favor?", "ruta": "TRIVIA"}
+{"frase": "Puedes hacerme un juego de música, ¿cómo lo quieres hacer?", "ruta": "TRIVIA"}
+{"frase": "Quiero jugar un juego de emociones, por favor.", "ruta": "TRIVIA"}
+{"frase": "¿Puedes hacerte como un robot y seguir jugando?", "ruta": "TRIVIA"}
+{"frase": "Puedes hacerme un juego de diccionario, ¿dónde se lo vas a encontrar?", "ruta": "TRIVIA"}
+{"frase": "Empezar un juego de imitazione, que tal?", "ruta": "TRIVIA"}
+{"frase": "¿Puedes hacerme un juego de dilemas?, ¿dónde puedo resolverlos?", "ruta": "TRIVIA"}
+{"frase": "Quiero seguir jugando un juego de reconocimiento musical", "ruta": "TRIVIA"}
+{"frase": "Puedes hacerme un juego de emociones, ¿qué emociones te ofreces?", "ruta": "TRIVIA"}
+{"frase": "¿Por qué ha habido una serie de inundaciones en diferentes partes del mundo últimamente?", "ruta": "BUSQUEDA_WEB"}
+{"frase": "¿Cuál es el actual índice de la bolsa de Nueva York?", "ruta": "BUSQUEDA_WEB"}
+{"frase": "¿Cuándo se llevará a cabo el partido de la Final de la Liga de Campeones?", "ruta": "BUSQUEDA_WEB"}
+{"frase": "¿Qué es lo que está causando que la temperatura del medio ambiente aumente?", "ruta": "BUSQUEDA_WEB"}
+{"frase": "¿Qué es el nombre del nuevo director del equipo de fútbol Madrid?", "ruta": "BUSQUEDA_WEB"}
+{"frase": "¿Cuál es el costo actual de la tarjeta de crédito Visa?", "ruta": "BUSQUEDA_WEB"}
+{"frase": "¿Qué evento deportivo se llevará a cabo en el Estadio Olímpico de Tokio?", "ruta": "BUSQUEDA_WEB"}
+{"frase": "¿Qué es lo que está sucediendo con las tasas de interés en las bancos?", "ruta": "BUSQUEDA_WEB"}
+{"frase": "¿Quién ganó el concurso de la última temporada de la serie de televisión 'American Idol'?", "ruta": "BUSQUEDA_WEB"}
+{"frase": "¿En qué hora de la mañana hay un eclipse de luna?", "ruta": "BUSQUEDA_WEB"}
+{"frase": "¿Cuál es el precio actual de una cama de espuma?", "ruta": "BUSQUEDA_WEB"}
+{"frase": "¿Qué tan grave es la hambruna que está afectando a más de 100 millones de personas?", "ruta": "BUSQUEDA_WEB"}
+{"frase": "¿Cuándo termina el semestre escolar en la Universidad de California?", "ruta": "BUSQUEDA_WEB"}
+{"frase": "¿Qué es el nombre del nuevo actor que se unirá al elenco de la próxima película de James Bond?", "ruta": "BUSQUEDA_WEB"}
+{"frase": "¿En qué país se llevó a cabo el maratón de atletismo más rápido de la historia?", "ruta": "BUSQUEDA_WEB"}
+{"frase": "¿Qué tan influyente es la acción de las protestas que se están llevando a cabo en Madrid?", "ruta": "BUSQUEDA_WEB"}
+{"frase": "¿Qué es el nombre de la novela que se estrella en las búsquedas de Google libros?", "ruta": "BUSQUEDA_WEB"}
+{"frase": "¿En qué día se cumple el décimo aniversario de la Fundación de Microsoft?", "ruta": "BUSQUEDA_WEB"}
+{"frase": "¿Qué tan altas son las tasas de desempleo en los diferentes estados de Estados Unidos?", "ruta": "BUSQUEDA_WEB"}
+{"frase": "¿Quién es el ganador del premio Nobel de Física?", "ruta": "BUSQUEDA_WEB"}
+{"frase": "¿Qué tan efectivos son los tratamientos para una enfermedad rara como la polio?", "ruta": "BUSQUEDA_WEB"}
+{"frase": "¿En qué ciudad se llevó a cabo el concert de la última gira de Madonna?", "ruta": "BUSQUEDA_WEB"}
+{"frase": "¿Qué tan útiles son los modelos de predictos estadísticos en la medicina?", "ruta": "BUSQUEDA_WEB"}
+{"frase": "¿Cuándo terminó el torneo de tenis Masters 1000?", "ruta": "BUSQUEDA_WEB"}
+{"frase": "¿Qué tan altos son los costos de la energía utilizada para iluminar un edificio?", "ruta": "BUSQUEDA_WEB"}
+{"frase": "¿Quién ganó el concurso de la última semana de la serie de televisión 'The Voice'?", "ruta": "BUSQUEDA_WEB"}
+{"frase": "¿En qué ciudad tuvo lugar la última conferencia de prensa de Mark zuckerberg?", "ruta": "BUSQUEDA_WEB"}
+{"frase": "¿Qué tan eficaces son los tratamientos de reemplazo de piezas móviles en la medicina?", "ruta": "BUSQUEDA_WEB"}
+{"frase": "¿Qué tan influyente es la acción de la huida por la rendición militar en algunas partes del mundo?", "ruta": "BUSQUEDA_WEB"}
+{"frase": "¿Cuál es el resultado del partido de fútbol entre Barcelona y Real Madrid del pasado sábado?", "ruta": "BUSQUEDA_WEB"}
+{"frase": "¿Cuál es el precio actual de un litro de gasolina en Madrid?", "ruta": "BUSQUEDA_WEB"}
+{"frase": "¿Cuándo se celebrará el eclipse solar de 2024?", "ruta": "BUSQUEDA_WEB"}
+{"frase": "¿Quién ganó el último campeonato de la NFL?", "ruta": "BUSQUEDA_WEB"}
+{"frase": "¿Cuál es el clima actual en París?", "ruta": "BUSQUEDA_WEB"}
+{"frase": "¿Qué hora es mañana?", "ruta": "BUSQUEDA_WEB"}
+{"frase": "¿Cuál es el precio actual de un kilo de harina en la zona sur de España?", "ruta": "BUSQUEDA_WEB"}
+{"frase": "¿Quién ganó el último campeonato de la Liga de la Nación", "ruta": "BUSQUEDA_WEB"}
+{"frase": "¿Cuándo se estrenará la nueva serie de la ITV?", "ruta": "BUSQUEDA_WEB"}
+{"frase": "¿Cuál es el resultado del partido detenido entre la selección de fútbol mexicana y la selección de fútbol de Estados Unidos?", "ruta": "BUSQUEDA_WEB"}
+{"frase": "¿Cuál es el precio actual de un metro de gas natural en Córdoba?", "ruta": "BUSQUEDA_WEB"}
+{"frase": "¿Quién ganó el primer premio en el last minute del concurso de la radio XFM?", "ruta": "BUSQUEDA_WEB"}
+{"frase": "¿Cuál es el clima actual en Tokio?", "ruta": "BUSQUEDA_WEB"}
+{"frase": "¿Qué hora será la partida del partido de fútbol entre Manchester United y Liverpool en la Champions League?", "ruta": "BUSQUEDA_WEB"}
+{"frase": "¿Cuál es el precio actual de un kilo de cebolla en la zona norte de España?", "ruta": "BUSQUEDA_WEB"}
+{"frase": "¿Quién ganó el último campeonato de la NBA?", "ruta": "BUSQUEDA_WEB"}
+{"frase": "¿Cuándo se celebrará el Festival de Música de Jazz?", "ruta": "BUSQUEDA_WEB"}
+{"frase": "¿Cuál es el precio actual de un litro de leche en la zona sur de España?", "ruta": "BUSQUEDA_WEB"}
+{"frase": "¿Quién ganó el primer premio en el concurso de baile de la televisión?", "ruta": "BUSQUEDA_WEB"}
+{"frase": "¿Cuál es el clima actual en Nueva York?", "ruta": "BUSQUEDA_WEB"}
+{"frase": "¿Qué hora será la cena del evento de gala de la Fundación de la Cultura?", "ruta": "BUSQUEDA_WEB"}
+{"frase": "¿Cuál es el precio actual de un kilo de arroz en la zona central de España?", "ruta": "BUSQUEDA_WEB"}
+{"frase": "¿Quién ganó el último campeonato de la Copa de la UEFA?", "ruta": "BUSQUEDA_WEB"}
+{"frase": "¿Cuándo se estrenará la nueva película de Spielberg?", "ruta": "BUSQUEDA_WEB"}
+{"frase": "¿Cuál es el precio actual de un metro de gasolina en Madrid?", "ruta": "BUSQUEDA_WEB"}
+{"frase": "¿Quién ganó el primer premio en el concurso de la radio de 104 FM?", "ruta": "BUSQUEDA_WEB"}
+{"frase": "¿Cuál es la última noticia sobre el terremoto que afectó a México?", "ruta": "BUSQUEDA_WEB"}
+{"frase": "¿Cuál es el promedio de temperatura en Madrid hoy?", "ruta": "BUSQUEDA_WEB"}
+{"frase": "¿Quién ganó el Mundial de fútbol la temporada pasada?", "ruta": "BUSQUEDA_WEB"}
+{"frase": "¿Cuál es la fecha today?", "ruta": "BUSQUEDA_WEB"}
+{"frase": "¿Qué eventos se celebrarán en la ciudad el 20 de marzo?", "ruta": "BUSQUEDA_WEB"}
+{"frase": "¿Cuál es el resultado del partido de la liga entre Barcelona y Real Madrid?", "ruta": "BUSQUEDA_WEB"}
+{"frase": "¿Quién ganó el Gran Premio de la F1 el pasado fin de semana?", "ruta": "BUSQUEDA_WEB"}
+{"frase": "¿Cuándo es la hora exacta de la medianoche de hoy?", "ruta": "BUSQUEDA_WEB"}
+{"frase": "¿Cuál es el costo actual de un kilogramo de arroz en la tienda?", "ruta": "BUSQUEDA_WEB"}
+{"frase": "¿Qué acto se celebrará en el Estadio Wembley este sábado?", "ruta": "BUSQUEDA_WEB"}
+{"frase": "¿Cuál es la temperatura en París en este momento?", "ruta": "BUSQUEDA_WEB"}
+{"frase": "¿Quién es el ganador del Grammy de la categoría de Mejor álbum pop?", "ruta": "BUSQUEDA_WEB"}
+{"frase": "¿Cuál es la fecha de finalización de la temporada de fútbol de la liga?", "ruta": "BUSQUEDA_WEB"}
+{"frase": "¿Cuál es el precio de un abono de transporte público actual en Madrid?", "ruta": "BUSQUEDA_WEB"}
+{"frase": "¿Qué eventos de patinaje artístico se llevarán a cabo este año?", "ruta": "BUSQUEDA_WEB"}
+{"frase": "¿Cuál es el promedio de humedad relativa en la ciudad este lunes?", "ruta": "BUSQUEDA_WEB"}
+{"frase": "¿Quién ganó el campeonato de tenis en la Copa del Reino?", "ruta": "BUSQUEDA_WEB"}
+{"frase": "¿Cuál es el costo actual de un litro de gasolina con descuento en la estación?", "ruta": "BUSQUEDA_WEB"}
+{"frase": "¿Qué espectáculo musical se representará en el Teatro Colon este mes?", "ruta": "BUSQUEDA_WEB"}
+{"frase": "¿Cuál es la temperatura media de la ciudad de Nueva York en este invierno?", "ruta": "BUSQUEDA_WEB"}
+{"frase": "¿Quién ganó el campeonato de fútbol de la liga?", "ruta": "BUSQUEDA_WEB"}
+{"frase": "¿Cuál es la última noticia sobre la crisis humanitaria en Ucrania?", "ruta": "BUSQUEDA_WEB"}
+{"frase": "¿Cuál es el tiempo esperado para el invierno en Miami?", "ruta": "BUSQUEDA_WEB"}
+{"frase": "¿Quién ganó la liga de fútbol americano la temporada pasada?", "ruta": "BUSQUEDA_WEB"}
+{"frase": "¿A qué hora comienza la reunión del Congreso estadounidense esta semana?", "ruta": "BUSQUEDA_WEB"}
+{"frase": "¿Cuál es el precio actual de un taza de café en el mercado de Nueva York?", "ruta": "BUSQUEDA_WEB"}
+{"frase": "¿Qué sucedió en el último evento deportivo de la FIBA?", "ruta": "BUSQUEDA_WEB"}
+{"frase": "¿Cuándo es el próximo día de ayuno en Egipto?", "ruta": "BUSQUEDA_WEB"}
+{"frase": "¿A qué precio se pueden comprar tickets para el próximo concierto de Ariana Grande?", "ruta": "BUSQUEDA_WEB"}
+{"frase": "¿Cuál es la temperatura actual en el Polo Norte?", "ruta": "BUSQUEDA_WEB"}
+{"frase": "¿Qué dijo el presidente sobre la política de inmigración?", "ruta": "BUSQUEDA_WEB"}
+{"frase": "¿A qué hora se realiza la transmisión del primer partido de la liga de fútbol brasileña?", "ruta": "BUSQUEDA_WEB"}
+{"frase": "¿Cuál es el número de casos confirmados de COVID-19 en Europa?", "ruta": "BUSQUEDA_WEB"}
+{"frase": "¿A qué precio se pueden adquirir dispositivos smartphone de última generación?", "ruta": "BUSQUEDA_WEB"}
+{"frase": "¿Cuándo es el próximo día de protesta en Argentina?", "ruta": "BUSQUEDA_WEB"}
+{"frase": "¿Qué sucedió en el último lanzamiento de un rover espacial?", "ruta": "BUSQUEDA_WEB"}
+{"frase": "¿Cuándo se realiza el próximo concurso de tatuadores en las Américas?", "ruta": "BUSQUEDA_WEB"}
+{"frase": "¿A qué hora comienza la competencia de esgrima en los Juegos Olímpicos?", "ruta": "BUSQUEDA_WEB"}
+{"frase": "¿Cuál es el índice de inflación actual en Japón?", "ruta": "BUSQUEDA_WEB"}
+{"frase": "¿Qué dijo la Reina Isabel II sobre la actualidad política?", "ruta": "BUSQUEDA_WEB"}
+{"frase": "¿Cuándo es el próximo evento de la Serie del Campeonato Mundial de Golf?", "ruta": "BUSQUEDA_WEB"}
+{"frase": "¿A qué precio se pueden comprar tickets para el próximo viaje espacial a la Luna?", "ruta": "BUSQUEDA_WEB"}
+{"frase": "¿Cuál es la velocidad actual del viento en las montañas Rocosas?", "ruta": "BUSQUEDA_WEB"}
+{"frase": "¿Qué sucedió en el último partido de la liga de baloncesto en Europa?", "ruta": "BUSQUEDA_WEB"}
+{"frase": "¿A qué hora se realizará el juicio contra el CEO de una empresa tech?", "ruta": "BUSQUEDA_WEB"}
+{"frase": "¿Cuál es el costo actual de una tonelada de petróleo en el mercado global?", "ruta": "BUSQUEDA_WEB"}
+{"frase": "¿Qué dijo el fundador de una empresa tech sobre la industria?", "ruta": "BUSQUEDA_WEB"}
+{"frase": "¿A qué hora se realizará el lanzamiento del próximo teléfono móvil?", "ruta": "BUSQUEDA_WEB"}
+{"frase": "¡Hola! Me alegra conocerte.", "ruta": "CHAT_LIBRE"}
+{"frase": "Tengo un chiste que te hace reír: ¿Por qué la computadora fue al doctor?", "ruta": "CHAT_LIBRE"}
+{"frase": "¿De dónde eres?", "ruta": "CHAT_LIBRE"}
+{"frase": "Me encanta la ópera", "ruta": "CHAT_LIBRE"}
+{"frase": "Me parece interesante que hablemos de historia", "ruta": "CHAT_LIBRE"}
+{"frase": "Gracias por la oportunidad de charlar con ti", "ruta": "CHAT_LIBRE"}
+{"frase": "¿Qué te parece el clima este mes?", "ruta": "CHAT_LIBRE"}
+{"frase": "La física es mi pasión", "ruta": "CHAT_LIBRE"}
+{"frase": "Me siento muy cómodo con esta conversación", "ruta": "CHAT_LIBRE"}
+{"frase": "La literatura es mi fuente de inspiración", "ruta": "CHAT_LIBRE"}
+{"frase": "Me parece divertido que hablemos sobre deportes", "ruta": "CHAT_LIBRE"}
+{"frase": "La química es un tema muy interesante", "ruta": "CHAT_LIBRE"}
+{"frase": "¿Qué te parece la música clásica?", "ruta": "CHAT_LIBRE"}
+{"frase": "La biología es un tema fascinante", "ruta": "CHAT_LIBRE"}
+{"frase": "Me parece placentero esta conversación", "ruta": "CHAT_LIBRE"}
+{"frase": "La psicología es un tema muy interesante", "ruta": "CHAT_LIBRE"}
+{"frase": "¡Vamos a jugar una pregunta, por favor!", "ruta": "TRIVIA"}
+{"frase": "Ponme una pregunta, tío!", "ruta": "TRIVIA"}
+{"frase": "Comienza el juego, por favor!", "ruta": "TRIVIA"}
+{"frase": "¿Podrías jugar una pregunta contigo?", "ruta": "TRIVIA"}
+{"frase": "¡Trivia, aquí!", "ruta": "TRIVIA"}
+{"frase": "¡Vamos a jugar algo!", "ruta": "TRIVIA"}
+{"frase": "¿Puedes hacer una pregunta para mí?", "ruta": "TRIVIA"}
+{"frase": "¡Empecemos un juego!", "ruta": "TRIVIA"}
+{"frase": "Estoy lista para jugar", "ruta": "TRIVIA"}
+{"frase": "¿Quieres jugar un juego?", "ruta": "TRIVIA"}
+{"frase": "Ponme una aventura!", "ruta": "TRIVIA"}
+{"frase": "¡Juega conmigo!", "ruta": "TRIVIA"}
+{"frase": "¡Vamos a jugar preguntas!", "ruta": "TRIVIA"}
+{"frase": "¡Juega conmigo un juego de aleatorias!", "ruta": "TRIVIA"}
+{"frase": "¿Puedes hacer preguntas conmigo?", "ruta": "TRIVIA"}
+{"frase": "¡Te voy a meter preguntas!", "ruta": "TRIVIA"}
+{"frase": "¿Quieres jugar pictionary?", "ruta": "TRIVIA"}
+{"frase": "¡Vamos con un juego de matemáticas!", "ruta": "TRIVIA"}
+{"frase": "¿Quieres seguir el juego?", "ruta": "TRIVIA"}
+{"frase": "Puedes hacer una suposición con el colores.", "ruta": "TRIVIA"}
+{"frase": "Empecemos un juego con emociones!", "ruta": "TRIVIA"}
+{"frase": "¿Quieres unirse a la sesión?", "ruta": "TRIVIA"}
+{"frase": "Te estoy pidiendo que imites mi voz!", "ruta": "TRIVIA"}
+{"frase": "¿Puedes hacer una canción conmigo?", "ruta": "TRIVIA"}
+{"frase": "¡Siga el juego!", "ruta": "TRIVIA"}
+{"frase": "Pide más preguntas", "ruta": "TRIVIA"}
+{"frase": "Comienza un nuevo juego", "ruta": "TRIVIA"}
+{"frase": "Juega algo divertido", "ruta": "TRIVIA"}
+{"frase": "Juegas?", "ruta": "TRIVIA"}
+{"frase": "¿Puedo intentarlo?", "ruta": "TRIVIA"}
+{"frase": "¿Cómo podemos jugar?", "ruta": "TRIVIA"}
+{"frase": "¿Quieres jugar?", "ruta": "TRIVIA"}
+{"frase": "Comienza un juego nuevo", "ruta": "TRIVIA"}
+{"frase": "¿Puedes proponer una?", "ruta": "TRIVIA"}
+{"frase": "¿Puedo seguir el juego?", "ruta": "TRIVIA"}
+{"frase": "¡Vamos a jugar!", "ruta": "TRIVIA"}
+{"frase": "Juega preguntas, amigo", "ruta": "TRIVIA"}
+{"frase": "¡Comencemos un juego!", "ruta": "TRIVIA"}
+{"frase": "¿Quieres jugar una partida?", "ruta": "TRIVIA"}
+{"frase": "¿Puedo empezar un juego?", "ruta": "TRIVIA"}
+{"frase": "¡Vamos a jugar conociendo!", "ruta": "TRIVIA"}
+{"frase": "¿Quieres resolver puzzles?", "ruta": "TRIVIA"}
+{"frase": "Vamos a jugar con lógica", "ruta": "TRIVIA"}
+{"frase": "¿Quieres usar tu cerebro?", "ruta": "TRIVIA"}
+{"frase": "Puedes jugar un juego conmigo", "ruta": "TRIVIA"}
+{"frase": "¿Qué es lo que buscas jugar?", "ruta": "TRIVIA"}
+{"frase": "Quiero jugar una pregunta", "ruta": "TRIVIA"}
+{"frase": "¿Te gustaría jugar matemáticas?", "ruta": "TRIVIA"}
+{"frase": "¿Quieres jugar un juego conmigo?", "ruta": "TRIVIA"}
+{"frase": "Estoy Listo cuando comiences", "ruta": "TRIVIA"}
+{"frase": "Sigue el juego que acabamos de jugar", "ruta": "TRIVIA"}
+{"frase": "Vamos a jugar a adivinanzas", "ruta": "TRIVIA"}
+{"frase": "Te voy a hacer una pregunta", "ruta": "TRIVIA"}
+{"frase": "¿Dónde debo empezar el juego?", "ruta": "TRIVIA"}
+{"frase": "¿Cómo se ve el próximo juego?", "ruta": "TRIVIA"}
+{"frase": "Quiero seguir donde te dejaste", "ruta": "TRIVIA"}
+{"frase": "Pide una pregunta, por favor!", "ruta": "TRIVIA"}
+{"frase": "Comience un juego de preguntas, por favor.", "ruta": "TRIVIA"}
+{"frase": "¿Puedo hacer una pregunta ahora?", "ruta": "TRIVIA"}
+{"frase": "Preguntas, por favor!", "ruta": "TRIVIA"}
+{"frase": "Juega conmigo, te ruego!", "ruta": "TRIVIA"}
+{"frase": "¿Puedo seguir con el juego?", "ruta": "TRIVIA"}
+{"frase": "¿Qué juego quieres jugar hoy?", "ruta": "TRIVIA"}
+{"frase": "Comienza un juego de trivia por favor.", "ruta": "TRIVIA"}
+{"frase": "Pide una nueva pregunta", "ruta": "TRIVIA"}
+{"frase": "¿Puedo jugar a preguntas ahora?", "ruta": "TRIVIA"}
+{"frase": "Juega conmigo, por favor!", "ruta": "TRIVIA"}
+{"frase": "¡Empecemos un juego de trivia!", "ruta": "TRIVIA"}
+{"frase": "¿Quieres jugar una ronda de matemáticas?", "ruta": "TRIVIA"}
+{"frase": "¿Puedes sentir mi alegría?", "ruta": "TRIVIA"}
+{"frase": "¡Imítame, quiero que escuches!", "ruta": "TRIVIA"}
+{"frase": "¿Puedes hacerlo de nuevo?", "ruta": "TRIVIA"}
+{"frase": "Vamos a empezar un juego de adivinanzas", "ruta": "TRIVIA"}
+{"frase": "¡Puedes seguir jugando cuando vayas!", "ruta": "TRIVIA"}
+{"frase": "¿Puedes escuchar mi canción favorita?", "ruta": "TRIVIA"}
+{"frase": "¿Te gusta el cielo azul?", "ruta": "CHAT_LIBRE"}
+{"frase": "Es un buen día, ¿verdad?", "ruta": "CHAT_LIBRE"}
+{"frase": "Me gustaría compartir un chiste contigo: ¿Por qué la computadora fue al doctor?", "ruta": "CHAT_LIBRE"}
+{"frase": "Sí, me encanta la música clásica.", "ruta": "CHAT_LIBRE"}
+{"frase": "¿Sabes quién fue el primer astronauta?", "ruta": "CHAT_LIBRE"}
+{"frase": "Agradezco que converses conmigo todos los días.", "ruta": "CHAT_LIBRE"}
+{"frase": "¿Cómo funcionas? Somas una combinación de hardware y software.", "ruta": "CHAT_LIBRE"}
+{"frase": "¿Te gusta el poquito de música mexicana?", "ruta": "CHAT_LIBRE"}
+{"frase": "Sí, la tecnología es el futuro de la sociedad moderna.", "ruta": "CHAT_LIBRE"}
+{"frase": "Me encanta hablar sobre tecnología", "ruta": "CHAT_LIBRE"}
+{"frase": "¿Cuál es tu país de origen?", "ruta": "CHAT_LIBRE"}
+{"frase": "Me siento muy entretenido gracias", "ruta": "CHAT_LIBRE"}
+{"frase": "El clima es perfecto para hoy", "ruta": "CHAT_LIBRE"}
+{"frase": "Es increíble lo avanzados los sistemas de inteligencia", "ruta": "CHAT_LIBRE"}
+{"frase": "Cuál es tu comida favorita en México?", "ruta": "CHAT_LIBRE"}
+{"frase": "Me parece que la política es complicada", "ruta": "CHAT_LIBRE"}
+{"frase": "Agradezco tu interés en que hablamos", "ruta": "CHAT_LIBRE"}
+{"frase": "¿Por qué siempre tienes un humor tan punzante?", "ruta": "CHAT_LIBRE"}
+{"frase": "Hola, ¿cómo está usted hoy?", "ruta": "CHAT_LIBRE"}
+{"frase": "¿Dónde está la plaza?", "ruta": "CHAT_LIBRE"}
+{"frase": "Me encanta la música clásica", "ruta": "CHAT_LIBRE"}
+{"frase": "¿Qué te gusta de la soledad?", "ruta": "CHAT_LIBRE"}
+{"frase": "La ciencia es mi gran pasión", "ruta": "CHAT_LIBRE"}
+{"frase": "Agradezco tu interés en hablar conmigo", "ruta": "CHAT_LIBRE"}
+{"frase": "¿Cuáles es tu hobby favorito?", "ruta": "CHAT_LIBRE"}
+{"frase": "¿Cómo te va hoy?", "ruta": "CHAT_LIBRE"}
+{"frase": "El chiste del día es que fui al circo", "ruta": "CHAT_LIBRE"}
+{"frase": "Estoy emocionado de estar en casa", "ruta": "CHAT_LIBRE"}
+{"frase": "¿A qué te gustaría beber ahora?", "ruta": "CHAT_LIBRE"}
+{"frase": "Creo que la naturaleza es hermosa hoy", "ruta": "CHAT_LIBRE"}
+{"frase": "Estoy aquí para entretenerte ¿Quieres un chiste?", "ruta": "CHAT_LIBRE"}
+{"frase": "Sé que los robots no pueden tener pasatiempo", "ruta": "CHAT_LIBRE"}
+{"frase": "¿Qué te parece el cielo? Es muy grande", "ruta": "CHAT_LIBRE"}
+{"frase": "Sé que la vida es igual para todos", "ruta": "CHAT_LIBRE"}
+{"frase": "Me gusta la tecnología, es muy interesante", "ruta": "CHAT_LIBRE"}
+{"frase": "Agradezco tu interés en hablar conmigo hoy", "ruta": "CHAT_LIBRE"}
+{"frase": "Necesito saber más sobre la historia actual", "ruta": "CHAT_LIBRE"}
+{"frase": "¿Cómo ha estado el día?, me parece bueno.", "ruta": "CHAT_LIBRE"}
+{"frase": "Estuve en el parque, pero no pude jugar. ¡Hasta luego!", "ruta": "CHAT_LIBRE"}
+{"frase": "¿Qué le parece leer 'Don Quijote'?", "ruta": "CHAT_LIBRE"}
+{"frase": "¿Te gusta viajar a lugares rurales?", "ruta": "CHAT_LIBRE"}
+{"frase": "¿Cómo se llama la estrofa más triste?", "ruta": "CHAT_LIBRE"}
+{"frase": "¿Puedes cantar como una truhán?", "ruta": "CHAT_LIBRE"}
+{"frase": "Bienvenido, ¿cómo andas hoy?", "ruta": "CHAT_LIBRE"}
+{"frase": "Me parece bien, ¿te gusta la vida en general?", "ruta": "CHAT_LIBRE"}
+{"frase": "Me parece interesante tu trabajo en astronomía.", "ruta": "CHAT_LIBRE"}
+{"frase": "Agradecido por la conversación contigo esta noche.", "ruta": "CHAT_LIBRE"}
+{"frase": "¿Cuántos libros has leído en tu vida?", "ruta": "CHAT_LIBRE"}
+{"frase": "¡Hola!, ¿cómo estás hoy?", "ruta": "CHAT_LIBRE"}
+{"frase": "¿Por qué las galletas salten en el suelo?", "ruta": "CHAT_LIBRE"}
+{"frase": "Estoy muy contento de hablar contigo.", "ruta": "CHAT_LIBRE"}
+{"frase": "¿Qué es la vida fuera del planeta?", "ruta": "CHAT_LIBRE"}
+{"frase": "¿Tienes un amigo o hermano?", "ruta": "CHAT_LIBRE"}
+{"frase": "¿Cuántos árboles hay en la Tierra?", "ruta": "CHAT_LIBRE"}
+{"frase": "Me encantaría escuchar un chiste.", "ruta": "CHAT_LIBRE"}
+{"frase": "¿Cuál es el mejor día del año?", "ruta": "CHAT_LIBRE"}
+{"frase": "Me parece interesante que tengas una mente artificial.", "ruta": "CHAT_LIBRE"}
+{"frase": "¿De dónde vengan los humos?", "ruta": "CHAT_LIBRE"}
+{"frase": "¿Cómo mide la velocidad del viento?", "ruta": "CHAT_LIBRE"}
+{"frase": "¿Cómo son tus sentidos?", "ruta": "CHAT_LIBRE"}
+{"frase": "¡Hola, ¿cómo estás hoy?\\", "ruta": "CHAT_LIBRE"}
+{"frase": "¿Te gustan los viajes?", "ruta": "CHAT_LIBRE"}
+{"frase": "Eso es una buena idea.", "ruta": "CHAT_LIBRE"}
+{"frase": "¿Qué hora hay?", "ruta": "CHAT_LIBRE"}
+{"frase": "Me encanta la música", "ruta": "CHAT_LIBRE"}
+{"frase": "¿Cuál es tu nacionalidad?", "ruta": "CHAT_LIBRE"}
+{"frase": "Qué tan divertido es jugar fútbol", "ruta": "CHAT_LIBRE"}
+{"frase": "¿Tienes amigo aquí?", "ruta": "CHAT_LIBRE"}
+{"frase": "¿A favor o en contra de pizza?", "ruta": "CHAT_LIBRE"}
+{"frase": "¿Qué tal el fútbol mundial?", "ruta": "CHAT_LIBRE"}
+{"frase": "¿Hablas más rápido cuando me sorprendes?", "ruta": "CHAT_LIBRE"}
+{"frase": "¿De dónde eres, robot?", "ruta": "CHAT_LIBRE"}
+{"frase": "¡Hola! ¿Cómo estás hoy?", "ruta": "CHAT_LIBRE"}
+{"frase": "Este chiste no me gustó", "ruta": "CHAT_LIBRE"}
+{"frase": "¿Cuál es tu año favorito?", "ruta": "CHAT_LIBRE"}
+{"frase": "Te miro un poco extraño", "ruta": "CHAT_LIBRE"}
+{"frase": "¿De dónde estás?", "ruta": "CHAT_LIBRE"}
+{"frase": "¿Sabes cuál es mayor en el mundo?", "ruta": "CHAT_LIBRE"}
+{"frase": "Este café es muy malo", "ruta": "CHAT_LIBRE"}
+{"frase": "¿Dónde vives?", "ruta": "CHAT_LIBRE"}
+{"frase": "¿Qué te gusta más?", "ruta": "CHAT_LIBRE"}
+{"frase": "¿Tienes familia?", "ruta": "CHAT_LIBRE"}
+{"frase": "Este juego es muy difícil", "ruta": "CHAT_LIBRE"}
+{"frase": "¿Tienes 1 centavo?", "ruta": "CHAT_LIBRE"}
+{"frase": "¡Hola! Por qué tan tranquilo hoy?", "ruta": "CHAT_LIBRE"}
+{"frase": "¿Te gusta el chocolate ganaché?", "ruta": "CHAT_LIBRE"}
+{"frase": "¿Qué te gusta leer?", "ruta": "CHAT_LIBRE"}
+{"frase": "¿Cuál es tu ciencia?", "ruta": "CHAT_LIBRE"}
+{"frase": "Me encanta tu sonrisa", "ruta": "CHAT_LIBRE"}
+{"frase": "¿Tienes un amigo favorito?", "ruta": "CHAT_LIBRE"}
+{"frase": "¿Qué es lo más divertido en la escuela?", "ruta": "CHAT_LIBRE"}
+{"frase": "¿Qué libro te gustaría leer?", "ruta": "CHAT_LIBRE"}
+{"frase": "Me alegro de verte aquí", "ruta": "CHAT_LIBRE"}
+{"frase": "¿Cómo se llamas?", "ruta": "CHAT_LIBRE"}
+{"frase": "¿Qué te gusta hacer en el tiempo libre?", "ruta": "CHAT_LIBRE"}
+{"frase": "¿Por qué te ríes sin saber?", "ruta": "CHAT_LIBRE"}
+{"frase": "puedes hacerme una pregunta que tal", "ruta": "TRIVIA"}
+{"frase": "empezar un juego de preguntas por favor", "ruta": "TRIVIA"}
+{"frase": "quiero jugar un juego matematico que me ofreces", "ruta": "TRIVIA"}
+{"frase": "crees que podrias hacerme una adivinanza", "ruta": "TRIVIA"}
+{"frase": "puedes hacerme un juego de colores y colores", "ruta": "TRIVIA"}
+{"frase": "cual emociones haras para el", "ruta": "TRIVIA"}
+{"frase": "quiero imitar a un robot donde debemos empezar", "ruta": "TRIVIA"}
+{"frase": "hay un dilema matematico para resolver", "ruta": "TRIVIA"}
+{"frase": "puedes hacerme la rima tonta o la matematica dificil", "ruta": "TRIVIA"}
+{"frase": "puedes hacer un juego de palabras", "ruta": "TRIVIA"}
+{"frase": "puedes hacerme una pregunta musical", "ruta": "TRIVIA"}
+{"frase": "quiero seguir jugando despues de la merienda", "ruta": "TRIVIA"}
+{"frase": "puedes seguiste el juego despues de que me sali", "ruta": "TRIVIA"}
+{"frase": "empezar un juego de reconocimiento visual por favor", "ruta": "TRIVIA"}
+{"frase": "quiero jugar un juego de emociones que me ofreces", "ruta": "TRIVIA"}
+{"frase": "puedes hacerte el robot y seguir jugando", "ruta": "TRIVIA"}
+{"frase": "puedes hacerme un juego de adivinanzas que tipo de adivinanzas", "ruta": "TRIVIA"}
+{"frase": "puedes hacerme un juego de matematicas por favor", "ruta": "TRIVIA"}
+{"frase": "puedes hacerme un juego de musica como lo quieres hacer", "ruta": "TRIVIA"}
+{"frase": "quiero jugar un juego de emociones por favor", "ruta": "TRIVIA"}
+{"frase": "puedes hacerte como un robot y seguir jugando", "ruta": "TRIVIA"}
+{"frase": "puedes hacerme un juego de diccionario donde se lo vas a encontrar", "ruta": "TRIVIA"}
+{"frase": "empezar un juego de imitazione que tal", "ruta": "TRIVIA"}
+{"frase": "puedes hacerme un juego de dilemas donde puedo resolverlos", "ruta": "TRIVIA"}
+{"frase": "puedes hacerme un juego de emociones que emociones te ofreces", "ruta": "TRIVIA"}
+{"frase": "por que ha habido una serie de inundaciones en diferentes partes del mundo ultimamente", "ruta": "BUSQUEDA_WEB"}
+{"frase": "cual es el actual indice de la bolsa de nueva york", "ruta": "BUSQUEDA_WEB"}
+{"frase": "cuando se llevara a cabo el partido de la final de la liga de campeones", "ruta": "BUSQUEDA_WEB"}
+{"frase": "que es lo que esta causando que la temperatura del medio ambiente aumente", "ruta": "BUSQUEDA_WEB"}
+{"frase": "que es el nombre del nuevo director del equipo de futbol madrid", "ruta": "BUSQUEDA_WEB"}
+{"frase": "cual es el costo actual de la tarjeta de credito visa", "ruta": "BUSQUEDA_WEB"}
+{"frase": "que evento deportivo se llevara a cabo en el estadio olimpico de tokio", "ruta": "BUSQUEDA_WEB"}
+{"frase": "que es lo que esta sucediendo con las tasas de interes en las bancos", "ruta": "BUSQUEDA_WEB"}
+{"frase": "quien gano el concurso de la ultima temporada de la serie de television 'american idol'", "ruta": "BUSQUEDA_WEB"}
+{"frase": "en que hora de la manana hay un eclipse de luna", "ruta": "BUSQUEDA_WEB"}
+{"frase": "cual es el precio actual de una cama de espuma", "ruta": "BUSQUEDA_WEB"}
+{"frase": "que tan grave es la hambruna que esta afectando a mas de 100 millones de personas", "ruta": "BUSQUEDA_WEB"}
+{"frase": "cuando termina el semestre escolar en la universidad de california", "ruta": "BUSQUEDA_WEB"}
+{"frase": "que es el nombre del nuevo actor que se unira al elenco de la proxima pelicula de james bond", "ruta": "BUSQUEDA_WEB"}
+{"frase": "en que pais se llevo a cabo el maraton de atletismo mas rapido de la historia", "ruta": "BUSQUEDA_WEB"}
+{"frase": "que tan influyente es la accion de las protestas que se estan llevando a cabo en madrid", "ruta": "BUSQUEDA_WEB"}
+{"frase": "que es el nombre de la novela que se estrella en las busquedas de google libros", "ruta": "BUSQUEDA_WEB"}
+{"frase": "en que dia se cumple el decimo aniversario de la fundacion de microsoft", "ruta": "BUSQUEDA_WEB"}
+{"frase": "que tan altas son las tasas de desempleo en los diferentes estados de estados unidos", "ruta": "BUSQUEDA_WEB"}
+{"frase": "quien es el ganador del premio nobel de fisica", "ruta": "BUSQUEDA_WEB"}
+{"frase": "que tan efectivos son los tratamientos para una enfermedad rara como la polio", "ruta": "BUSQUEDA_WEB"}
+{"frase": "en que ciudad se llevo a cabo el concert de la ultima gira de madonna", "ruta": "BUSQUEDA_WEB"}
+{"frase": "que tan utiles son los modelos de predictos estadisticos en la medicina", "ruta": "BUSQUEDA_WEB"}
+{"frase": "cuando termino el torneo de tenis masters 1000", "ruta": "BUSQUEDA_WEB"}
+{"frase": "que tan altos son los costos de la energia utilizada para iluminar un edificio", "ruta": "BUSQUEDA_WEB"}
+{"frase": "quien gano el concurso de la ultima semana de la serie de television 'the voice'", "ruta": "BUSQUEDA_WEB"}
+{"frase": "en que ciudad tuvo lugar la ultima conferencia de prensa de mark zuckerberg", "ruta": "BUSQUEDA_WEB"}
+{"frase": "que tan eficaces son los tratamientos de reemplazo de piezas moviles en la medicina", "ruta": "BUSQUEDA_WEB"}
+{"frase": "que tan influyente es la accion de la huida por la rendicion militar en algunas partes del mundo", "ruta": "BUSQUEDA_WEB"}
+{"frase": "cual es el resultado del partido de futbol entre barcelona y real madrid del pasado sabado", "ruta": "BUSQUEDA_WEB"}
+{"frase": "cual es el precio actual de un litro de gasolina en madrid", "ruta": "BUSQUEDA_WEB"}
+{"frase": "cuando se celebrara el eclipse solar de 2024", "ruta": "BUSQUEDA_WEB"}
+{"frase": "quien gano el ultimo campeonato de la nfl", "ruta": "BUSQUEDA_WEB"}
+{"frase": "cual es el clima actual en paris", "ruta": "BUSQUEDA_WEB"}
+{"frase": "que hora es manana", "ruta": "BUSQUEDA_WEB"}
+{"frase": "cual es el precio actual de un kilo de harina en la zona sur de espana", "ruta": "BUSQUEDA_WEB"}
+{"frase": "quien gano el ultimo campeonato de la liga de la nacion", "ruta": "BUSQUEDA_WEB"}
+{"frase": "cuando se estrenara la nueva serie de la itv", "ruta": "BUSQUEDA_WEB"}
+{"frase": "cual es el resultado del partido detenido entre la seleccion de futbol mexicana y la seleccion de futbol de estados unidos", "ruta": "BUSQUEDA_WEB"}
+{"frase": "cual es el precio actual de un metro de gas natural en cordoba", "ruta": "BUSQUEDA_WEB"}
+{"frase": "quien gano el primer premio en el last minute del concurso de la radio xfm", "ruta": "BUSQUEDA_WEB"}
+{"frase": "cual es el clima actual en tokio", "ruta": "BUSQUEDA_WEB"}
+{"frase": "que hora sera la partida del partido de futbol entre manchester united y liverpool en la champions league", "ruta": "BUSQUEDA_WEB"}
+{"frase": "cual es el precio actual de un kilo de cebolla en la zona norte de espana", "ruta": "BUSQUEDA_WEB"}
+{"frase": "quien gano el ultimo campeonato de la nba", "ruta": "BUSQUEDA_WEB"}
+{"frase": "cuando se celebrara el festival de musica de jazz", "ruta": "BUSQUEDA_WEB"}
+{"frase": "cual es el precio actual de un litro de leche en la zona sur de espana", "ruta": "BUSQUEDA_WEB"}
+{"frase": "quien gano el primer premio en el concurso de baile de la television", "ruta": "BUSQUEDA_WEB"}
+{"frase": "cual es el clima actual en nueva york", "ruta": "BUSQUEDA_WEB"}
+{"frase": "que hora sera la cena del evento de gala de la fundacion de la cultura", "ruta": "BUSQUEDA_WEB"}
+{"frase": "cual es el precio actual de un kilo de arroz en la zona central de espana", "ruta": "BUSQUEDA_WEB"}
+{"frase": "quien gano el ultimo campeonato de la copa de la uefa", "ruta": "BUSQUEDA_WEB"}
+{"frase": "cuando se estrenara la nueva pelicula de spielberg", "ruta": "BUSQUEDA_WEB"}
+{"frase": "cual es el precio actual de un metro de gasolina en madrid", "ruta": "BUSQUEDA_WEB"}
+{"frase": "quien gano el primer premio en el concurso de la radio de 104 fm", "ruta": "BUSQUEDA_WEB"}
+{"frase": "cual es la ultima noticia sobre el terremoto que afecto a mexico", "ruta": "BUSQUEDA_WEB"}
+{"frase": "cual es el promedio de temperatura en madrid hoy", "ruta": "BUSQUEDA_WEB"}
+{"frase": "quien gano el mundial de futbol la temporada pasada", "ruta": "BUSQUEDA_WEB"}
+{"frase": "cual es la fecha today", "ruta": "BUSQUEDA_WEB"}
+{"frase": "que eventos se celebraran en la ciudad el 20 de marzo", "ruta": "BUSQUEDA_WEB"}
+{"frase": "cual es el resultado del partido de la liga entre barcelona y real madrid", "ruta": "BUSQUEDA_WEB"}
+{"frase": "quien gano el gran premio de la f1 el pasado fin de semana", "ruta": "BUSQUEDA_WEB"}
+{"frase": "cuando es la hora exacta de la medianoche de hoy", "ruta": "BUSQUEDA_WEB"}
+{"frase": "cual es el costo actual de un kilogramo de arroz en la tienda", "ruta": "BUSQUEDA_WEB"}
+{"frase": "que acto se celebrara en el estadio wembley este sabado", "ruta": "BUSQUEDA_WEB"}
+{"frase": "cual es la temperatura en paris en este momento", "ruta": "BUSQUEDA_WEB"}
+{"frase": "quien es el ganador del grammy de la categoria de mejor album pop", "ruta": "BUSQUEDA_WEB"}
+{"frase": "cual es la fecha de finalizacion de la temporada de futbol de la liga", "ruta": "BUSQUEDA_WEB"}
+{"frase": "cual es el precio de un abono de transporte publico actual en madrid", "ruta": "BUSQUEDA_WEB"}
+{"frase": "que eventos de patinaje artistico se llevaran a cabo este ano", "ruta": "BUSQUEDA_WEB"}
+{"frase": "cual es el promedio de humedad relativa en la ciudad este lunes", "ruta": "BUSQUEDA_WEB"}
+{"frase": "quien gano el campeonato de tenis en la copa del reino", "ruta": "BUSQUEDA_WEB"}
+{"frase": "cual es el costo actual de un litro de gasolina con descuento en la estacion", "ruta": "BUSQUEDA_WEB"}
+{"frase": "que espectaculo musical se representara en el teatro colon este mes", "ruta": "BUSQUEDA_WEB"}
+{"frase": "cual es la temperatura media de la ciudad de nueva york en este invierno", "ruta": "BUSQUEDA_WEB"}
+{"frase": "quien gano el campeonato de futbol de la liga", "ruta": "BUSQUEDA_WEB"}
+{"frase": "cual es la ultima noticia sobre la crisis humanitaria en ucrania", "ruta": "BUSQUEDA_WEB"}
+{"frase": "cual es el tiempo esperado para el invierno en miami", "ruta": "BUSQUEDA_WEB"}
+{"frase": "quien gano la liga de futbol americano la temporada pasada", "ruta": "BUSQUEDA_WEB"}
+{"frase": "a que hora comienza la reunion del congreso estadounidense esta semana", "ruta": "BUSQUEDA_WEB"}
+{"frase": "cual es el precio actual de un taza de cafe en el mercado de nueva york", "ruta": "BUSQUEDA_WEB"}
+{"frase": "que sucedio en el ultimo evento deportivo de la fiba", "ruta": "BUSQUEDA_WEB"}
+{"frase": "cuando es el proximo dia de ayuno en egipto", "ruta": "BUSQUEDA_WEB"}
+{"frase": "a que precio se pueden comprar tickets para el proximo concierto de ariana grande", "ruta": "BUSQUEDA_WEB"}
+{"frase": "cual es la temperatura actual en el polo norte", "ruta": "BUSQUEDA_WEB"}
+{"frase": "que dijo el presidente sobre la politica de inmigracion", "ruta": "BUSQUEDA_WEB"}
+{"frase": "a que hora se realiza la transmision del primer partido de la liga de futbol brasilena", "ruta": "BUSQUEDA_WEB"}
+{"frase": "cual es el numero de casos confirmados de covid-19 en europa", "ruta": "BUSQUEDA_WEB"}
+{"frase": "a que precio se pueden adquirir dispositivos smartphone de ultima generacion", "ruta": "BUSQUEDA_WEB"}
+{"frase": "cuando es el proximo dia de protesta en argentina", "ruta": "BUSQUEDA_WEB"}
+{"frase": "que sucedio en el ultimo lanzamiento de un rover espacial", "ruta": "BUSQUEDA_WEB"}
+{"frase": "cuando se realiza el proximo concurso de tatuadores en las americas", "ruta": "BUSQUEDA_WEB"}
+{"frase": "a que hora comienza la competencia de esgrima en los juegos olimpicos", "ruta": "BUSQUEDA_WEB"}
+{"frase": "cual es el indice de inflacion actual en japon", "ruta": "BUSQUEDA_WEB"}
+{"frase": "que dijo la reina isabel ii sobre la actualidad politica", "ruta": "BUSQUEDA_WEB"}
+{"frase": "cuando es el proximo evento de la serie del campeonato mundial de golf", "ruta": "BUSQUEDA_WEB"}
+{"frase": "a que precio se pueden comprar tickets para el proximo viaje espacial a la luna", "ruta": "BUSQUEDA_WEB"}
+{"frase": "cual es la velocidad actual del viento en las montanas rocosas", "ruta": "BUSQUEDA_WEB"}
+{"frase": "que sucedio en el ultimo partido de la liga de baloncesto en europa", "ruta": "BUSQUEDA_WEB"}
+{"frase": "a que hora se realizara el juicio contra el ceo de una empresa tech", "ruta": "BUSQUEDA_WEB"}
+{"frase": "cual es el costo actual de una tonelada de petroleo en el mercado global", "ruta": "BUSQUEDA_WEB"}
+{"frase": "que dijo el fundador de una empresa tech sobre la industria", "ruta": "BUSQUEDA_WEB"}
+{"frase": "a que hora se realizara el lanzamiento del proximo telefono movil", "ruta": "BUSQUEDA_WEB"}
+{"frase": "hola me alegra conocerte", "ruta": "CHAT_LIBRE"}
+{"frase": "tengo un chiste que te hace reir: por que la computadora fue al doctor", "ruta": "CHAT_LIBRE"}
+{"frase": "de donde eres", "ruta": "CHAT_LIBRE"}
+{"frase": "me encanta la opera", "ruta": "CHAT_LIBRE"}
+{"frase": "que te parece el clima este mes", "ruta": "CHAT_LIBRE"}
+{"frase": "la fisica es mi pasion", "ruta": "CHAT_LIBRE"}
+{"frase": "me siento muy comodo con esta conversacion", "ruta": "CHAT_LIBRE"}
+{"frase": "la literatura es mi fuente de inspiracion", "ruta": "CHAT_LIBRE"}
+{"frase": "la quimica es un tema muy interesante", "ruta": "CHAT_LIBRE"}
+{"frase": "que te parece la musica clasica", "ruta": "CHAT_LIBRE"}
+{"frase": "la biologia es un tema fascinante", "ruta": "CHAT_LIBRE"}
+{"frase": "me parece placentero esta conversacion", "ruta": "CHAT_LIBRE"}
+{"frase": "la psicologia es un tema muy interesante", "ruta": "CHAT_LIBRE"}
+{"frase": "vamos a jugar una pregunta por favor", "ruta": "TRIVIA"}
+{"frase": "ponme una pregunta tio", "ruta": "TRIVIA"}
+{"frase": "comienza el juego por favor", "ruta": "TRIVIA"}
+{"frase": "podrias jugar una pregunta contigo", "ruta": "TRIVIA"}
+{"frase": "trivia aqui", "ruta": "TRIVIA"}
+{"frase": "vamos a jugar algo", "ruta": "TRIVIA"}
+{"frase": "puedes hacer una pregunta para mi", "ruta": "TRIVIA"}
+{"frase": "empecemos un juego", "ruta": "TRIVIA"}
+{"frase": "quieres jugar un juego", "ruta": "TRIVIA"}
+{"frase": "ponme una aventura", "ruta": "TRIVIA"}
+{"frase": "juega conmigo", "ruta": "TRIVIA"}
+{"frase": "vamos a jugar preguntas", "ruta": "TRIVIA"}
+{"frase": "juega conmigo un juego de aleatorias", "ruta": "TRIVIA"}
+{"frase": "puedes hacer preguntas conmigo", "ruta": "TRIVIA"}
+{"frase": "te voy a meter preguntas", "ruta": "TRIVIA"}
+{"frase": "quieres jugar pictionary", "ruta": "TRIVIA"}
+{"frase": "vamos con un juego de matematicas", "ruta": "TRIVIA"}
+{"frase": "quieres seguir el juego", "ruta": "TRIVIA"}
+{"frase": "puedes hacer una suposicion con el colores", "ruta": "TRIVIA"}
+{"frase": "empecemos un juego con emociones", "ruta": "TRIVIA"}
+{"frase": "quieres unirse a la sesion", "ruta": "TRIVIA"}
+{"frase": "te estoy pidiendo que imites mi voz", "ruta": "TRIVIA"}
+{"frase": "puedes hacer una cancion conmigo", "ruta": "TRIVIA"}
+{"frase": "siga el juego", "ruta": "TRIVIA"}
+{"frase": "pide mas preguntas", "ruta": "TRIVIA"}
+{"frase": "juegas", "ruta": "TRIVIA"}
+{"frase": "puedo intentarlo", "ruta": "TRIVIA"}
+{"frase": "como podemos jugar", "ruta": "TRIVIA"}
+{"frase": "quieres jugar", "ruta": "TRIVIA"}
+{"frase": "puedes proponer una", "ruta": "TRIVIA"}
+{"frase": "puedo seguir el juego", "ruta": "TRIVIA"}
+{"frase": "vamos a jugar", "ruta": "TRIVIA"}
+{"frase": "juega preguntas amigo", "ruta": "TRIVIA"}
+{"frase": "comencemos un juego", "ruta": "TRIVIA"}
+{"frase": "quieres jugar una partida", "ruta": "TRIVIA"}
+{"frase": "puedo empezar un juego", "ruta": "TRIVIA"}
+{"frase": "vamos a jugar conociendo", "ruta": "TRIVIA"}
+{"frase": "quieres resolver puzzles", "ruta": "TRIVIA"}
+{"frase": "vamos a jugar con logica", "ruta": "TRIVIA"}
+{"frase": "quieres usar tu cerebro", "ruta": "TRIVIA"}
+{"frase": "que es lo que buscas jugar", "ruta": "TRIVIA"}
+{"frase": "te gustaria jugar matematicas", "ruta": "TRIVIA"}
+{"frase": "quieres jugar un juego conmigo", "ruta": "TRIVIA"}
+{"frase": "donde debo empezar el juego", "ruta": "TRIVIA"}
+{"frase": "como se ve el proximo juego", "ruta": "TRIVIA"}
+{"frase": "pide una pregunta por favor", "ruta": "TRIVIA"}
+{"frase": "comience un juego de preguntas por favor", "ruta": "TRIVIA"}
+{"frase": "puedo hacer una pregunta ahora", "ruta": "TRIVIA"}
+{"frase": "preguntas por favor", "ruta": "TRIVIA"}
+{"frase": "juega conmigo te ruego", "ruta": "TRIVIA"}
+{"frase": "puedo seguir con el juego", "ruta": "TRIVIA"}
+{"frase": "que juego quieres jugar hoy", "ruta": "TRIVIA"}
+{"frase": "comienza un juego de trivia por favor", "ruta": "TRIVIA"}
+{"frase": "puedo jugar a preguntas ahora", "ruta": "TRIVIA"}
+{"frase": "juega conmigo por favor", "ruta": "TRIVIA"}
+{"frase": "empecemos un juego de trivia", "ruta": "TRIVIA"}
+{"frase": "quieres jugar una ronda de matematicas", "ruta": "TRIVIA"}
+{"frase": "puedes sentir mi alegria", "ruta": "TRIVIA"}
+{"frase": "imitame quiero que escuches", "ruta": "TRIVIA"}
+{"frase": "puedes hacerlo de nuevo", "ruta": "TRIVIA"}
+{"frase": "puedes seguir jugando cuando vayas", "ruta": "TRIVIA"}
+{"frase": "puedes escuchar mi cancion favorita", "ruta": "TRIVIA"}
+{"frase": "te gusta el cielo azul", "ruta": "CHAT_LIBRE"}
+{"frase": "es un buen dia verdad", "ruta": "CHAT_LIBRE"}
+{"frase": "me gustaria compartir un chiste contigo: por que la computadora fue al doctor", "ruta": "CHAT_LIBRE"}
+{"frase": "si me encanta la musica clasica", "ruta": "CHAT_LIBRE"}
+{"frase": "sabes quien fue el primer astronauta", "ruta": "CHAT_LIBRE"}
+{"frase": "agradezco que converses conmigo todos los dias", "ruta": "CHAT_LIBRE"}
+{"frase": "como funcionas somas una combinacion de hardware y software", "ruta": "CHAT_LIBRE"}
+{"frase": "te gusta el poquito de musica mexicana", "ruta": "CHAT_LIBRE"}
+{"frase": "si la tecnologia es el futuro de la sociedad moderna", "ruta": "CHAT_LIBRE"}
+{"frase": "me encanta hablar sobre tecnologia", "ruta": "CHAT_LIBRE"}
+{"frase": "cual es tu pais de origen", "ruta": "CHAT_LIBRE"}
+{"frase": "es increible lo avanzados los sistemas de inteligencia", "ruta": "CHAT_LIBRE"}
+{"frase": "cual es tu comida favorita en mexico", "ruta": "CHAT_LIBRE"}
+{"frase": "me parece que la politica es complicada", "ruta": "CHAT_LIBRE"}
+{"frase": "agradezco tu interes en que hablamos", "ruta": "CHAT_LIBRE"}
+{"frase": "por que siempre tienes un humor tan punzante", "ruta": "CHAT_LIBRE"}
+{"frase": "hola como esta usted hoy", "ruta": "CHAT_LIBRE"}
+{"frase": "donde esta la plaza", "ruta": "CHAT_LIBRE"}
+{"frase": "me encanta la musica clasica", "ruta": "CHAT_LIBRE"}
+{"frase": "que te gusta de la soledad", "ruta": "CHAT_LIBRE"}
+{"frase": "la ciencia es mi gran pasion", "ruta": "CHAT_LIBRE"}
+{"frase": "agradezco tu interes en hablar conmigo", "ruta": "CHAT_LIBRE"}
+{"frase": "cuales es tu hobby favorito", "ruta": "CHAT_LIBRE"}
+{"frase": "como te va hoy", "ruta": "CHAT_LIBRE"}
+{"frase": "el chiste del dia es que fui al circo", "ruta": "CHAT_LIBRE"}
+{"frase": "a que te gustaria beber ahora", "ruta": "CHAT_LIBRE"}
+{"frase": "estoy aqui para entretenerte quieres un chiste", "ruta": "CHAT_LIBRE"}
+{"frase": "se que los robots no pueden tener pasatiempo", "ruta": "CHAT_LIBRE"}
+{"frase": "que te parece el cielo es muy grande", "ruta": "CHAT_LIBRE"}
+{"frase": "se que la vida es igual para todos", "ruta": "CHAT_LIBRE"}
+{"frase": "me gusta la tecnologia es muy interesante", "ruta": "CHAT_LIBRE"}
+{"frase": "agradezco tu interes en hablar conmigo hoy", "ruta": "CHAT_LIBRE"}
+{"frase": "necesito saber mas sobre la historia actual", "ruta": "CHAT_LIBRE"}
+{"frase": "como ha estado el dia me parece bueno", "ruta": "CHAT_LIBRE"}
+{"frase": "estuve en el parque pero no pude jugar hasta luego", "ruta": "CHAT_LIBRE"}
+{"frase": "que le parece leer 'don quijote'", "ruta": "CHAT_LIBRE"}
+{"frase": "te gusta viajar a lugares rurales", "ruta": "CHAT_LIBRE"}
+{"frase": "como se llama la estrofa mas triste", "ruta": "CHAT_LIBRE"}
+{"frase": "puedes cantar como una truhan", "ruta": "CHAT_LIBRE"}
+{"frase": "bienvenido como andas hoy", "ruta": "CHAT_LIBRE"}
+{"frase": "me parece bien te gusta la vida en general", "ruta": "CHAT_LIBRE"}
+{"frase": "me parece interesante tu trabajo en astronomia", "ruta": "CHAT_LIBRE"}
+{"frase": "agradecido por la conversacion contigo esta noche", "ruta": "CHAT_LIBRE"}
+{"frase": "cuantos libros has leido en tu vida", "ruta": "CHAT_LIBRE"}
+{"frase": "hola como estas hoy", "ruta": "CHAT_LIBRE"}
+{"frase": "por que las galletas salten en el suelo", "ruta": "CHAT_LIBRE"}
+{"frase": "estoy muy contento de hablar contigo", "ruta": "CHAT_LIBRE"}
+{"frase": "que es la vida fuera del planeta", "ruta": "CHAT_LIBRE"}
+{"frase": "tienes un amigo o hermano", "ruta": "CHAT_LIBRE"}
+{"frase": "cuantos arboles hay en la tierra", "ruta": "CHAT_LIBRE"}
+{"frase": "me encantaria escuchar un chiste", "ruta": "CHAT_LIBRE"}
+{"frase": "cual es el mejor dia del ano", "ruta": "CHAT_LIBRE"}
+{"frase": "me parece interesante que tengas una mente artificial", "ruta": "CHAT_LIBRE"}
+{"frase": "de donde vengan los humos", "ruta": "CHAT_LIBRE"}
+{"frase": "como mide la velocidad del viento", "ruta": "CHAT_LIBRE"}
+{"frase": "como son tus sentidos", "ruta": "CHAT_LIBRE"}
+{"frase": "hola como estas hoy\\", "ruta": "CHAT_LIBRE"}
+{"frase": "te gustan los viajes", "ruta": "CHAT_LIBRE"}
+{"frase": "eso es una buena idea", "ruta": "CHAT_LIBRE"}
+{"frase": "que hora hay", "ruta": "CHAT_LIBRE"}
+{"frase": "me encanta la musica", "ruta": "CHAT_LIBRE"}
+{"frase": "cual es tu nacionalidad", "ruta": "CHAT_LIBRE"}
+{"frase": "que tan divertido es jugar futbol", "ruta": "CHAT_LIBRE"}
+{"frase": "tienes amigo aqui", "ruta": "CHAT_LIBRE"}
+{"frase": "a favor o en contra de pizza", "ruta": "CHAT_LIBRE"}
+{"frase": "que tal el futbol mundial", "ruta": "CHAT_LIBRE"}
+{"frase": "hablas mas rapido cuando me sorprendes", "ruta": "CHAT_LIBRE"}
+{"frase": "de donde eres robot", "ruta": "CHAT_LIBRE"}
+{"frase": "este chiste no me gusto", "ruta": "CHAT_LIBRE"}
+{"frase": "cual es tu ano favorito", "ruta": "CHAT_LIBRE"}
+{"frase": "te miro un poco extrano", "ruta": "CHAT_LIBRE"}
+{"frase": "de donde estas", "ruta": "CHAT_LIBRE"}
+{"frase": "sabes cual es mayor en el mundo", "ruta": "CHAT_LIBRE"}
+{"frase": "este cafe es muy malo", "ruta": "CHAT_LIBRE"}
+{"frase": "donde vives", "ruta": "CHAT_LIBRE"}
+{"frase": "que te gusta mas", "ruta": "CHAT_LIBRE"}
+{"frase": "tienes familia", "ruta": "CHAT_LIBRE"}
+{"frase": "este juego es muy dificil", "ruta": "CHAT_LIBRE"}
+{"frase": "tienes 1 centavo", "ruta": "CHAT_LIBRE"}
+{"frase": "hola por que tan tranquilo hoy", "ruta": "CHAT_LIBRE"}
+{"frase": "te gusta el chocolate ganache", "ruta": "CHAT_LIBRE"}
+{"frase": "que te gusta leer", "ruta": "CHAT_LIBRE"}
+{"frase": "cual es tu ciencia", "ruta": "CHAT_LIBRE"}
+{"frase": "tienes un amigo favorito", "ruta": "CHAT_LIBRE"}
+{"frase": "que es lo mas divertido en la escuela", "ruta": "CHAT_LIBRE"}
+{"frase": "que libro te gustaria leer", "ruta": "CHAT_LIBRE"}
+{"frase": "me alegro de verte aqui", "ruta": "CHAT_LIBRE"}
+{"frase": "como se llamas", "ruta": "CHAT_LIBRE"}
+{"frase": "que te gusta hacer en el tiempo libre", "ruta": "CHAT_LIBRE"}
+{"frase": "por que te ries sin saber", "ruta": "CHAT_LIBRE"}
+{"frase": "que noticias hay hoy", "ruta": "BUSQUEDA_WEB"}
+{"frase": "hay noticias nuevas", "ruta": "BUSQUEDA_WEB"}
+{"frase": "que paso hoy", "ruta": "BUSQUEDA_WEB"}
+{"frase": "que esta pasando ahora", "ruta": "BUSQUEDA_WEB"}
+{"frase": "quien gano ayer", "ruta": "BUSQUEDA_WEB"}
+{"frase": "quien gano el partido", "ruta": "BUSQUEDA_WEB"}
+{"frase": "como esta el clima", "ruta": "BUSQUEDA_WEB"}
+{"frase": "va a llover hoy", "ruta": "BUSQUEDA_WEB"}
+{"frase": "que hora es", "ruta": "BUSQUEDA_WEB"}
+{"frase": "que dia es hoy", "ruta": "BUSQUEDA_WEB"}
+{"frase": "cuanto esta el dolar", "ruta": "BUSQUEDA_WEB"}
+{"frase": "subio el dolar", "ruta": "BUSQUEDA_WEB"}
+{"frase": "que paso con el terremoto", "ruta": "BUSQUEDA_WEB"}
+{"frase": "hubo terremoto hoy", "ruta": "BUSQUEDA_WEB"}
+{"frase": "que equipos jugaron ayer", "ruta": "BUSQUEDA_WEB"}
+{"frase": "que paso en las noticias", "ruta": "BUSQUEDA_WEB"}
+{"frase": "cuando es el partido", "ruta": "BUSQUEDA_WEB"}
+{"frase": "gano river o boca", "ruta": "BUSQUEDA_WEB"}
+{"frase": "quien gano las elecciones", "ruta": "BUSQUEDA_WEB"}
+{"frase": "que paso con el eclipse", "ruta": "BUSQUEDA_WEB"}
+{"frase": "hay algo nuevo en las noticias", "ruta": "BUSQUEDA_WEB"}
+{"frase": "cuanto cuesta el dolar hoy", "ruta": "BUSQUEDA_WEB"}
+{"frase": "que tiempo hace afuera", "ruta": "BUSQUEDA_WEB"}
+{"frase": "llovio en lima hoy", "ruta": "BUSQUEDA_WEB"}
+{"frase": "que noticias salieron hoy", "ruta": "BUSQUEDA_WEB"}
+{"frase": "hubo algun accidente hoy", "ruta": "BUSQUEDA_WEB"}
+{"frase": "que resultado dio el partido de ayer", "ruta": "BUSQUEDA_WEB"}
+{"frase": "cual es la noticia del dia", "ruta": "BUSQUEDA_WEB"}
+{"frase": "que paso con el vuelo cancelado", "ruta": "BUSQUEDA_WEB"}
+{"frase": "hay huelga hoy", "ruta": "BUSQUEDA_WEB"}
+{"frase": "como te llamas", "ruta": "CHAT_LIBRE"}
+{"frase": "cuantos años tienes", "ruta": "CHAT_LIBRE"}
+{"frase": "de que color eres", "ruta": "CHAT_LIBRE"}
+{"frase": "tienes hermanos", "ruta": "CHAT_LIBRE"}
+{"frase": "que comiste hoy", "ruta": "CHAT_LIBRE"}
+{"frase": "te gusta bailar", "ruta": "CHAT_LIBRE"}
+{"frase": "sabes bailar", "ruta": "CHAT_LIBRE"}
+{"frase": "cual es tu color favorito", "ruta": "CHAT_LIBRE"}
+{"frase": "eres divertido", "ruta": "CHAT_LIBRE"}
+{"frase": "me caes bien", "ruta": "CHAT_LIBRE"}
+{"frase": "estas triste", "ruta": "CHAT_LIBRE"}
+{"frase": "por que eres asi", "ruta": "CHAT_LIBRE"}
+{"frase": "cuentame algo", "ruta": "CHAT_LIBRE"}
+{"frase": "dime algo random", "ruta": "CHAT_LIBRE"}
+{"frase": "que sabes hacer", "ruta": "CHAT_LIBRE"}
+{"frase": "sabes cocinar", "ruta": "CHAT_LIBRE"}
+{"frase": "tienes sueño", "ruta": "CHAT_LIBRE"}
+{"frase": "te gusta el futbol", "ruta": "CHAT_LIBRE"}
+{"frase": "cual es tu superheroe favorito", "ruta": "CHAT_LIBRE"}
+{"frase": "que pelicula te gusta", "ruta": "CHAT_LIBRE"}
+{"frase": "sabes contar chistes", "ruta": "CHAT_LIBRE"}
+{"frase": "hazme reir", "ruta": "CHAT_LIBRE"}
+{"frase": "que edad tienes", "ruta": "CHAT_LIBRE"}
+{"frase": "de donde sos", "ruta": "CHAT_LIBRE"}
+{"frase": "cuanto sabes", "ruta": "CHAT_LIBRE"}
+{"frase": "eres inteligente", "ruta": "CHAT_LIBRE"}
+{"frase": "que te gusta hacer", "ruta": "CHAT_LIBRE"}
+{"frase": "tienes mascota", "ruta": "CHAT_LIBRE"}
+{"frase": "te caigo bien", "ruta": "CHAT_LIBRE"}
+{"frase": "sos gracioso", "ruta": "CHAT_LIBRE"}
+{"frase": "quiero jugar", "ruta": "TRIVIA"}
+{"frase": "juguemos", "ruta": "TRIVIA"}
+{"frase": "otra pregunta", "ruta": "TRIVIA"}
+{"frase": "hazme otra", "ruta": "TRIVIA"}
+{"frase": "sigo jugando", "ruta": "TRIVIA"}
+{"frase": "una mas", "ruta": "TRIVIA"}
+{"frase": "dale otra pregunta", "ruta": "TRIVIA"}
+{"frase": "quiero mas preguntas", "ruta": "TRIVIA"}
+{"frase": "empecemos", "ruta": "TRIVIA"}
+{"frase": "quiero el juego de numeros", "ruta": "TRIVIA"}
+{"frase": "hagamos trivia", "ruta": "TRIVIA"}
+{"frase": "quiero adivinanzas", "ruta": "TRIVIA"}
+{"frase": "dame un acertijo", "ruta": "TRIVIA"}
+{"frase": "hazme preguntas de mate", "ruta": "TRIVIA"}
+{"frase": "jugamos a las adivinanzas", "ruta": "TRIVIA"}
+{"frase": "quiero jugar de nuevo", "ruta": "TRIVIA"}
+{"frase": "sigamos jugando", "ruta": "TRIVIA"}
+{"frase": "continua el juego", "ruta": "TRIVIA"}
+{"frase": "quiero jugar colores", "ruta": "TRIVIA"}
+{"frase": "hagamos el juego de emociones", "ruta": "TRIVIA"}
+{"frase": "quiero el juego musical", "ruta": "TRIVIA"}
+{"frase": "adivina esto", "ruta": "TRIVIA"}
+{"frase": "te reto a un juego", "ruta": "TRIVIA"}
+{"frase": "hagamos una trivia", "ruta": "TRIVIA"}
+{"frase": "empecemos otra ronda", "ruta": "TRIVIA"}
+{"frase": "quiero jugar matematica", "ruta": "TRIVIA"}
+{"frase": "vamos con otra pregunta", "ruta": "TRIVIA"}
+{"frase": "sigue preguntando", "ruta": "TRIVIA"}
+{"frase": "dale con otra", "ruta": "TRIVIA"}

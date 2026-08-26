@@ -3,3 +3,5 @@ httpx
 rank_bm25
 flask
 edge-tts
+scikit-learn
+joblib

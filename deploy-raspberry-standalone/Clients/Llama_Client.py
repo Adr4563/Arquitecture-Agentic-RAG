@@ -1,11 +1,15 @@
 """
-Cliente HTTP hacia Ollama (generar_respuesta(), enrutar()).
+Cliente HTTP hacia Ollama (generar_respuesta() -- la única llamada a un LLM
+que le queda a este archivo).
 
-La recuperación de preguntas/contexto YA NO es HTTP: vive en preguntas.py,
-un módulo que corre en este mismo proceso (ver la nota en ese archivo sobre
-por qué acá no hace falta un servidor separado como en el despliegue
-dividido). Orchestrator_Management.py y los Agents importan generar_respuesta()/
-enrutar() de acá, y recuperar_contexto()/pregunta_aleatoria()/etc. de preguntas.py.
+El router YA NO llama a Ollama: enrutar() se mudó a Agents/Agent_Router.py,
+un clasificador clásico (TF-IDF + regresión logística, sin LLM) -- ver ese
+archivo y router_training/ para el porqué y el benchmark. La recuperación de
+preguntas/contexto tampoco es HTTP: vive en preguntas.py, un módulo que
+corre en este mismo proceso (ver la nota en ese archivo). Orchestrator_
+Management.py y los Agents importan generar_respuesta() de acá,
+recuperar_contexto()/pregunta_aleatoria()/etc. de preguntas.py, y enrutar()
+de Agent_Router.
 """
 
 import json
@@ -39,21 +43,13 @@ CHAT_SERVER_HOST = os.environ.get("CHAT_SERVER_HOST", "http://localhost:11434")
 #     repiten textual en vez de responder, o devuelven texto vacío).
 #   - smollm2:1.7b: calidad aceptable pero 2.7GB residente -- más pesado que
 #     el default ANTERIOR, no tiene sentido como reemplazo "liviano".
-# Bonus: al ser el MISMO modelo que ROUTER_MODEL, Ollama mantiene una sola
-# copia en memoria para routing + generación (antes eran 2 modelos residentes
-# a la vez). Si hace falta más calidad de prosa y el hardware lo permite,
-# sobreescribir con `export CHAT_MODEL=llama3.2:3b-q4s`.
+# Bonus: como el router (Agent_Router.py) ya no llama a Ollama para nada,
+# este es el ÚNICO modelo que Ollama mantiene cargado en RAM -- antes eran 2
+# (este + ROUTER_MODEL). Si hace falta más calidad de prosa y el hardware lo
+# permite, sobreescribir con `export CHAT_MODEL=llama3.2:3b-q4s`.
 CHAT_MODEL = os.environ.get("CHAT_MODEL", "qwen2.5:0.5b")  # nombre del modelo en `ollama list` — genera las respuestas reales
 # (no usar una variante -fp16: corre 100% en CPU sin VRAM y es extremadamente lenta;
 # los modelos cuantizados -q4_K_*/-q4s son los viables en CPU)
-
-# El router no necesita el modelo grande: es una clasificación de 3 etiquetas,
-# no generación de texto. qwen2.5:0.5b con few-shot + salida JSON forzada
-# clasifica igual de bien que llama3.2:1b en este caso y corre ~3x más rápido
-# (benchmark en rag-model-bench/: 5/5 aciertos, ~760ms promedio vs ~2.6s). Fijo
-# (no configurable por env var, a diferencia de CHAT_MODEL): el prompt del
-# router está afinado específicamente para este modelo.
-ROUTER_MODEL = "qwen2.5:0.5b"
 
 
 def generar_respuesta(mensajes, temperature=0.3, max_tokens=100, on_token=None):
@@ -92,71 +88,3 @@ def generar_respuesta(mensajes, temperature=0.3, max_tokens=100, on_token=None):
             if on_token:
                 on_token(delta)
     return "".join(texto)
-
-
-RUTAS_VALIDAS = {"TRIVIA", "BUSQUEDA_WEB", "CHAT_LIBRE"}
-
-# Few-shot: sin ejemplos, qwen2.5:0.5b clasificaba con ~50-60% de acierto
-# (confundía preguntas de precio/contrato con otras rutas). Con estos 6
-# ejemplos sube a 5/5 en el set de prueba — ver rag-model-bench/bench.mjs.
-_ROUTER_SYSTEM_PROMPT = """Eres un router. Clasifica el mensaje del usuario en UNA de estas rutas y responde SOLO con un JSON de la forma {"ruta": "..."}.
-- TRIVIA: quiere jugar, que le hagan preguntas, trivia, matemática, chistes, o cualquier minijuego — incluye pedir seguir/retomar/continuar un juego de preguntas que ya había empezado.
-- BUSQUEDA_WEB: pregunta algo actual o reciente que no se puede saber de memoria (noticias, el clima, quién ganó algo hace poco, la fecha de hoy).
-- CHAT_LIBRE: charla general o cualquier otra pregunta que no sea ninguna de las anteriores.
-No agregues explicación ni texto fuera del JSON.
-
-Ejemplos:
-Usuario: "quiero jugar trivia"
-{"ruta": "TRIVIA"}
-Usuario: "hazme una pregunta de matematica"
-{"ruta": "TRIVIA"}
-Usuario: "sigamos con la trivia"
-{"ruta": "TRIVIA"}
-Usuario: "continuemos con las preguntas"
-{"ruta": "TRIVIA"}
-Usuario: "volvamos al juego de preguntas"
-{"ruta": "TRIVIA"}
-Usuario: "que clima hace hoy en lima"
-{"ruta": "BUSQUEDA_WEB"}
-Usuario: "quien gano el partido de anoche"
-{"ruta": "BUSQUEDA_WEB"}
-Usuario: "hola como estas"
-{"ruta": "CHAT_LIBRE"}
-Usuario: "cuentame un chiste"
-{"ruta": "CHAT_LIBRE"}"""
-
-
-def enrutar(mensaje_usuario):
-    """Clasifica el mensaje en TRIVIA / BUSQUEDA_WEB / CHAT_LIBRE con el modelo
-    liviano del router (ROUTER_MODEL), no con el modelo grande de generación.
-    Usa /api/chat (nativo de Ollama, no el compatible con OpenAI) porque es el
-    que soporta format="json" para forzar una salida parseable sin post-procesar
-    texto libre. Sin streaming: la respuesta son unos pocos tokens, no vale la
-    pena el streaming para esto.
-
-    Devuelve "" si el modelo no respondió una ruta válida (el caller decide el
-    fallback, hoy CHAT_LIBRE) — nunca lanza por una clasificación rara, solo
-    por un problema real de red/servidor.
-    """
-    mensajes = [
-        {"role": "system", "content": _ROUTER_SYSTEM_PROMPT},
-        {"role": "user", "content": mensaje_usuario},
-    ]
-    resp = requests.post(
-        f"{CHAT_SERVER_HOST}/api/chat",
-        json={
-            "model": ROUTER_MODEL,
-            "messages": mensajes,
-            "format": "json",
-            "stream": False,
-            "options": {"temperature": 0, "num_predict": 20},
-        },
-        timeout=30,
-    )
-    resp.raise_for_status()
-    contenido = resp.json()["message"]["content"]
-    try:
-        ruta = json.loads(contenido).get("ruta", "").strip().upper()
-    except (json.JSONDecodeError, AttributeError):
-        ruta = ""
-    return ruta if ruta in RUTAS_VALIDAS else ""

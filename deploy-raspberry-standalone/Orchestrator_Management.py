@@ -32,9 +32,10 @@ import display  # display.py: carita en la LCD conectada a esta Raspberry Pi
 import voz_server  # voz_server.py: página de voz+texto, corre en un hilo aparte
 from Agents.Agent_Behavior import elegir_cara_por_calidad, reaccionar as reaccionar_expresion
 from Agents.Agent_Corrector import evaluar_respuesta
+from Agents.Agent_Router import enrutar  # router sin LLM (TF-IDF + regresión logística)
 from Agents.Agent_Verificator import verificar_y_corregir
 from Clients import Voice_Output_Client as voz_output  # Ereberus habla en voz alta (edge-tts + mpv)
-from Clients.Llama_Client import enrutar, generar_respuesta
+from Clients.Llama_Client import generar_respuesta
 from personalidad import construir_personalidad, obtener_system_prompt
 from preguntas import SIN_CONTEXTO, recuperar_contexto
 from preguntas import pregunta_aleatoria as _pregunta_aleatoria
@@ -401,9 +402,9 @@ def _leer_entrada(prompt="Tú: "):
 
 
 def enrutar_mensaje(mensaje_usuario):
-    # El prompt, el few-shot y el modelo liviano (qwen2.5:0.5b) viven en
-    # Clients/Llama_Client.enrutar() — acá solo se decide el fallback si no
-    # clasificó.
+    # El clasificador (Agents/Agent_Router.py, sin LLM) vive ahí — acá solo
+    # se decide el fallback por si alguna vez devolviera algo raro (hoy no
+    # debería pasar: el clasificador siempre devuelve una de RUTAS_VALIDAS).
     ruta = enrutar(mensaje_usuario)
     return ruta if ruta in RUTAS else "CHAT_LIBRE"
 

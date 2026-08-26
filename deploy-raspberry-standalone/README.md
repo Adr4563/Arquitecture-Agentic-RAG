@@ -11,11 +11,10 @@ Probado pensando en una **Raspberry Pi 4 (8GB RAM, 128GB de almacenamiento)**.
 ## ⚠️ Rendimiento esperado
 
 Una Pi 4 no tiene GPU para inferencia — todo corre en CPU (ARM Cortex-A72).
-El modelo por default de `CHAT_MODEL` (que genera TODAS las respuestas:
-chat libre, búsqueda web, reacciones de trivia, corrector, verificador) y
-`ROUTER_MODEL` (que clasifica cada turno) son el MISMO modelo —
-`qwen2.5:0.5b` — así que Ollama solo mantiene una copia en RAM para las dos
-cosas, no dos modelos separados.
+`CHAT_MODEL` (`qwen2.5:0.5b` por default) es el ÚNICO modelo que Ollama
+mantiene cargado en RAM: genera todas las respuestas (chat libre, búsqueda
+web, reacciones de trivia, corrector, verificador). El router YA NO usa
+Ollama para nada — ver "Router sin LLM" más abajo.
 
 Se eligió `qwen2.5:0.5b` sobre `llama3.2:3b-q4s` (el default anterior) tras
 benchmarquear 7 modelos livianos (Meta/Facebook y HuggingFace, ver
@@ -37,6 +36,28 @@ grande sin tocar código (ver "Subir a un modelo más grande" más abajo).
 `preguntas.py` no usa ningún modelo — busca sobre `preguntas.jsonl` con BM25
 (keyword) en memoria dentro del mismo proceso de `Orchestrator_Management.py`,
 así que no consume Ollama, RAM de embeddings, ni un puerto/proceso aparte.
+
+### Router sin LLM
+
+Clasificar cada turno en TRIVIA / BUSQUEDA_WEB / CHAT_LIBRE es una
+clasificación de 3 etiquetas fijas, no generación de texto — no hace falta
+un modelo de lenguaje para eso. `Agents/Agent_Router.py` reemplaza al viejo
+router basado en LLM (few-shot sobre Ollama) por un clasificador clásico
+(TF-IDF de n-gramas de caracteres + regresión logística, scikit-learn),
+entrenado en `router_training/` sobre ~700 frases (generadas con LLM +
+curadas a mano + augmentadas):
+
+| | Router con LLM (antes) | Router sin LLM (ahora) |
+|---|---|---|
+| Peso del modelo | 397 MB (qwen2.5:0.5b) | **~185 KB** |
+| Tiempo por turno | 1–3s (llamada a Ollama) | **microsegundos** (cuenta local) |
+| RAM extra | Compartida con `CHAT_MODEL` | Ninguna — ni siquiera toca Ollama |
+| Precisión | No medida formalmente | 95% held-out, 7/7 en frases nunca vistas |
+
+Si algún día `TEMAS_CATALOGO` gana un tema nuevo y el router lo confunde con
+otra ruta, se reentrena editando `router_training/dataset_router.jsonl` y
+corriendo `python router_training/entrenar_router.py` — no hace falta tocar
+`Agent_Router.py`.
 
 ## 1. Instalar Ollama en la Pi
 
@@ -99,11 +120,10 @@ export CHAT_MODEL=llama3.2:3b-q4s
 ./start-all.sh
 ```
 
-Ojo: esto vuelve a levantar DOS modelos en RAM (`qwen2.5:0.5b` para el router
-+ el que pongas acá para generar), no uno solo como con el default — y
-respuestas de 7-12s en vez de 1-3s (ver la tabla de la sección de
-rendimiento). `ROUTER_MODEL` no se toca con esta variable: el router siempre
-corre en `qwen2.5:0.5b`, esté `CHAT_MODEL` en lo que esté.
+Ojo: respuestas de 7-12s en vez de 1-3s (ver la tabla de la sección de
+rendimiento). El router (`Agent_Router.py`) no se ve afectado por esta
+variable — no usa Ollama, así que sigue corriendo en microsegundos esté
+`CHAT_MODEL` en lo que esté.
 
 ## Escribirle a Ereberus desde el celular/otra PC (página web)
 
@@ -146,6 +166,7 @@ deploy-raspberry-standalone/
 ├── voz_server.py
 │
 ├── Agents/            ← veredictos y decisiones (con o sin LLM)
+│   ├── Agent_Router.py       (+ router_modelo.joblib)
 │   ├── Agent_Corrector.py
 │   ├── Agent_Verificator.py
 │   └── Agent_Behavior.py
@@ -155,6 +176,10 @@ deploy-raspberry-standalone/
 │   ├── Carrito_Client.py
 │   ├── Musica_Client.py
 │   └── Voice_Output_Client.py
+│
+├── router_training/   ← dataset + script para reentrenar Agent_Router
+│   ├── dataset_router.jsonl
+│   └── entrenar_router.py
 │
 ├── base_datos/, musica/, requirements.txt, start-all.sh
 ```
@@ -166,13 +191,15 @@ deploy-raspberry-standalone/
 | `personalidad.py` | Arma el system prompt con la personalidad del robot. |
 | `display.py`, `face_viewer.py`, `faces/` | Carita en pantalla (LCD/HDMI en la Pi, o Tkinter en PC). |
 | `voz_server.py` | Página web de texto (ver arriba) — entrada por voz todavía deshabilitada. |
+| `Agents/Agent_Router.py` | Sin LLM: clasifica cada turno en TRIVIA/BUSQUEDA_WEB/CHAT_LIBRE (TF-IDF + regresión logística sobre `router_modelo.joblib`, ver "Router sin LLM" arriba). |
 | `Agents/Agent_Corrector.py` | Veredicto CORRECTO/INCORRECTO de una respuesta de Trivia (único punto que usa el LLM para eso). |
 | `Agents/Agent_Verificator.py` | Revisa coherencia de las respuestas de Chat libre/Búsqueda Web antes de mostrarlas. |
 | `Agents/Agent_Behavior.py` | Sin LLM: elige la cara de acierto/error de cada pregunta de Trivia (de las columnas del dataset) y dispara música/desplazamiento; también la cara genérica de Chat libre/Búsqueda Web. Fusión de lo que antes eran `reactor.py` + `cara_agente.py`. |
-| `Clients/Llama_Client.py` | Cliente HTTP hacia Ollama (`generar_respuesta()`, `enrutar()`). |
+| `Clients/Llama_Client.py` | Cliente HTTP hacia Ollama (`generar_respuesta()` — genera texto, ya no enruta). |
 | `Clients/Carrito_Client.py` | Cliente HTTP hacia el carrito mecanum (ver `../carrito-mecanum-esp32/`) para los comandos de `desplazamiento`. |
 | `Clients/Musica_Client.py` | Reproduce (con `mpv`) el archivo de `musica/` que indique la columna `musical`, recortado a 20s. |
 | `Clients/Voice_Output_Client.py` | Ereberus habla en voz alta con `edge-tts` (voz `es-AR-ElenaNeural`) + `mpv`. |
+| `router_training/` | Dataset + script para reentrenar `Agent_Router.py` si hace falta (ver "Router sin LLM" arriba). |
 | `musica/` | Archivos de audio para la columna `musical` del dataset (ver su propio README). |
 | `base_datos/` | `preguntas.jsonl` + el Excel fuente (sin índice de ChromaDB — `preguntas.py` arma el índice BM25 en memoria al importarse). |
 | `requirements.txt` | Dependencias de Python. |
