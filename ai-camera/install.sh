@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
-# Instala las dependencias necesarias para correr los scripts de ai-camera
-# (hdmi_live.py, live_stream.py, snapshot_deteccion.py): deteccion de objetos
-# en vivo con la camara IMX500 de Raspberry Pi.
+# Instala las dependencias necesarias para correr los scripts de ai-camera:
+# deteccion de objetos en vivo con la camara IMX500 de Raspberry Pi
+# (hdmi_live.py, live_stream.py, snapshot_deteccion.py) y reconocimiento de
+# emocion facial en CPU (reconocer_emocion.py, con onnxruntime).
 #
 # Uso:
 #   chmod +x install.sh
