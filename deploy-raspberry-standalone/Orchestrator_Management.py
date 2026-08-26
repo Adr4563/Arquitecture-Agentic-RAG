@@ -67,6 +67,19 @@ def _es_mensaje_trivial(mensaje):
     return mensaje.strip().lower().strip("¡!¿?.,") in SALUDOS_TRIVIALES
 
 
+def _mensajes_con_personalidad(persona_str, contenido_usuario):
+    """Arma la lista de mensajes para generar_respuesta(): system (si
+    obtener_system_prompt devuelve algo -- viene vacío cuando CHAT_MODEL es
+    ereberus-personalidad, que ya trae la personalidad horneada, ver
+    personalidad.py) + el mensaje del usuario."""
+    system_prompt = obtener_system_prompt(persona_str)
+    mensajes = []
+    if system_prompt:
+        mensajes.append({"role": "system", "content": system_prompt})
+    mensajes.append({"role": "user", "content": contenido_usuario})
+    return mensajes
+
+
 def _quitar_pregunta_final(texto):
     """Si el texto cierra con una pregunta, se la recorta.
 
@@ -92,16 +105,13 @@ def generar_apertura(persona_str, on_token=None):
     arranca con la primera pregunta del dataset sin esperar confirmación, así que
     una pregunta acá quedaría sin responder y la interacción se ve rota.
     """
-    mensajes = [
-        {"role": "system", "content": obtener_system_prompt(persona_str)},
-        {"role": "user", "content": (
-            "Instrucción: inicia tú la conversación, todavía no hay mensaje del "
-            "usuario. Preséntate en una frase muy breve (con tu personalidad, sin "
-            "sonar a asistente genérico) y avisa que le vas a hacer preguntas y que "
-            "él responde. Es un aviso, no una pregunta: no cierres preguntando nada "
-            "ni pidas permiso ni confirmación."
-        )},
-    ]
+    mensajes = _mensajes_con_personalidad(persona_str, (
+        "Instrucción: inicia tú la conversación, todavía no hay mensaje del "
+        "usuario. Preséntate en una frase muy breve (con tu personalidad, sin "
+        "sonar a asistente genérico) y avisa que le vas a hacer preguntas y que "
+        "él responde. Es un aviso, no una pregunta: no cierres preguntando nada "
+        "ni pidas permiso ni confirmación."
+    ))
     # Sin streaming a propósito: hay que ver el texto completo para poder recortar
     # una pregunta final, y eso no se puede hacer si ya se imprimió token a token.
     return _quitar_pregunta_final(generar_respuesta(mensajes, on_token=on_token))
@@ -135,10 +145,7 @@ def responder(mensaje_usuario, persona_str, n_results=2, on_token=None):
     else:
         user = mensaje_usuario
 
-    mensajes = [
-        {"role": "system", "content": obtener_system_prompt(persona_str)},
-        {"role": "user", "content": user},
-    ]
+    mensajes = _mensajes_con_personalidad(persona_str, user)
 
     # Sin streaming a propósito: el agente verificador necesita el texto
     # completo para revisarlo antes de que el usuario lo vea — si se
@@ -164,7 +171,8 @@ def responder(mensaje_usuario, persona_str, n_results=2, on_token=None):
 TEMAS_CATALOGO = [
     # "númerica" así, mal tildada, porque es el texto tal cual viene del Excel
     # (columna Actividad/Tema) — tiene que calzar exacto con preguntas.jsonl.
-    "Adivinanza númerica", "Chistes", "Dilema", "Dilema del coche autónomo",
+    # "Chistes" se sacó del catálogo (y del dataset) a pedido del usuario.
+    "Adivinanza númerica", "Dilema", "Dilema del coche autónomo",
     "Interaccion personalizada (COMIDA)", "Juego de colores", "Juego de emociones",
     "Juego de imitación", "Juego de multiplicar nivel Alto 1",
     "Juego de multiplicar nivel Alto 2", "Juego de multiplicar nivel Simple 1",
@@ -212,15 +220,12 @@ def comentar_resultado(pregunta, esperada, respuesta_usuario, acerto, persona_st
             f"El estudiante respondió '{respuesta_usuario}' y SE EQUIVOCÓ. Dile en una "
             f"frase corta que no es correcto y que la respuesta correcta era {esperada}."
         )
-    mensajes = [
-        {"role": "system", "content": obtener_system_prompt(persona_str)},
-        {"role": "user", "content": (
-            f"Pregunta que se hizo: {pregunta}\n\n"
-            f"{instruccion} No vuelvas a resolver la pregunta ni expliques el cálculo: "
-            "el veredicto ya está decidido, tu única tarea es reaccionar a él. "
-            "No hagas otra pregunta."
-        )},
-    ]
+    mensajes = _mensajes_con_personalidad(persona_str, (
+        f"Pregunta que se hizo: {pregunta}\n\n"
+        f"{instruccion} No vuelvas a resolver la pregunta ni expliques el cálculo: "
+        "el veredicto ya está decidido, tu única tarea es reaccionar a él. "
+        "No hagas otra pregunta."
+    ))
     return generar_respuesta(mensajes, on_token=on_token).strip()
 
 
@@ -228,16 +233,13 @@ def reaccionar_libre(pregunta, respuesta_usuario, persona_str, on_token=None):
     """Para preguntas sin respuesta_esperada (Chistes, Reconocimiento Musical,
     Juego de colores...): no hay nada que corregir, así que en vez de
     evaluar_respuesta/comentar_resultado el robot solo reacciona."""
-    mensajes = [
-        {"role": "system", "content": obtener_system_prompt(persona_str)},
-        {"role": "user", "content": (
-            f"Pregunta: {pregunta}\n"
-            f"Respuesta del usuario: {respuesta_usuario}\n\n"
-            "Reacciona en una frase corta. No hay respuesta correcta acá: no "
-            "corrijas ni evalúes, solo reacciona con tu personalidad. No hagas "
-            "otra pregunta."
-        )},
-    ]
+    mensajes = _mensajes_con_personalidad(persona_str, (
+        f"Pregunta: {pregunta}\n"
+        f"Respuesta del usuario: {respuesta_usuario}\n\n"
+        "Reacciona en una frase corta. No hay respuesta correcta acá: no "
+        "corrijas ni evalúes, solo reacciona con tu personalidad. No hagas "
+        "otra pregunta."
+    ))
     return generar_respuesta(mensajes, on_token=on_token).strip()
 
 
@@ -332,14 +334,11 @@ def responder_busqueda_web(mensaje_usuario, persona_str, on_token=None):
             on_token(SIN_RESULTADO_WEB)
         return SIN_RESULTADO_WEB, True  # no encontrar nada tampoco es un momento feliz
 
-    mensajes = [
-        {"role": "system", "content": obtener_system_prompt(persona_str)},
-        {"role": "user", "content": (
-            f"Pregunta: {mensaje_usuario}\n"
-            f"Resultado de la búsqueda web: {resultado}\n\n"
-            "Responde con esa información, en una frase corta."
-        )},
-    ]
+    mensajes = _mensajes_con_personalidad(persona_str, (
+        f"Pregunta: {mensaje_usuario}\n"
+        f"Resultado de la búsqueda web: {resultado}\n\n"
+        "Responde con esa información, en una frase corta."
+    ))
 
     # Sin streaming: el verificador necesita el texto completo antes de que
     # el usuario lo vea (ver la misma nota en responder(), chat libre).

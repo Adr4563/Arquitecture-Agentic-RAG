@@ -2,6 +2,17 @@
 Personalidad Big Five (OCEAN) y el system prompt que de ella depende.
 """
 
+import os
+
+# "ereberus-personalidad" (opcional, ver README "Personalidad horneada en el
+# modelo") ya tiene la personalidad y las reglas de estilo entrenadas en los
+# pesos (fine-tuning LoRA, ver personalidad_training/) -- mandarle este
+# system prompt de nuevo sería redundante (y le costaría tokens de más en
+# cada turno, justo lo que ese modelo existe para evitar). Con cualquier
+# otro CHAT_MODEL (el default, qwen2.5:0.5b, o el de 3B) el prompt se manda
+# como siempre.
+_USA_PERSONALIDAD_HORNEADA = os.environ.get("CHAT_MODEL", "qwen2.5:0.5b") == "ereberus-personalidad"
+
 # ─── Personalidad Big Five (OCEAN) ───────────────────────────
 BIG_FIVE_TRAITS = [
     ("Extraversion", "extroverted", "introverted"),
@@ -53,7 +64,14 @@ _system_prompt_cache = None  # se arma una sola vez y se reutiliza en cada turno
 
 def obtener_system_prompt(persona_str):
     """Instrucciones fijas (personalidad + reglas de estilo): no cambian turno a
-    turno, así que se construyen una sola vez por sesión, no en cada mensaje."""
+    turno, así que se construyen una sola vez por sesión, no en cada mensaje.
+
+    Devuelve "" si CHAT_MODEL es ereberus-personalidad -- ese modelo ya trae
+    la personalidad horneada, así que no hace falta (ni conviene) mandarla
+    de nuevo en texto. El caller decide qué hacer con un system prompt vacío
+    (ver Orchestrator_Management._mensajes_con_personalidad)."""
+    if _USA_PERSONALIDAD_HORNEADA:
+        return ""
     global _system_prompt_cache
     if _system_prompt_cache is None:
         _system_prompt_cache = (

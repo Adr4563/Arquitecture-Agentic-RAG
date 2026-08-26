@@ -84,6 +84,48 @@ generación de texto, no clasificación, así que no tiene el mismo reemplazo
 directo. Ya se beneficia igual del modelo más liviano (`qwen2.5:0.5b`, ver
 arriba).
 
+### Personalidad horneada en el modelo (opcional)
+
+La generación de texto en sí (`responder()`, `comentar_resultado()`, etc.)
+manda el system prompt completo de la personalidad (~200-350 tokens) en
+CADA llamada — a diferencia del router y el corrector, acá sí hace falta un
+modelo generativo, no hay forma de sacarlo por completo. Pero sí se puede
+"hornear" la personalidad y las reglas de estilo DENTRO de los pesos con un
+fine-tuning LoRA, para no tener que repetirlas en texto cada vez.
+
+`ereberus-personalidad` es un fine-tuning LoRA de `qwen2.5:0.5b` entrenado
+sobre 251 ejemplos (generados por destilación: `llama3.2:3b-q4s` con el
+prompt completo genera la respuesta objetivo, y se entrena el modelo chico
+a reproducirla con un system prompt mucho más corto). Pipeline completo,
+reproducible, en `personalidad_training/`.
+
+| | qwen2.5:0.5b + prompt completo (default) | ereberus-personalidad (opcional) |
+|---|---|---|
+| Tokens de prompt por turno | ~324–362 | **~99–137** (~65% menos) |
+| Velocidad | 1–6s | **0.9–1.7s** (igual o más rápido) |
+| Calidad (5 casos comparados) | Correcta, pero violó su propia regla "no cierres preguntando" en 1/5 casos | Correcta, no violó ninguna regla |
+
+No es el default todavía a propósito: se entrenó una sola vez sobre un
+dataset chico (251 ejemplos) y solo se probó contra 5 casos — el router y
+el corrector pasaron por bastante más validación (cientos de casos reales
+del dataset) antes de convertirse en default. Para probarlo:
+
+```bash
+export CHAT_MODEL=ereberus-personalidad
+./start-all.sh
+```
+
+`Clients/Llama_Client.py` y `personalidad.py` detectan el nombre solos:
+con `ereberus-personalidad` activo, `obtener_system_prompt()` devuelve `""`
+y el system prompt largo deja de mandarse (ver
+`Orchestrator_Management._mensajes_con_personalidad`) — no hace falta tocar
+código para usarlo.
+
+⚠️ El modelo (`.gguf`, unos 370MB) no vive en este repo (muy pesado para
+git) — hay que entrenarlo/convertirlo en una PC de desarrollo siguiendo
+`personalidad_training/entrenar_personalidad.py` y copiar el resultado a la
+Pi, o correr `ollama create` directo ahí con el `.gguf` ya transferido.
+
 ## 1. Instalar Ollama en la Pi
 
 ```bash
@@ -206,6 +248,11 @@ deploy-raspberry-standalone/
 │   ├── dataset_router.jsonl
 │   └── entrenar_router.py
 │
+├── personalidad_training/   ← pipeline de fine-tuning (opcional, correr en PC de desarrollo)
+│   ├── dataset_personalidad.jsonl
+│   ├── entrenar_personalidad.py
+│   └── Modelfile
+│
 ├── base_datos/, musica/, requirements.txt, start-all.sh
 ```
 
@@ -213,7 +260,7 @@ deploy-raspberry-standalone/
 |---|---|
 | `Orchestrator_Management.py` | Router + loop de conversación (Trivia/Búsqueda Web/Chat libre) y la lógica de cada modo — fusión de lo que antes eran `chat.py` (manager) y `workers.py` (lógica por modo). |
 | `preguntas.py` | Búsqueda BM25 sobre `preguntas.jsonl` en memoria — sin HTTP, sin servidor aparte. |
-| `personalidad.py` | Arma el system prompt con la personalidad del robot. |
+| `personalidad.py` | Arma el system prompt con la personalidad del robot — vacío si `CHAT_MODEL=ereberus-personalidad` (ver "Personalidad horneada en el modelo" arriba). |
 | `display.py`, `face_viewer.py`, `faces/` | Carita en pantalla (LCD/HDMI en la Pi, o Tkinter en PC). |
 | `voz_server.py` | Página web de texto (ver arriba) — entrada por voz todavía deshabilitada. |
 | `Agents/Agent_Router.py` | Sin LLM: clasifica cada turno en TRIVIA/BUSQUEDA_WEB/CHAT_LIBRE (TF-IDF + regresión logística sobre `router_modelo.joblib`, ver "Router sin LLM" arriba). |
@@ -225,6 +272,7 @@ deploy-raspberry-standalone/
 | `Clients/Musica_Client.py` | Reproduce (con `mpv`) el archivo de `musica/` que indique la columna `musical`, recortado a 20s. |
 | `Clients/Voice_Output_Client.py` | Ereberus habla en voz alta con `edge-tts` (voz `es-AR-ElenaNeural`) + `mpv`. |
 | `router_training/` | Dataset + script para reentrenar `Agent_Router.py` si hace falta (ver "Router sin LLM" arriba). |
+| `personalidad_training/` | Pipeline de fine-tuning LoRA para `ereberus-personalidad`, opcional -- correr en una PC de desarrollo, no en la Pi (ver "Personalidad horneada en el modelo" arriba). |
 | `musica/` | Archivos de audio para la columna `musical` del dataset (ver su propio README). |
 | `base_datos/` | `preguntas.jsonl` + el Excel fuente (sin índice de ChromaDB — `preguntas.py` arma el índice BM25 en memoria al importarse). |
 | `requirements.txt` | Dependencias de Python. |
