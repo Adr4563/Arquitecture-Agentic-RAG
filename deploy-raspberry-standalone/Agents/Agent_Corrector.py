@@ -53,8 +53,13 @@ def _extraer_numeros(s):
     return [float(n.replace(",", ".")) for n in re.findall(r"-?\d+(?:[.,]\d+)?", s)]
 
 
-def evaluar_respuesta(pregunta, esperada, respuesta_usuario):
+def evaluar_respuesta(esperada, respuesta_usuario):
     """Compara la respuesta del usuario con la esperada. Devuelve True/False.
+
+    No recibe la pregunta -- el corrector anterior (LLM) sí la necesitaba
+    como contexto para juzgar; esta comparación determinista no usa nada
+    de eso, solo `esperada` y `respuesta_usuario` (ver el motivo abajo), así
+    que se sacó el parámetro en vez de dejarlo sin usar.
 
     El usuario escribe en libre: "paris", "es parís", "la capital es paris"
     son todas correctas para una esperada de "París" -- por eso no es un ==
@@ -127,16 +132,16 @@ if __name__ == "__main__":
             d = json.loads(linea)
             r = (d.get("respuesta_esperada") or "").strip()
             if r:
-                datos.append((d.get("pregunta", ""), r))
-    todas_respuestas = [r for _, r in datos]
+                datos.append(r)
+    todas_respuestas = datos
 
     envoltorios = ["{r}", "es {r}", "la respuesta es {r}", "creo que es {r}", "{r}, obvio"]
     tp = fn = tn = fp = 0
-    for pregunta, esperada in datos:
+    for esperada in datos:
         variante = random.choice(envoltorios).format(r=esperada.lower())
         if not _es_numerico(esperada) and random.random() < 0.3:
             variante = _typo(variante)
-        if evaluar_respuesta(pregunta, esperada, variante):
+        if evaluar_respuesta(esperada, variante):
             tp += 1
         else:
             fn += 1
@@ -144,7 +149,7 @@ if __name__ == "__main__":
         otra = esperada
         while otra.strip().lower() == esperada.strip().lower():
             otra = random.choice(todas_respuestas)
-        if not evaluar_respuesta(pregunta, esperada, otra):
+        if not evaluar_respuesta(esperada, otra):
             tn += 1
         else:
             fp += 1

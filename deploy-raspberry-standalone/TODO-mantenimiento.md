@@ -64,6 +64,72 @@ sudo systemctl daemon-reload && sudo systemctl restart ollama
 Ojo: esto es configuración de sistema, no de código -- **no se sube a git
 ni se replica sola** si se reinstala esta Pi desde cero.
 
+## `preguntas.jsonl` tiene 13 preguntas con texto duplicado (`id` distinto)
+
+Encontrado probando una tanda real de "Juego de multiplicar nivel Simple 1"
+(2026-08-26): la ronda 4 y la ronda 5 salieron con la pregunta exacta
+"¿Cuánto es cinco por ocho?" -- dos filas distintas del dataset (`p-24` y
+`p-79`) con el mismo texto y la misma `respuesta_esperada`. `_iniciar_tanda`
+filtra por `id` en `estado["ya_usados"]`, no por texto, así que no detecta
+que son "la misma" pregunta.
+
+13 de las 243 preguntas del dataset tienen esta duplicación, casi todas bajo
+el tema combinado "Juego de multiplicar nivel Simple 1 / Juego de
+multiplicar nivel Simple 2" (`p-24`/`p-79`, `p-25`/`p-80`, `p-26`/`p-81`,
+`p-27`/`p-82`, `p-28`/`p-83`, `p-29`/`p-84`, `p-30`/`p-85`, `p-31`/`p-86`),
+más "¿Cuál es tu nombre?" bajo "... / Juego de colores" (`p-22`/`p-94`).
+
+No se aplicó ningún fix porque implica decidir qué hacer con el dataset de
+producción (¿borrar la fila duplicada? ¿son a propósito, una por cada
+combinación de tema doble?) -- eso lo tiene que decidir quien mantiene el
+Excel/dataset, no es un cambio de código seguro de aplicar solo.
+
+## Ya corregido: `hilo_voz.join()` sin definir en `manejar_trivia()`
+
+Encontrado leyendo el código antes de probar la tanda real de "Juego de
+emociones" a través de `manejar_trivia()` (2026-08-26): en la rama de temas
+SIN veredicto (`Chistes`, `Reconocimiento Musical`, `Juego de colores`,
+`Interaccion personalizada (COMIDA)`... cualquier tema sin
+`respuesta_esperada` y fuera de `TEMAS_JUEGO_EMOCIONES`) quedó un
+`hilo_voz.join()` colgado -- `hilo_voz` no está definido en ningún lado del
+archivo, resto de una versión con threading que se probó y revirtió más
+temprano el mismo día (ver el diff sin commitear). Habría tirado
+`NameError: name 'hilo_voz' is not defined` y cortado el turno la primera
+vez que un usuario real llegara a una pregunta de esos temas -- no se había
+detectado porque las pruebas reales del día se hicieron con temas de
+matemática (con `respuesta_esperada`, otra rama) o de emociones (rama
+`TEMAS_JUEGO_EMOCIONES`, otra rama también), nunca con un tema de la rama
+"sin veredicto".
+
+Fix: se sacó esa línea (no queda ningún hilo que joinear en la versión
+síncrona actual).
+
+## Ya corregido: cámara nunca se liberaba entre rondas del Juego de emociones
+
+Encontrado probando una tanda real de "Juego de emociones"/"Juego de
+imitación" (2026-08-26, tras agregar que el robot muestre la cara a imitar
+en pantalla ANTES de pedirla por voz): la ronda 1 conseguía veredicto de
+cámara bien, pero TODAS las rondas siguientes de ese mismo proceso fallaban
+con `Camera in Configured state trying acquire() requiring state
+Available` -- `Camara_Client.detectar_emocion()` devolvía `(None, None)`
+como si no hubiera cámara conectada.
+
+Causa: `ai-camera/reconocer_emocion.py::_capturar_y_detectar()` crea una
+`Picamera2()` nueva en cada llamada y hace `picam2.stop()` al final, pero
+nunca `picam2.close()` -- sin eso la cámara queda en estado "Configured", no
+"Available", y la siguiente `Picamera2()` de ese mismo proceso no puede
+`acquire()`la. Como `Orchestrator_Management.py` corre como un solo proceso
+de larga vida, esto significaba que **solo la primera ronda del Juego de
+emociones de toda la vida del robot conseguía veredicto de cámara real** --
+todas las siguientes, hasta reiniciar el proceso, quedaban sin evaluar
+(silencioso: se loguea y sigue sin cortar el turno, así que no se notaba
+sin mirar los logs).
+
+Fix: se agregó `picam2.close()` después de `picam2.stop()`. Verificado con
+3 detecciones consecutivas en el mismo proceso (antes fallaba desde la
+segunda) y con una tanda real de 5 rondas del Juego de emociones (antes
+fallaban las rondas 2-5, ahora las 5 consiguieron veredicto de cámara).
+
 ## Ya corregido en esta misma revisión
 
 - `llama3.2:3b-q4s` (tag inexistente en Ollama) → `llama3.2:3b` en

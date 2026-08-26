@@ -30,7 +30,10 @@ import httpx
 
 import display  # display.py: carita en la LCD conectada a esta Raspberry Pi
 import voz_server  # voz_server.py: página de voz+texto, corre en un hilo aparte
-from Agents.Agent_Behavior import elegir_cara_por_calidad, reaccionar as reaccionar_expresion
+from Agents.Agent_Behavior import (
+    cara_para_emocion, elegir_cara_por_calidad, elegir_cara_pregunta, expresar_desplazamiento,
+    expresar_musica,
+)
 from Agents.Agent_Corrector import evaluar_respuesta
 from Agents.Agent_Router import enrutar  # router sin LLM (TF-IDF + regresión logística)
 from Agents.Agent_Verificator import verificar_y_corregir
@@ -223,16 +226,22 @@ def comentar_resultado(pregunta, esperada, respuesta_usuario, acerto, persona_st
     "re-resolver" el ejercicio por su cuenta en vez de limitarse a comentar
     el resultado, y a veces lo hace mal (ej. lee "1 por 8" como "1/8" y
     contesta con eso en vez de confirmar el acierto).
-    """
+
+    max_tokens=20 (no el default de 50) y "máximo 5 palabras" en vez de
+    "frase corta" (más concreto, un modelo chico sigue mejor un número que
+    un adjetivo vago) -- esto es una reacción, no una explicación, así que
+    no hace falta más. Recorta tanto el tiempo de generación del LLM como
+    el de habla después (medido: ~1.2-1.7s de red del TTS + ~lo que dure
+    decirla en voz, que escala directo con la cantidad de palabras)."""
     if acerto:
         instruccion = (
             f"El estudiante respondió '{respuesta_usuario}' y ACERTÓ (la respuesta "
-            f"correcta es {esperada}). Confírmaselo en una frase corta."
+            f"correcta es {esperada}). Confírmaselo en máximo 5 palabras."
         )
     else:
         instruccion = (
-            f"El estudiante respondió '{respuesta_usuario}' y SE EQUIVOCÓ. Dile en una "
-            f"frase corta que no es correcto y que la respuesta correcta era {esperada}."
+            f"El estudiante respondió '{respuesta_usuario}' y SE EQUIVOCÓ. Dile en "
+            f"máximo 5 palabras que no es correcto y que la respuesta correcta era {esperada}."
         )
     mensajes = _mensajes_con_personalidad(persona_str, (
         f"Pregunta que se hizo: {pregunta}\n\n"
@@ -240,7 +249,7 @@ def comentar_resultado(pregunta, esperada, respuesta_usuario, acerto, persona_st
         "el veredicto ya está decidido, tu única tarea es reaccionar a él. "
         "No hagas otra pregunta."
     ), modelo=TRIVIA_MODEL)
-    return generar_respuesta(mensajes, on_token=on_token, modelo=TRIVIA_MODEL).strip()
+    return generar_respuesta(mensajes, on_token=on_token, modelo=TRIVIA_MODEL, max_tokens=20).strip()
 
 
 def comentar_resultado_emocion(objetivo, detectada, acerto, persona_str, on_token=None):
@@ -248,22 +257,23 @@ def comentar_resultado_emocion(objetivo, detectada, acerto, persona_str, on_toke
     el veredicto no sale de comparar texto (Agent_Corrector) sino de la
     cámara (Clients/Camara_Client.py) contra la cara que se le pidió al
     usuario que hiciera -- ver _jugar_emociones(). Usa TRIVIA_MODEL, mismo
-    criterio que comentar_resultado()."""
+    criterio que comentar_resultado() -- incluido max_tokens=20 y "máximo 5
+    palabras" en vez de "frase corta", ver la nota ahí."""
     if acerto:
         instruccion = (
             f"Le pediste al usuario que pusiera cara de {objetivo.lower()} y la cámara "
-            f"detectó justo esa cara. Celébraselo en una frase corta."
+            f"detectó justo esa cara. Celébraselo en máximo 5 palabras."
         )
     else:
         instruccion = (
             f"Le pediste al usuario que pusiera cara de {objetivo.lower()} pero la cámara "
-            f"detectó cara de {detectada.lower()}. Dile en una frase corta que no era esa, "
-            "con humor, sin ser pesado."
+            f"detectó cara de {detectada.lower()}. Dile en máximo 5 palabras que no era esa, "
+            "con humor."
         )
     mensajes = _mensajes_con_personalidad(persona_str, (
         f"{instruccion} No vuelvas a pedir otra cara ni hagas otra pregunta."
     ), modelo=TRIVIA_MODEL)
-    return generar_respuesta(mensajes, on_token=on_token, modelo=TRIVIA_MODEL).strip()
+    return generar_respuesta(mensajes, on_token=on_token, modelo=TRIVIA_MODEL, max_tokens=20).strip()
 
 
 def _jugar_emociones(pregunta, persona_str, on_token=None):
@@ -281,6 +291,11 @@ def _jugar_emociones(pregunta, persona_str, on_token=None):
     if not opciones:
         opciones = ["Feliz"]  # fallback: nunca debería pasar, pero sin esto no habría qué pedir
     objetivo = random.choice(opciones)
+    # El robot presenta la cara que hay que imitar ANTES de pedirla por voz --
+    # referencia visual, no solo el nombre hablado. Se mantiene en pantalla
+    # mientras el usuario posa (ver display.mostrar_cara() más abajo, recién
+    # cambia cuando sale el veredicto).
+    display.mostrar_cara(cara_para_emocion(objetivo) or "content")
     pedido = f"¡Hazme una cara de {objetivo.lower()}!"
     print(f"Asistente: {pedido}")
     voz_output.hablar(pedido)
@@ -288,21 +303,28 @@ def _jugar_emociones(pregunta, persona_str, on_token=None):
     detectada, confianza = Camara_Client.detectar_emocion()
 
     if detectada is None:
-        reaccionar_expresion(pregunta)
+        # A pedido del usuario: sin agente de comentario (ver la nota en
+        # manejar_trivia()). No hay veredicto acá, así que no hay una cara de
+        # veredicto que mostrar (queda 'speaking').
         display.mostrar_cara("speaking")
-        voz_output.hablar(reaccionar_libre(pregunta["pregunta"], pedido, persona_str, on_token=on_token))
+        time.sleep(PAUSA_ANTES_ACCION_FISICA)
+        expresar_musica(pregunta)
+        expresar_desplazamiento(pregunta)
         return None
 
     acerto = detectada == objetivo
     print(f"    [cámara] pedido={objetivo} detectado={detectada} (confianza {confianza:.0%}) -> {'OK' if acerto else 'MAL'}")
-    expresion = reaccionar_expresion(pregunta, acerto)
-    cara = expresion["cara"] or ("happy" if acerto else "sad")
-    display.mostrar_cara("content")
-    time.sleep(PAUSA_CAMBIO_CARA)
+    cara = elegir_cara_pregunta(pregunta, acerto) or ("happy" if acerto else "sad")
     display.mostrar_cara(cara)
-    reaccion = comentar_resultado_emocion(objetivo, detectada, acerto, persona_str, on_token=on_token)
-    voz_output.hablar(reaccion)
-    time.sleep(PAUSA_CAMBIO_CARA)
+    # Veredicto hablado -- sin agente de comentario (LLM, sigue sin usarse):
+    # solo la palabra fija según acerto/error. A diferencia del resto de
+    # Trivia (que se queda callada, solo cara/música/desplazamiento), acá
+    # hace falta: el usuario está posando frente a la cámara, no mirando la
+    # pantalla, así que no ve la cara de veredicto sin este aviso por voz.
+    voz_output.hablar("¡Correcto!" if acerto else "¡Incorrecto!")
+    time.sleep(PAUSA_ANTES_ACCION_FISICA)
+    expresar_musica(pregunta)
+    expresar_desplazamiento(pregunta)
     display.mostrar_cara("speaking")
     return acerto
 
@@ -312,15 +334,16 @@ def reaccionar_libre(pregunta, respuesta_usuario, persona_str, on_token=None):
     de colores...): no hay nada que corregir, así que en vez de
     evaluar_respuesta/comentar_resultado el robot solo reacciona.
 
-    Usa TRIVIA_MODEL, no CHAT_MODEL -- mismo criterio que comentar_resultado()."""
+    Usa TRIVIA_MODEL, no CHAT_MODEL -- mismo criterio que comentar_resultado(),
+    incluido max_tokens=20 y "máximo 5 palabras" en vez de "frase corta"."""
     mensajes = _mensajes_con_personalidad(persona_str, (
         f"Pregunta: {pregunta}\n"
         f"Respuesta del usuario: {respuesta_usuario}\n\n"
-        "Reacciona en una frase corta. No hay respuesta correcta acá: no "
+        "Reacciona en máximo 5 palabras. No hay respuesta correcta acá: no "
         "corrijas ni evalúes, solo reacciona con tu personalidad. No hagas "
         "otra pregunta."
     ), modelo=TRIVIA_MODEL)
-    return generar_respuesta(mensajes, on_token=on_token, modelo=TRIVIA_MODEL).strip()
+    return generar_respuesta(mensajes, on_token=on_token, modelo=TRIVIA_MODEL, max_tokens=20).strip()
 
 
 def resolver_tema(eleccion_usuario):
@@ -497,6 +520,13 @@ def enrutar_mensaje(mensaje_usuario):
 
 PREGUNTAS_POR_TANDA = 5
 PAUSA_CAMBIO_CARA = 4  # segundos en 'content' antes de pasar a la cara que sigue (habla o reacción)
+# Reacción a una respuesta, sin agente de comentario (a pedido del usuario --
+# comentar_resultado()/comentar_resultado_emocion()/reaccionar_libre() siguen
+# definidas pero manejar_trivia()/_jugar_emociones() ya no las llaman): la
+# cara se mueve al veredicto, se espera esta pausa, y recién ahí se disparan
+# música/desplazamiento (en paralelo entre sí, hilo/Popen, no bloquean) --
+# ver manejar_trivia()/_jugar_emociones().
+PAUSA_ANTES_ACCION_FISICA = 1
 
 
 def _preguntar_siguiente(estado):
@@ -520,18 +550,62 @@ def _preguntar_siguiente(estado):
     return True
 
 
-def _iniciar_tanda(tema, estado):
+def _cerrar_tanda(estado):
+    """Mensaje de cierre cuando se acaba la tanda sola (cola_preguntas vacía,
+    no por una salida a mitad de pregunta): ya no hay nada que retomar, así
+    que el próximo mensaje vuelve a pasar por el Router como cualquier turno
+    normal."""
+    estado["en_trivia"] = False
+    display.mostrar_cara("speaking")
+    cierre = ("Esas eran las 5. ¿Seguimos con más trivia, "
+              "buscamos algo en la web, o prefieres charlar?")
+    print(f"Asistente: {cierre}\n")
+    voz_output.hablar(cierre)
+    time.sleep(PAUSA_CAMBIO_CARA)
+    display.mostrar_cara("content")
+
+
+def _correr_tanda_emociones(estado, persona_str, on_token):
+    """Para TEMAS_JUEGO_EMOCIONES el veredicto sale de la cámara, no de una
+    respuesta de texto -- a diferencia de Trivia normal, no tiene sentido
+    esperar un mensaje del usuario entre pregunta y pregunta (no hay nada
+    que responder por texto). Por eso esta función corre la tanda entera
+    (hasta PREGUNTAS_POR_TANDA rondas) de un tirón: pregunta -> cara a
+    imitar -> captura -> veredicto -> siguiente pregunta, sin devolver el
+    control a _main_loop()/_leer_entrada() hasta que se acaba la tanda.
+
+    Trade-off a propósito: mientras corre, no hay forma de que el usuario
+    la interrumpa a mitad (_quiere_salir_trivia() solo se chequea entre
+    turnos en _main_loop()) -- aceptable para un juego con cámara en vivo,
+    igual que el resto del turno bloquea mientras habla/captura."""
+    while _preguntar_siguiente(estado):
+        pendiente = estado["pregunta_pendiente"]
+        estado["pregunta_pendiente"] = None
+        acerto = _jugar_emociones(pendiente, persona_str, on_token=on_token)
+        if acerto is not None:
+            estado["total"] += 1
+            estado["aciertos"] += acerto
+        print("\n")
+    _cerrar_tanda(estado)
+
+
+def _iniciar_tanda(tema, estado, persona_str=None, on_token=None):
     """Pide de una sola vez una tanda de PREGUNTAS_POR_TANDA preguntas de un
-    tema ya elegido (un solo request al backend) y arranca con la primera;
-    las demás quedan en cola_preguntas para encadenarlas sin volver a pasar
-    por el menú de temas entre una y otra."""
+    tema ya elegido (un solo request al backend). Para TEMAS_JUEGO_EMOCIONES
+    corre la tanda entera de una (ver _correr_tanda_emociones()); para el
+    resto arranca solo con la primera pregunta -- las demás quedan en
+    cola_preguntas para encadenarlas sin volver a pasar por el menú de temas,
+    pero esperando la respuesta de texto de cada una antes de seguir."""
     preguntas = obtener_preguntas_por_tema(tema, estado["ya_usados"], cantidad=PREGUNTAS_POR_TANDA)
     if not preguntas:
         print(f"Asistente: No quedan preguntas de {tema}.\n")
         return
     estado["ya_usados"].update(p["id"] for p in preguntas)
     estado["cola_preguntas"] = preguntas
-    _preguntar_siguiente(estado)
+    if tema in TEMAS_JUEGO_EMOCIONES:
+        _correr_tanda_emociones(estado, persona_str, on_token)
+    else:
+        _preguntar_siguiente(estado)
 
 
 def manejar_trivia(mensaje_usuario, estado, persona_str, on_token):
@@ -548,57 +622,45 @@ def manejar_trivia(mensaje_usuario, estado, persona_str, on_token):
         anuncio = f"Vamos con {tema}. Van {PREGUNTAS_POR_TANDA} preguntas seguidas."
         print(f"Asistente: {anuncio}")
         voz_output.hablar(anuncio)
-        _iniciar_tanda(tema, estado)
+        _iniciar_tanda(tema, estado, persona_str, on_token)
         return
 
     pendiente = estado["pregunta_pendiente"]
     if pendiente is not None:
+        # Nunca queda pendiente una pregunta de TEMAS_JUEGO_EMOCIONES acá --
+        # esas se resuelven enteras, tanda completa, dentro de
+        # _correr_tanda_emociones() (ver _iniciar_tanda()), sin devolver el
+        # control hasta que se acaban. Lo que llega a esta rama es siempre
+        # una respuesta de texto a corregir.
         estado["pregunta_pendiente"] = None
         print("Asistente: ", end="", flush=True)
         if pendiente["respuesta_esperada"]:
             estado["total"] += 1
-            acerto = evaluar_respuesta(pendiente["pregunta"], pendiente["respuesta_esperada"],
-                                        mensaje_usuario)
+            acerto = evaluar_respuesta(pendiente["respuesta_esperada"], mensaje_usuario)
             estado["aciertos"] += acerto
-            # Agent_Behavior.reaccionar() decide la cara específica de ESTA
-            # pregunta (cara_respuesta_buena/mala del dataset, sin LLM) y de
-            # paso revisa música/desplazamiento de la misma fila. Fallback
-            # genérico solo por si esa columna viniera vacía en algún caso raro.
-            expresion = reaccionar_expresion(pendiente, acerto)
-            cara = expresion["cara"] or ("happy" if acerto else "sad")
-            # Se muestra ANTES de la reacción hablada, no "speaking": acá lo
-            # que importa comunicar primero es el veredicto, no que está hablando.
-            # Una pausa breve en 'content' antes de saltar a la emoción: mostrarla
-            # de un tirón se siente demasiado instantáneo/robótico para una reacción.
-            display.mostrar_cara("content")
-            time.sleep(PAUSA_CAMBIO_CARA)
+            # Agent_Behavior.elegir_cara_pregunta() decide la cara específica
+            # de ESTA pregunta (cara_respuesta_buena/mala del dataset, sin
+            # LLM). Fallback genérico solo por si esa columna viniera vacía.
+            cara = elegir_cara_pregunta(pendiente, acerto) or ("happy" if acerto else "sad")
+            # A pedido del usuario: sin el agente de comentario
+            # (comentar_resultado(), LLM) -- se sigue mostrando el veredicto
+            # (cara/música/desplazamiento, en paralelo entre sí) pero sin
+            # reacción hablada.
             display.mostrar_cara(cara)
-            reaccion = comentar_resultado(pendiente["pregunta"], pendiente["respuesta_esperada"],
-                                           mensaje_usuario, acerto, persona_str, on_token=on_token)
-            voz_output.hablar(reaccion)
-            # Se queda un rato en la emoción (acierto o error, mismo trato para
-            # las dos) antes de pasar a 'speaking' — el asistente ya va a decir
-            # algo más (la próxima pregunta, o si se acabó la tanda) así que
-            # vuelve a "hablar" antes de eso, no queda pegado en la emoción.
-            time.sleep(PAUSA_CAMBIO_CARA)
+            time.sleep(PAUSA_ANTES_ACCION_FISICA)
+            expresar_musica(pendiente)
+            expresar_desplazamiento(pendiente)
             display.mostrar_cara("speaking")
-        elif estado["tema_actual"] in TEMAS_JUEGO_EMOCIONES:
-            # Único caso con veredicto real fuera de respuesta_esperada: la
-            # cámara reemplaza a Agent_Corrector -- ver _jugar_emociones().
-            acerto = _jugar_emociones(pendiente, persona_str, on_token=on_token)
-            if acerto is not None:
-                estado["total"] += 1
-                estado["aciertos"] += acerto
         else:
             # Temas como Chistes o Reconocimiento Musical no tienen una
-            # respuesta correcta que corregir: no hay veredicto, así que
-            # Agent_Behavior.reaccionar() no elige cara (queda la genérica de
-            # "hablando") — pero igual revisa música/desplazamiento, que no
-            # dependen de acierto/error.
-            reaccionar_expresion(pendiente)
+            # respuesta correcta que corregir: no hay veredicto, así que no
+            # se elige cara (queda la genérica de "hablando") — pero igual se
+            # revisa música/desplazamiento, que no dependen de acierto/error.
+            # Mismo criterio que la rama de arriba: sin agente de comentario.
             display.mostrar_cara("speaking")
-            reaccion = reaccionar_libre(pendiente["pregunta"], mensaje_usuario, persona_str, on_token=on_token)
-            voz_output.hablar(reaccion)
+            time.sleep(PAUSA_ANTES_ACCION_FISICA)
+            expresar_musica(pendiente)
+            expresar_desplazamiento(pendiente)
         print("\n")
 
         # Sigue encadenando la tanda; recién cuando se acaba se vuelve a
@@ -606,20 +668,7 @@ def manejar_trivia(mensaje_usuario, estado, persona_str, on_token):
         # pero preguntarlo explícito evita que el usuario se quede sin saber
         # qué esperar después de la última pregunta).
         if not _preguntar_siguiente(estado):
-            # Se acabó la tanda sola (no por una salida a mitad de pregunta):
-            # ya no hay nada que retomar, así que el próximo mensaje vuelve a
-            # pasar por el Router como cualquier turno normal.
-            estado["en_trivia"] = False
-            # Ya está en 'speaking' desde la rama de arriba (o se acaba de
-            # poner acá si no hubo veredicto) para el mensaje de cierre de
-            # tanda; recién después de decirlo pasa a la cara de reposo.
-            display.mostrar_cara("speaking")
-            cierre = ("Esas eran las 5. ¿Seguimos con más trivia, "
-                      "buscamos algo en la web, o prefieres charlar?")
-            print(f"Asistente: {cierre}\n")
-            voz_output.hablar(cierre)
-            time.sleep(PAUSA_CAMBIO_CARA)
-            display.mostrar_cara("content")
+            _cerrar_tanda(estado)
         return
 
     opciones = ", ".join(random.sample(TEMAS_CATALOGO, 5))
@@ -736,9 +785,10 @@ def _main_loop():
     # (sin pasar por el Router) o no — se puede apagar a mitad de una pregunta
     # (_quiere_salir_trivia) SIN perder pregunta_pendiente/cola_preguntas, que
     # quedan "congeladas" para poder retomar la tanda más adelante. tema_actual:
-    # el tema exacto (uno de TEMAS_CATALOGO) de la tanda en curso -- lo único
-    # que usa hoy es manejar_trivia() para saber si toca veredicto por cámara
-    # (TEMAS_JUEGO_EMOCIONES) en vez de reaccionar_libre().
+    # el tema exacto (uno de TEMAS_CATALOGO) de la tanda en curso -- lo usan
+    # _iniciar_tanda() (para saber si corre la tanda entera de un tirón vía
+    # _correr_tanda_emociones(), TEMAS_JUEGO_EMOCIONES) y elegir_cara_pregunta()
+    # indirectamente a través de cada pregunta.
     estado = {
         "pregunta_pendiente": None, "esperando_tema": False, "en_trivia": False,
         "cola_preguntas": [], "ya_usados": set(), "aciertos": 0, "total": 0,

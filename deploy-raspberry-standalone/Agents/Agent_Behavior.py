@@ -5,12 +5,16 @@ Fusiona lo que antes eran reactor.py + cara_agente.py, porque las dos cosas
 son la misma idea (elegir una cara a partir de un veredicto ya resuelto) con
 dos fuentes de datos distintas:
 
-- elegir_cara_pregunta()/expresar_musica()/expresar_desplazamiento()/
-  reaccionar(): para Trivia, a partir de las columnas del dataset
-  (cara_respuesta_buena, cara_respuesta_mala, musical, desplazamiento en
-  preguntas.jsonl) — se invoca para CUALQUIER pregunta de Trivia, tenga o no
-  respuesta_esperada (Reconocimiento Musical, Chistes, etc. son temas del
-  mismo catálogo, no un modo aparte del router).
+- elegir_cara_pregunta()/expresar_musica()/expresar_desplazamiento(): para
+  Trivia, a partir de las columnas del dataset (cara_respuesta_buena,
+  cara_respuesta_mala, musical, desplazamiento en preguntas.jsonl) — se
+  invocan para CUALQUIER pregunta de Trivia, tenga o no respuesta_esperada
+  (Reconocimiento Musical, Chistes, etc. son temas del mismo catálogo, no un
+  modo aparte del router). Orchestrator_Management.py las llama por
+  separado, no todas juntas -- el orden pedido es voz primero, después la
+  cara, y recién después música/desplazamiento (ver la nota en
+  manejar_trivia()), así que no hay un solo "punto de entrada" que las
+  agrupe como antes.
 - elegir_cara_por_calidad(): para Chat libre y Búsqueda Web, donde no hay
   fila de dataset asociada — el veredicto es "¿la respuesta del asistente
   estaba bien o hubo que corregirla?" (Agent_Verificator.verificar_y_corregir),
@@ -26,6 +30,7 @@ Si una columna viene vacía, no se hace nada con esa parte — ni log, ni acció
 """
 
 import random
+import threading
 
 from Clients import Carrito_Client, Musica_Client
 
@@ -53,6 +58,17 @@ def elegir_cara_pregunta(pregunta, acerto):
     return _CARA_A_DISPLAY.get(valor)
 
 
+def cara_para_emocion(nombre):
+    """Traduce un nombre de emoción en español tal como viene en la columna
+    'cara' del dataset (Feliz/Triste/Enojado/Neutral) a la clave que entiende
+    display.mostrar_cara() -- usa el mismo mapeo que elegir_cara_pregunta().
+    Pensada para el Juego de emociones/imitación (Orchestrator_Management.py
+    ::_jugar_emociones()): el robot muestra esta cara ANTES de pedirle al
+    usuario que la imite, como referencia visual (antes solo se pedía por
+    voz). None si el nombre no matchea ninguna de las 4 conocidas."""
+    return _CARA_A_DISPLAY.get((nombre or "").strip())
+
+
 def expresar_musica(pregunta):
     """Si la pregunta trae algo en 'musical', reproduce ese archivo de
     musica/ de verdad (Musica_Client.py, recortado a 20s). Vacío/ausente ->
@@ -78,26 +94,14 @@ def expresar_desplazamiento(pregunta):
         return None
     print(f"    [desplazamiento: {desplazamiento}]")
     if desplazamiento.lower().startswith("girar"):
-        Carrito_Client.mover_360()
+        # mover_360() bloquea ~2.4s (6 pulsos con pausa entre cada uno, ver
+        # Carrito_Client.py) -- se lanza en un hilo aparte, fire-and-forget,
+        # igual que Musica_Client.reproducir() ya hace con mpv (Popen), para
+        # no sumarle ese tiempo al turno de trivia.
+        threading.Thread(target=Carrito_Client.mover_360, daemon=True).start()
     else:
-        Carrito_Client.mover(desplazamiento)
+        Carrito_Client.mover(desplazamiento)  # un solo write serial, ya casi instantáneo
     return desplazamiento
-
-
-def reaccionar(pregunta, acerto=None):
-    """Punto de entrada único de Trivia: decide (y por ahora loguea) las
-    señales que correspondan a esta pregunta.
-
-    acerto=None es para preguntas SIN respuesta_esperada (Chistes,
-    Reconocimiento Musical...) — no hay veredicto, así que no se elige cara
-    acá (esas siguen con la cara genérica "speaking" que ya pone
-    Orchestrator_Management.py); solo se revisan música/desplazamiento, que
-    no dependen de un veredicto.
-    """
-    cara = elegir_cara_pregunta(pregunta, acerto) if acerto is not None else None
-    musica = expresar_musica(pregunta)
-    desplazamiento = expresar_desplazamiento(pregunta)
-    return {"cara": cara, "musica": musica, "desplazamiento": desplazamiento}
 
 
 # ─── Chat libre / Búsqueda web: cara genérica por calidad ────────────────

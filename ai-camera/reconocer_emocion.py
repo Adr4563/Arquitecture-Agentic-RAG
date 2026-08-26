@@ -117,6 +117,10 @@ def _capturar_y_detectar():
         time.sleep(0.2)
 
     picam2.stop()
+    picam2.close()  # sin esto la cámara queda en estado "Configured" (no
+    # "Available") y la siguiente Picamera2() de este mismo proceso falla al
+    # acquire() -- ver Camara_Client.detectar_emocion(), que crea una
+    # Picamera2 nueva en cada ronda del Juego de emociones/imitación.
     return emocion, confianza
 
 
