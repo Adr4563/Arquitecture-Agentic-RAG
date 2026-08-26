@@ -36,7 +36,7 @@ from Agents.Agent_Router import enrutar  # router sin LLM (TF-IDF + regresión l
 from Agents.Agent_Verificator import verificar_y_corregir
 from Clients import Camara_Client
 from Clients import Voice_Output_Client as voz_output  # Ereberus habla en voz alta (edge-tts + mpv)
-from Clients.Llama_Client import CHAT_MODEL, TRIVIA_MODEL, generar_respuesta
+from Clients.Llama_Client import CHAT_MODEL, TRIVIA_MODEL, VERIFICADOR_MODEL, generar_respuesta
 from personalidad import construir_personalidad, obtener_system_prompt
 from preguntas import SIN_CONTEXTO, recuperar_contexto
 from preguntas import pregunta_aleatoria as _pregunta_aleatoria
@@ -382,7 +382,14 @@ def extraer_termino_busqueda(mensaje_usuario):
     Wikipedia: "busca Peru", "qué es Peru" o "dime sobre Peru" no traen
     nada, pero "Peru" a secas sí. Se le pide al LLM que aísle el tema/
     entidad central, sin verbos ni envoltorio conversacional, antes de
-    mandarlo a buscar — mismo patrón que resolver_tema() para Trivia."""
+    mandarlo a buscar — mismo patrón que resolver_tema() para Trivia.
+
+    Usa VERIFICADOR_MODEL, no CHAT_MODEL: es extracción con una regla de
+    formato estricta ("solo el término, nada más"), no una reacción con
+    personalidad -- mismo motivo que Agent_Verificator.py (ver la nota ahí
+    y en Clients/Llama_Client.py sobre el bug real que causó al mezclar
+    esta clase de tarea con CHAT_MODEL una vez que pasó a ser un fine-tune
+    de estilo)."""
     mensajes = [
         {"role": "system", "content": (
             "Extrae el tema o entidad principal de la pregunta del usuario, "
@@ -394,7 +401,7 @@ def extraer_termino_busqueda(mensaje_usuario):
         {"role": "user", "content": mensaje_usuario},
     ]
     # temperature=0: es extracción, no charla — no queremos variación entre corridas.
-    return generar_respuesta(mensajes, temperature=0, max_tokens=15).strip()
+    return generar_respuesta(mensajes, temperature=0, max_tokens=15, modelo=VERIFICADOR_MODEL).strip()
 
 
 def responder_busqueda_web(mensaje_usuario, persona_str, on_token=None):
