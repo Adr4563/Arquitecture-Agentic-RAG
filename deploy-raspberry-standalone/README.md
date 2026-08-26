@@ -11,18 +11,32 @@ Probado pensando en una **Raspberry Pi 4 (8GB RAM, 128GB de almacenamiento)**.
 ## ⚠️ Rendimiento esperado
 
 Una Pi 4 no tiene GPU para inferencia — todo corre en CPU (ARM Cortex-A72).
-Con 8GB de RAM entran los 2 modelos sin problema, pero van a ser más lentos
-que en una PC:
+El modelo por default de `CHAT_MODEL` (que genera TODAS las respuestas:
+chat libre, búsqueda web, reacciones de trivia, corrector, verificador) y
+`ROUTER_MODEL` (que clasifica cada turno) son el MISMO modelo —
+`qwen2.5:0.5b` — así que Ollama solo mantiene una copia en RAM para las dos
+cosas, no dos modelos separados.
 
-- `qwen2.5:0.5b` (router) es chico, debería sentirse razonablemente rápido.
-- `llama3.2:3b-q4s` (el modelo que genera las respuestas) es el más pesado —
-  probablemente notes varios segundos de espera por respuesta. Pruébalo
-  primero; si se siente demasiado lento para una conversación fluida, hay un
-  fallback más liviano (ver "Si `llama3.2:3b` va muy lento" más abajo).
+Se eligió `qwen2.5:0.5b` sobre `llama3.2:3b-q4s` (el default anterior) tras
+benchmarquear 7 modelos livianos (Meta/Facebook y HuggingFace, ver
+`Clients/Llama_Client.py` para el detalle y los números) con los prompts
+reales de este proyecto:
+
+| Modelo | RAM residente (`ollama ps`) | Respuesta en caliente | Calidad en las 5 corridas |
+|---|---|---|---|
+| **qwen2.5:0.5b (default)** | **484 MB** | **1–3s** | 5/5 correctas, sin fugas ni frases prohibidas |
+| llama3.2:3b-q4s (default anterior) | 2.5 GB | 7–12s | 5/5 correctas, prosa más elaborada |
+| llama3.2:1b (Meta) | 1.5 GB | 4–7s | Falló: se negó a confirmar una respuesta correcta en 2/3 corridas, filtró `<rag>` crudo en 3/3 |
+| smollm2:1.7b (HuggingFace) | 2.7 GB | 10–14s | Más pesado que el default anterior — sin sentido como "liviano" |
+| tinyllama, qwen3:0.6b, smollm2:360m | 0.7–1 GB | — | No siguen el system prompt (lo repiten, o texto vacío) |
+
+Con `qwen2.5:0.5b` la Pi debería sentirse fluida. Si en algún momento se
+quiere prosa más rica y el hardware lo banca, se puede volver al modelo
+grande sin tocar código (ver "Subir a un modelo más grande" más abajo).
 
 `preguntas.py` no usa ningún modelo — busca sobre `preguntas.jsonl` con BM25
-(keyword) en memoria dentro del mismo proceso de `chat.py`, así que no
-consume Ollama, RAM de embeddings, ni un puerto/proceso aparte.
+(keyword) en memoria dentro del mismo proceso de `Orchestrator_Management.py`,
+así que no consume Ollama, RAM de embeddings, ni un puerto/proceso aparte.
 
 ## 1. Instalar Ollama en la Pi
 
@@ -37,12 +51,15 @@ al bootear la Pi — no hace falta iniciarlo a mano). Verificalo con:
 systemctl status ollama
 ```
 
-## 2. Descargar los 2 modelos
+## 2. Descargar el modelo
 
 ```bash
-ollama pull llama3.2:3b-q4s        # genera las respuestas (chat.py)
-ollama pull qwen2.5:0.5b           # router de intención (chat.py)
+ollama pull qwen2.5:0.5b   # router de intención Y generación de respuestas por default
 ```
+
+`llama3.2:3b-q4s` NO hace falta descargarlo salvo que se quiera pasar a él
+después (ver "Subir a un modelo más grande" más abajo) — con el default no
+se usa.
 
 ## 3. Instalar dependencias de Python
 
@@ -69,20 +86,24 @@ No hace falta exportar `CHAT_SERVER_HOST` — apunta a `localhost` por defecto
 en `Clients/Llama_Client.py`, que es justo lo que se necesita cuando Ollama
 corre en la misma máquina.
 
-## Si `llama3.2:3b` va muy lento
+## Subir a un modelo más grande (más prosa, más RAM/tiempo)
 
-`CHAT_MODEL` se puede sobreescribir por variable de entorno. Para probar con
-el modelo liviano en vez del de 3B:
+`CHAT_MODEL` se puede sobreescribir por variable de entorno sin tocar código.
+Si el hardware tiene margen y se prefiere una prosa más elaborada que la de
+`qwen2.5:0.5b`, `llama3.2:3b-q4s` (el default de este proyecto hasta el
+benchmark de más arriba) sigue siendo una opción válida — ya viene probado:
 
 ```bash
-export CHAT_MODEL=qwen2.5:0.5b
+ollama pull llama3.2:3b-q4s   # si no está descargado todavía
+export CHAT_MODEL=llama3.2:3b-q4s
 ./start-all.sh
 ```
 
-Ojo: `qwen2.5:0.5b` está afinado en `Clients/Llama_Client.py` como
-clasificador de rutas (few-shot para TRIVIA/BUSQUEDA_WEB/CHAT_LIBRE), no
-como modelo de charla — úsalo como prueba de velocidad, pero esperá
-respuestas de menor calidad conversacional que con `llama3.2:3b`.
+Ojo: esto vuelve a levantar DOS modelos en RAM (`qwen2.5:0.5b` para el router
++ el que pongas acá para generar), no uno solo como con el default — y
+respuestas de 7-12s en vez de 1-3s (ver la tabla de la sección de
+rendimiento). `ROUTER_MODEL` no se toca con esta variable: el router siempre
+corre en `qwen2.5:0.5b`, esté `CHAT_MODEL` en lo que esté.
 
 ## Escribirle a Ereberus desde el celular/otra PC (página web)
 

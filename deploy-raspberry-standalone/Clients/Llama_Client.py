@@ -19,17 +19,40 @@ import requests
 # sobreescribir con la IP correspondiente:
 #   export CHAT_SERVER_HOST=http://192.168.1.44:11434
 CHAT_SERVER_HOST = os.environ.get("CHAT_SERVER_HOST", "http://localhost:11434")
-# Configurable por env var (no solo hardcodeado) para poder bajar a un modelo más
-# liviano en hardware limitado (ej. Raspberry Pi) sin tocar código — ver
+# Configurable por env var (no solo hardcodeado) para poder subir a un modelo más
+# grande si el hardware lo banca, sin tocar código — ver
 # deploy-raspberry-standalone/README.md.
-CHAT_MODEL = os.environ.get("CHAT_MODEL", "llama3.2:3b-q4s")  # nombre del modelo en `ollama list` — genera las respuestas reales
-# (no usar la variante -fp16: corre 100% en CPU sin VRAM y es extremadamente lenta;
-# -q4s está cuantizado y es viable en CPU)
+#
+# qwen2.5:0.5b (0.5B, Alibaba) por default — no llama3.2:3b-q4s (3B, Meta), que
+# era el default anterior. Benchmark propio (bench_modelos.py, 7 candidatos x 5
+# prompts representativos de este proyecto, con el system prompt real de
+# personalidad.py, corridos varias veces para chequear consistencia):
+#   - qwen2.5:0.5b: 484MB residente en Ollama (`ollama ps`) vs 2.5GB de
+#     llama3.2:3b-q4s -- ~5x menos RAM. Respuestas 1-3s en caliente vs 7-12s.
+#     Calidad: 5/5 corridas correctas, coherentes, en español, sin fugas de
+#     formato ni frases prohibidas.
+#   - llama3.2:1b (1.5GB) se probó como alternativa "liviana" obvia y perdió:
+#     en 2/3 corridas se negó a confirmar una respuesta CORRECTA ("¡Lo siento!
+#     No puedo confirmar..."), y en 3/3 corridas filtró las etiquetas <rag>
+#     crudas al texto que ve el usuario. Bug reproducible, no un accidente.
+#   - tinyllama, qwen3:0.6b y smollm2:360m: no siguen el system prompt (lo
+#     repiten textual en vez de responder, o devuelven texto vacío).
+#   - smollm2:1.7b: calidad aceptable pero 2.7GB residente -- más pesado que
+#     el default ANTERIOR, no tiene sentido como reemplazo "liviano".
+# Bonus: al ser el MISMO modelo que ROUTER_MODEL, Ollama mantiene una sola
+# copia en memoria para routing + generación (antes eran 2 modelos residentes
+# a la vez). Si hace falta más calidad de prosa y el hardware lo permite,
+# sobreescribir con `export CHAT_MODEL=llama3.2:3b-q4s`.
+CHAT_MODEL = os.environ.get("CHAT_MODEL", "qwen2.5:0.5b")  # nombre del modelo en `ollama list` — genera las respuestas reales
+# (no usar una variante -fp16: corre 100% en CPU sin VRAM y es extremadamente lenta;
+# los modelos cuantizados -q4_K_*/-q4s son los viables en CPU)
 
 # El router no necesita el modelo grande: es una clasificación de 3 etiquetas,
 # no generación de texto. qwen2.5:0.5b con few-shot + salida JSON forzada
 # clasifica igual de bien que llama3.2:1b en este caso y corre ~3x más rápido
-# (benchmark en rag-model-bench/: 5/5 aciertos, ~760ms promedio vs ~2.6s).
+# (benchmark en rag-model-bench/: 5/5 aciertos, ~760ms promedio vs ~2.6s). Fijo
+# (no configurable por env var, a diferencia de CHAT_MODEL): el prompt del
+# router está afinado específicamente para este modelo.
 ROUTER_MODEL = "qwen2.5:0.5b"
 
 
