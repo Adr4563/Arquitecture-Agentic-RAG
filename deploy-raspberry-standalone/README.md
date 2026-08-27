@@ -39,7 +39,7 @@ así que no consume Ollama, RAM de embeddings, ni un puerto/proceso aparte.
 
 ### Router sin LLM
 
-Clasificar cada turno en TRIVIA / BUSQUEDA_WEB / CHAT_LIBRE es una
+Clasificar cada turno en TRIVIA / CHAT_LIBRE es una
 clasificación de 3 etiquetas fijas, no generación de texto — no hace falta
 un modelo de lenguaje para eso. `Agents/Agent_Router.py` reemplaza al viejo
 router basado en LLM (few-shot sobre Ollama) por un clasificador clásico
@@ -77,12 +77,12 @@ palabras clave + fuzzy para typos.
 | Recall en incorrectas (nunca acredita una mal) | No medida | **100%** |
 | Bug real encontrado | Llegó a leer "7 por 8" como "7/8" y decir que la respuesta era 0.875 | No aplica — comparación matemática directa, sin ese riesgo |
 
-`Agent_Verificator.py` (Chat libre/Búsqueda Web) sigue usando LLM: a
-diferencia del router y el corrector, a veces tiene que REESCRIBIR la
-respuesta cuando la encuentra incoherente, no solo clasificarla — eso es
-generación de texto, no clasificación, así que no tiene el mismo reemplazo
-directo. Ya se beneficia igual del modelo más liviano (`qwen2.5:0.5b`, ver
-arriba).
+`Agent_Verificator.py` (la revisión de coherencia de Chat libre) se sacó
+del proyecto por completo: Chat libre ahora es una sola llamada a
+`CHAT_MODEL`, sin una segunda pasada de corrección detrás -- Llama_Client
+responde directo. De paso esto habilitó streaming real en Chat libre (antes
+estaba apagado porque el verificador necesitaba el texto completo antes de
+mostrarlo).
 
 ### Personalidad horneada en el modelo (opcional)
 
@@ -93,13 +93,13 @@ modelo generativo, no hay forma de sacarlo por completo. Pero sí se puede
 "hornear" la personalidad y las reglas de estilo DENTRO de los pesos con un
 fine-tuning LoRA, para no tener que repetirlas en texto cada vez.
 
-`ereberus-personalidad` es un fine-tuning LoRA de `qwen2.5:0.5b` entrenado
+`lora-personalidad` es un fine-tuning LoRA de `qwen2.5:0.5b` entrenado
 sobre 251 ejemplos (generados por destilación: `llama3.2:3b` con el
 prompt completo genera la respuesta objetivo, y se entrena el modelo chico
 a reproducirla con un system prompt mucho más corto). Pipeline completo,
 reproducible, en `personalidad_training/`.
 
-| | qwen2.5:0.5b + prompt completo (default) | ereberus-personalidad (opcional) |
+| | qwen2.5:0.5b + prompt completo (default) | lora-personalidad (opcional) |
 |---|---|---|
 | Tokens de prompt por turno | ~324–362 | **~99–137** (~65% menos) |
 | Velocidad | 1–6s | **0.9–1.7s** (igual o más rápido) |
@@ -111,12 +111,12 @@ el corrector pasaron por bastante más validación (cientos de casos reales
 del dataset) antes de convertirse en default. Para probarlo:
 
 ```bash
-export CHAT_MODEL=ereberus-personalidad
+export CHAT_MODEL=lora-personalidad
 ./start-all.sh
 ```
 
 `Clients/Llama_Client.py` y `personalidad.py` detectan el nombre solos:
-con `ereberus-personalidad` activo, `obtener_system_prompt()` devuelve `""`
+con `lora-personalidad` activo, `obtener_system_prompt()` devuelve `""`
 y el system prompt largo deja de mandarse (ver
 `Orchestrator_Management._mensajes_con_personalidad`) — no hace falta tocar
 código para usarlo.
@@ -192,7 +192,7 @@ rendimiento). El router (`Agent_Router.py`) no se ve afectado por esta
 variable — no usa Ollama, así que sigue corriendo en microsegundos esté
 `CHAT_MODEL` en lo que esté.
 
-## Escribirle a Ereberus desde el celular/otra PC (página web)
+## Escribirle a Lora desde el celular/otra PC (página web)
 
 Además de la terminal, `Orchestrator_Management.py` levanta automáticamente
 una página en `http://<ip-de-la-pi>:8081/` con un campo de texto — lo que
@@ -207,7 +207,7 @@ hilo principal — que es como corre hoy. Falta resolver eso antes de
 reactivarla; mientras tanto la página es solo texto (ver la nota al
 principio de `voz_server.py`).
 
-La voz de SALIDA (lo que dice Ereberus) sí está activa: usa `edge-tts`
+La voz de SALIDA (lo que dice Lora) sí está activa: usa `edge-tts`
 (`Clients/Voice_Output_Client.py`, voz `es-AR-ElenaNeural`) — a diferencia de
 la entrada, esto necesita internet (servicio en la nube de Microsoft, gratis
 y sin API key). Si la Pi se queda sin WiFi, se loguea el error y el chat
@@ -253,7 +253,6 @@ deploy-raspberry-standalone/
 ├── Agents/            ← veredictos y decisiones (con o sin LLM)
 │   ├── Agent_Router.py       (+ router_modelo.joblib)
 │   ├── Agent_Corrector.py
-│   ├── Agent_Verificator.py
 │   └── Agent_Behavior.py
 │
 ├── Clients/           ← wrappers hacia servicios/hardware externos
@@ -276,21 +275,20 @@ deploy-raspberry-standalone/
 
 | Archivo/carpeta | Qué es |
 |---|---|
-| `Orchestrator_Management.py` | Router + loop de conversación (Trivia/Búsqueda Web/Chat libre) y la lógica de cada modo — fusión de lo que antes eran `chat.py` (manager) y `workers.py` (lógica por modo). |
+| `Orchestrator_Management.py` | Router + loop de conversación (Trivia/Chat libre) y la lógica de cada modo — fusión de lo que antes eran `chat.py` (manager) y `workers.py` (lógica por modo). |
 | `preguntas.py` | Búsqueda BM25 sobre `preguntas.jsonl` en memoria — sin HTTP, sin servidor aparte. |
-| `personalidad.py` | Arma el system prompt con la personalidad del robot — vacío si `CHAT_MODEL=ereberus-personalidad` (ver "Personalidad horneada en el modelo" arriba). |
+| `personalidad.py` | Arma el system prompt con la personalidad del robot — vacío si `CHAT_MODEL=lora-personalidad` (ver "Personalidad horneada en el modelo" arriba). |
 | `display.py`, `face_viewer.py`, `faces/` | Carita en pantalla (LCD/HDMI en la Pi, o Tkinter en PC). |
 | `voz_server.py` | Página web de texto (ver arriba) — entrada por voz todavía deshabilitada. |
-| `Agents/Agent_Router.py` | Sin LLM: clasifica cada turno en TRIVIA/BUSQUEDA_WEB/CHAT_LIBRE (TF-IDF + regresión logística sobre `router_modelo.joblib`, ver "Router sin LLM" arriba). |
+| `Agents/Agent_Router.py` | Sin LLM: clasifica cada turno en TRIVIA/CHAT_LIBRE (TF-IDF + regresión logística sobre `router_modelo.joblib`, ver "Router sin LLM" arriba). |
 | `Agents/Agent_Corrector.py` | Sin LLM: veredicto CORRECTO/INCORRECTO de una respuesta de Trivia (número exacto o normalización+substring+fuzzy contra `respuesta_esperada`, ver "Corrector de Trivia sin LLM" arriba). |
-| `Agents/Agent_Verificator.py` | Único Agent que sigue usando LLM (`CHAT_MODEL`): revisa coherencia de las respuestas de Chat libre/Búsqueda Web y las reescribe si hace falta -- eso es generación de texto, no clasificación, ver la nota en "Corrector de Trivia sin LLM" arriba. |
-| `Agents/Agent_Behavior.py` | Sin LLM: elige la cara de acierto/error de cada pregunta de Trivia (de las columnas del dataset) y dispara música/desplazamiento; también la cara genérica de Chat libre/Búsqueda Web. Fusión de lo que antes eran `reactor.py` + `cara_agente.py`. |
+| `Agents/Agent_Behavior.py` | Sin LLM: elige la cara de acierto/error de cada pregunta de Trivia (de las columnas del dataset) y dispara música/desplazamiento; también la cara genérica de Chat libre. Fusión de lo que antes eran `reactor.py` + `cara_agente.py`. |
 | `Clients/Llama_Client.py` | Cliente HTTP hacia Ollama (`generar_respuesta()` — genera texto, ya no enruta). |
 | `Clients/Carrito_Client.py` | Cliente Serial (USB) hacia el carrito mecanum (ver `../carrito-mecanum-esp32/`) para los comandos de `desplazamiento`. |
 | `Clients/Musica_Client.py` | Reproduce (con `mpv`) el archivo de `musica/` que indique la columna `musical`, recortado a 20s. |
-| `Clients/Voice_Output_Client.py` | Ereberus habla en voz alta con `edge-tts` (voz `es-AR-ElenaNeural`) + `mpv`. |
+| `Clients/Voice_Output_Client.py` | Lora habla en voz alta con `edge-tts` (voz `es-AR-ElenaNeural`) + `mpv`. |
 | `router_training/` | Dataset + script para reentrenar `Agent_Router.py` si hace falta (ver "Router sin LLM" arriba). |
-| `personalidad_training/` | Pipeline de fine-tuning LoRA para `ereberus-personalidad`, opcional -- correr en una PC de desarrollo, no en la Pi (ver "Personalidad horneada en el modelo" arriba). |
+| `personalidad_training/` | Pipeline de fine-tuning LoRA para `lora-personalidad`, opcional -- correr en una PC de desarrollo, no en la Pi (ver "Personalidad horneada en el modelo" arriba). |
 | `musica/` | Archivos de audio para la columna `musical` del dataset (ver su propio README). |
 | `base_datos/` | `preguntas.jsonl` + el Excel fuente (sin índice de ChromaDB — `preguntas.py` arma el índice BM25 en memoria al importarse). |
 | `requirements.txt` | Dependencias de Python. |

@@ -6,14 +6,14 @@ import os
 
 # Modelos que ya tienen la personalidad y las reglas de estilo entrenadas en
 # los pesos (fine-tuning LoRA, ver README "Personalidad horneada en el
-# modelo"): "ereberus-personalidad" (general, las 4 categorías),
-# "ereberus-trivia" (solo trivia_training/, especializado en Trivia) y
-# "ereberus-chat" (solo chat_training/, especializado en Chat libre/
-# Búsqueda web) -- mandarles este system prompt de nuevo sería redundante
-# (y les costaría tokens de más en cada turno, justo lo que existen para
-# evitar). Con cualquier otro modelo (qwen2.5:0.5b, el de 3B, etc.) el
-# prompt se manda como siempre.
-_MODELOS_CON_PERSONALIDAD_HORNEADA = {"ereberus-personalidad", "ereberus-trivia", "ereberus-chat"}
+# modelo"): "lora-personalidad" (general, las 4 categorías),
+# "lora-trivia" (solo trivia_training/, especializado en Trivia) y
+# "lora-chat" (solo chat_training/, especializado en Chat libre) --
+# mandarles este system prompt de nuevo sería redundante (y les costaría
+# tokens de más en cada turno, justo lo que existen para evitar). Con
+# cualquier otro modelo (qwen2.5:0.5b, el de 3B, etc.) el prompt se manda
+# como siempre.
+_MODELOS_CON_PERSONALIDAD_HORNEADA = {"lora-personalidad", "lora-trivia", "lora-chat"}
 
 # ─── Personalidad Big Five (OCEAN) ───────────────────────────
 BIG_FIVE_TRAITS = [

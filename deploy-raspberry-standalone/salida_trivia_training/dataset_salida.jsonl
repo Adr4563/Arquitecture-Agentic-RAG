@@ -1,0 +1,542 @@
+{"instruccion": "Pregunta: ¿Sabes de qué videojuego es esta canción?\nUsuario: la respuesta es plants vs. zombies\n¿RESPUESTA o SALIR?", "objetivo": "RESPUESTA"}
+{"instruccion": "Pregunta: ¿De qué está recubierto el cuerpo de los peces?\nUsuario: ¿Tienes un amigo o hermano?\n¿RESPUESTA o SALIR?", "objetivo": "SALIR"}
+{"instruccion": "Pregunta: Ana Carolina usa 7 ovillos de lana para hacer una blusa. ¿Cuántos ovillos de lana necesitará Ana para hacer 4 blusas?\nUsuario: te gusta el cielo azul\n¿RESPUESTA o SALIR?", "objetivo": "SALIR"}
+{"instruccion": "Pregunta: ¿Cuánto es cinco por ocho?\nUsuario: mi maestra me dijo algo que me hizo sentir mal en clase de historia\n¿RESPUESTA o SALIR?", "objetivo": "SALIR"}
+{"instruccion": "Pregunta: ¿Cuál es el ave voladora más grande del mundo en la actualidad?\nUsuario: tengo un chiste que te hace reir: por que la computadora fue al doctor\n¿RESPUESTA o SALIR?", "objetivo": "SALIR"}
+{"instruccion": "Pregunta: ¿Qué significa FIFA?\nUsuario: federación internacional de fútbol asociación, obvio\n¿RESPUESTA o SALIR?", "objetivo": "RESPUESTA"}
+{"instruccion": "Pregunta: ¿Cuánto es siete por nueve?\nUsuario: yo creo que 63\n¿RESPUESTA o SALIR?", "objetivo": "RESPUESTA"}
+{"instruccion": "Pregunta: ¿Quién es el padre del psicoanálisis?\nUsuario: me siento un poco mal hoy, no sé bien por qué\n¿RESPUESTA o SALIR?", "objetivo": "SALIR"}
+{"instruccion": "Pregunta: ¿Cuál es la capital de Dinamarca?\nUsuario: copenhague!\n¿RESPUESTA o SALIR?", "objetivo": "RESPUESTA"}
+{"instruccion": "Pregunta: Calcula siete por nueve, ¿qué número obtienes?\nUsuario: por que las galletas salten en el suelo\n¿RESPUESTA o SALIR?", "objetivo": "SALIR"}
+{"instruccion": "Pregunta: En la tabla periódica CA representa a:\nUsuario: como se llamas\n¿RESPUESTA o SALIR?", "objetivo": "SALIR"}
+{"instruccion": "Pregunta: ¿En qué país se usó la primera bomba atómica en combate?\nUsuario: hiroshima!\n¿RESPUESTA o SALIR?", "objetivo": "RESPUESTA"}
+{"instruccion": "Pregunta: Opción uno, el coche autónomo continúa hacia adelante, como consecuencia, lastima a un joven. Opción dos, el coche autónomo gira, como consecuencia, lastima a un anciano.\nUsuario: quiero contarte algo que me pasó ayer en el colegio con mis compañeros\n¿RESPUESTA o SALIR?", "objetivo": "SALIR"}
+{"instruccion": "Pregunta: ¿Cuánto es nueve por seis?\nUsuario: ¿De dónde estás?\n¿RESPUESTA o SALIR?", "objetivo": "SALIR"}
+{"instruccion": "Pregunta: ¿Cómo se denomina el resultado de la multiplicación?\nUsuario: cual es tu nacionalidad\n¿RESPUESTA o SALIR?", "objetivo": "SALIR"}
+{"instruccion": "Pregunta: Una sala tiene 5 computadoras con 9 pantallas. ¿Cuántas pantallas hay en esta sala?\nUsuario: Agradezco tu interés en hablar conmigo\n¿RESPUESTA o SALIR?", "objetivo": "SALIR"}
+{"instruccion": "Pregunta: ¿Qué es un animal carnívoro?\nUsuario: estoy aqui para entretenerte quieres un chiste\n¿RESPUESTA o SALIR?", "objetivo": "SALIR"}
+{"instruccion": "Pregunta: ¿Puedes calcular cuánto es cuatro por cinco?\nUsuario: el chiste del dia es que fui al circo\n¿RESPUESTA o SALIR?", "objetivo": "SALIR"}
+{"instruccion": "Pregunta: ¿Sabes cuánto resulta nueve por seis?\nUsuario: yo creo que 54\n¿RESPUESTA o SALIR?", "objetivo": "RESPUESTA"}
+{"instruccion": "Pregunta: Oye , ¿jugamos al juego de la imitación?\nUsuario: me encanta hablar sobre tecnologia\n¿RESPUESTA o SALIR?", "objetivo": "SALIR"}
+{"instruccion": "Pregunta: Opción uno el coche autónomo continúa hacia adelante, como consecuencia, aplasta a un robot dejándolo inservible. Opción dos, el coche autónomo gira, como consecuencia, lastima a un perro.\nUsuario: sabes cual es mayor en el mundo\n¿RESPUESTA o SALIR?", "objetivo": "SALIR"}
+{"instruccion": "Pregunta: ¿Cuál es el área del arte protagonista en los Premios Óscar?\nUsuario: cine, obivo\n¿RESPUESTA o SALIR?", "objetivo": "RESPUESTA"}
+{"instruccion": "Pregunta: ¿Cuál es tu nombre?\nUsuario: estoy preocupado porque tengo un examen difícil la próxima semana\n¿RESPUESTA o SALIR?", "objetivo": "SALIR"}
+{"instruccion": "Pregunta: Un cajón tiene 8 manzanas. ¿Cuántas manzanas habrá en 2 cajones?\nUsuario: pienso que es 16\n¿RESPUESTA o SALIR?", "objetivo": "RESPUESTA"}
+{"instruccion": "Pregunta: ¿Cuál es la capital de Argentina?\nUsuario: la respuesta es buenos aires\n¿RESPUESTA o SALIR?", "objetivo": "RESPUESTA"}
+{"instruccion": "Pregunta: ¿Cuál es la capital de Dinamarca?\nUsuario: ¿Cómo se llamas?\n¿RESPUESTA o SALIR?", "objetivo": "SALIR"}
+{"instruccion": "Pregunta: ¿A quién le crecía la nariz cuando mentía?\nUsuario: pniocho!\n¿RESPUESTA o SALIR?", "objetivo": "RESPUESTA"}
+{"instruccion": "Pregunta: ¿Reconoces la música de este videojuego?\nUsuario: La literatura es mi fuente de inspiración\n¿RESPUESTA o SALIR?", "objetivo": "SALIR"}
+{"instruccion": "Pregunta: Escuchá esto, ¿qué canción es?\nUsuario: creo que es more than words\n¿RESPUESTA o SALIR?", "objetivo": "RESPUESTA"}
+{"instruccion": "Pregunta: ¿Reconoces la música de este videojuego?\nUsuario: minecraft!\n¿RESPUESTA o SALIR?", "objetivo": "RESPUESTA"}
+{"instruccion": "Pregunta: ¿Cuánto es cuatro por cinco?\nUsuario: 20\n¿RESPUESTA o SALIR?", "objetivo": "RESPUESTA"}
+{"instruccion": "Pregunta: Joana necesita llenar 3 vasos de 5 ml con gaseosa. ¿Qué cantidad de gaseosa necesitará?\nUsuario: de donde vengan los humos\n¿RESPUESTA o SALIR?", "objetivo": "SALIR"}
+{"instruccion": "Pregunta: Roberto, ¿Te gustaría escuchar música de los panchos mientras comes?\nUsuario: queria contarte que mi papá consiguió un trabajo nuevo\n¿RESPUESTA o SALIR?", "objetivo": "SALIR"}
+{"instruccion": "Pregunta: Qué son los humanos: ¿omnívoros, herbívoros o carnívoros?\nUsuario: e somnívoros\n¿RESPUESTA o SALIR?", "objetivo": "RESPUESTA"}
+{"instruccion": "Pregunta: ¿En qué año apareció en el mercado el primer videojuego protagonizado por Super Mario?\nUsuario: que te gusta mas\n¿RESPUESTA o SALIR?", "objetivo": "SALIR"}
+{"instruccion": "Pregunta: Esta música es de un juego muy famoso, ¿cuál es?\nUsuario: es angry birds\n¿RESPUESTA o SALIR?", "objetivo": "RESPUESTA"}
+{"instruccion": "Pregunta: Un cajón tiene 4 manzanas. ¿Cuántas manzanas habrá en 3 cajones?\nUsuario: Me encanta la música\n¿RESPUESTA o SALIR?", "objetivo": "SALIR"}
+{"instruccion": "Pregunta: ¿Quién es el protagonista de la película Rocky?\nUsuario: eh, cambiemos de tema mejor\n¿RESPUESTA o SALIR?", "objetivo": "SALIR"}
+{"instruccion": "Pregunta: Para hacer un pastel se necesitan 4 huevos. ¿Cuántos huevos se necesitarán para hacer 7 pasteles?\nUsuario: hoy en el colegio me sentí muy solo todo el día\n¿RESPUESTA o SALIR?", "objetivo": "SALIR"}
+{"instruccion": "Pregunta: ¿Cuál es la capital de Perú?\nUsuario: lima, obvio\n¿RESPUESTA o SALIR?", "objetivo": "RESPUESTA"}
+{"instruccion": "Pregunta: ¿Cuál es la nacionalidad de Pablo Neruda?\nUsuario: que te gusta de la soledad\n¿RESPUESTA o SALIR?", "objetivo": "SALIR"}
+{"instruccion": "Pregunta: ¿Cómo se llama el animal más rápido del mundo?\nUsuario: guepardo!\n¿RESPUESTA o SALIR?", "objetivo": "RESPUESTA"}
+{"instruccion": "Pregunta: ¿Cuánto es 3 por 5?\nUsuario: 15\n¿RESPUESTA o SALIR?", "objetivo": "RESPUESTA"}
+{"instruccion": "Pregunta: ¿Quién es Justin Timberlake?\nUsuario: es cantnate\n¿RESPUESTA o SALIR?", "objetivo": "RESPUESTA"}
+{"instruccion": "Pregunta: ¿Qué producto cultiva más Guatemala?\nUsuario: Este café es muy malo\n¿RESPUESTA o SALIR?", "objetivo": "SALIR"}
+{"instruccion": "Pregunta: Ana tiene 9 cajas de huevos y cada caja tiene 9 huevos. ¿Cuántos huevos tiene en total?\nUsuario: creo que es 81\n¿RESPUESTA o SALIR?", "objetivo": "RESPUESTA"}
+{"instruccion": "Pregunta: Ahora resuelve: ocho por nueve, ¿cuánto es?\nUsuario: ¿A qué te gustaría beber ahora?\n¿RESPUESTA o SALIR?", "objetivo": "SALIR"}
+{"instruccion": "Pregunta: ¿Qué producto cultiva más Guatemala?\nUsuario: café\n¿RESPUESTA o SALIR?", "objetivo": "RESPUESTA"}
+{"instruccion": "Pregunta: Un jugador compró 3 camisetas de equipo que cuestan 7 reales cada una. ¿Cuánto gastó?\nUsuario: te gusta el poquito de musica mexicana\n¿RESPUESTA o SALIR?", "objetivo": "SALIR"}
+{"instruccion": "Pregunta: ¿Cuál es país más poblado de la Tierra?\nUsuario: ¿Te gusta el poquito de música mexicana?\n¿RESPUESTA o SALIR?", "objetivo": "SALIR"}
+{"instruccion": "Pregunta: Una sala tiene 5 computadoras con 9 pantallas. ¿Cuántas pantallas hay en esta sala?\nUsuario: 45, obvio\n¿RESPUESTA o SALIR?", "objetivo": "RESPUESTA"}
+{"instruccion": "Pregunta: Oye Luiza, ¿jugamos al juego de las emociones?\nUsuario: que es la vida fuera del planeta\n¿RESPUESTA o SALIR?", "objetivo": "SALIR"}
+{"instruccion": "Pregunta: ¿Qué país tiene forma de bota?\nUsuario: italia\n¿RESPUESTA o SALIR?", "objetivo": "RESPUESTA"}
+{"instruccion": "Pregunta: ¿Dónde se encuentra la Sagrada Familia?\nUsuario: barcelona!\n¿RESPUESTA o SALIR?", "objetivo": "RESPUESTA"}
+{"instruccion": "Pregunta: En la escuela de Alice hay 5 aulas y en cada una hay 3 sillas. ¿Cuántas sillas hay en la escuela de Alice?\nUsuario: La química es un tema muy interesante\n¿RESPUESTA o SALIR?", "objetivo": "SALIR"}
+{"instruccion": "Pregunta: ¿Cuál es la capital de Argentina?\nUsuario: ¿A favor o en contra de pizza?\n¿RESPUESTA o SALIR?", "objetivo": "SALIR"}
+{"instruccion": "Pregunta: ¿En qué año comenzó la II Guerra Mundial?\nUsuario: creo que es 1939\n¿RESPUESTA o SALIR?", "objetivo": "RESPUESTA"}
+{"instruccion": "Pregunta: ¿Cómo se llama el fundador de Facebook?\nUsuario: a que te gustaria beber ahora\n¿RESPUESTA o SALIR?", "objetivo": "SALIR"}
+{"instruccion": "Pregunta: ¿Cuál es el nombre de la lengua oficial en china?\nUsuario: ¿Cuál es tu nacionalidad?\n¿RESPUESTA o SALIR?", "objetivo": "SALIR"}
+{"instruccion": "Pregunta: ¿Cuál es la capital de Francia?\nUsuario: sos gracioso\n¿RESPUESTA o SALIR?", "objetivo": "SALIR"}
+{"instruccion": "Pregunta: ¿Sabes de qué videojuego es esta canción?\nUsuario: tuve un problema con mi mamá esta mañana antes de venir\n¿RESPUESTA o SALIR?", "objetivo": "SALIR"}
+{"instruccion": "Pregunta: ¿Cuál es el océano más grande?\nUsuario: pienso que es el océano pacífico\n¿RESPUESTA o SALIR?", "objetivo": "RESPUESTA"}
+{"instruccion": "Pregunta: ¿Cómo me estoy sintiendo?\nUsuario: no, todavía no tengo hambre, gracias por preguntar\n¿RESPUESTA o SALIR?", "objetivo": "RESPUESTA"}
+{"instruccion": "Pregunta: ¿Cuál es la capital de Canadá?\nUsuario: disculpa, ya fue suficiente trivia por hoy\n¿RESPUESTA o SALIR?", "objetivo": "SALIR"}
+{"instruccion": "Pregunta: ¿Cuál es el disco más vendido de la historia?\nUsuario: estoy muy contento de hablar contigo\n¿RESPUESTA o SALIR?", "objetivo": "SALIR"}
+{"instruccion": "Pregunta: Dime, ¿a cuánto equivale dos por cinco?\nUsuario: es 10\n¿RESPUESTA o SALIR?", "objetivo": "RESPUESTA"}
+{"instruccion": "Pregunta: ¿Qué es un ebook?\nUsuario: cual es tu pais de origen\n¿RESPUESTA o SALIR?", "objetivo": "SALIR"}
+{"instruccion": "Pregunta: Para hacer un pastel se necesitan 4 huevos. ¿Cuántos huevos se necesitarán para hacer 7 pasteles?\nUsuario: me parece placentero esta conversacion\n¿RESPUESTA o SALIR?", "objetivo": "SALIR"}
+{"instruccion": "Pregunta: ¿Cómo se llama la capital de Mongolia?\nUsuario: ula nbator\n¿RESPUESTA o SALIR?", "objetivo": "RESPUESTA"}
+{"instruccion": "Pregunta: ¿De qué estilo arquitectónico es la Catedral de Notre Dame en París?\nUsuario: gótico\n¿RESPUESTA o SALIR?", "objetivo": "RESPUESTA"}
+{"instruccion": "Pregunta: ¿Cuál es el país con mayor porcentaje de budistas?\nUsuario: camboya, obvio\n¿RESPUESTA o SALIR?", "objetivo": "RESPUESTA"}
+{"instruccion": "Pregunta: ¿Cuánto es dos por cinco?\nUsuario: yo cre oque 10\n¿RESPUESTA o SALIR?", "objetivo": "RESPUESTA"}
+{"instruccion": "Pregunta: Opción uno, el coche autónomo continúa hacia adelante, como consecuencia, aplasta a una planta. Opción dos, el coche autónomo gira, como consecuencia, aplasta a un robot dejándolo inservible.\nUsuario: eh, hablemos de otra cosa un momento\n¿RESPUESTA o SALIR?", "objetivo": "SALIR"}
+{"instruccion": "Pregunta: ¿Cómo se le llama a una colección de revistas, diarios y publicaciones periódicas?\nUsuario: ¿Por qué siempre tienes un humor tan punzante?\n¿RESPUESTA o SALIR?", "objetivo": "SALIR"}
+{"instruccion": "Pregunta: ¿Quién sabía que no sabía nada?\nUsuario: platón, obvio\n¿RESPUESTA o SALIR?", "objetivo": "RESPUESTA"}
+{"instruccion": "Pregunta: ¿Cuál es el único mamífero capaz de volar?\nUsuario: hola por que tan tranquilo hoy\n¿RESPUESTA o SALIR?", "objetivo": "SALIR"}
+{"instruccion": "Pregunta: ¿Cuál es el metal más caro del mundo?\nUsuario: por que te ries sin saber\n¿RESPUESTA o SALIR?", "objetivo": "SALIR"}
+{"instruccion": "Pregunta: Quién va a la cárcel: ¿el imputado, el acusado, el condenado?\nUsuario: que sabes hacer\n¿RESPUESTA o SALIR?", "objetivo": "SALIR"}
+{"instruccion": "Pregunta: ¿Cuál es el libro sagrado del Islam?\nUsuario: yo creo que corán\n¿RESPUESTA o SALIR?", "objetivo": "RESPUESTA"}
+{"instruccion": "Pregunta: Opción uno, el coche autónomo continúa hacia adelante, como consecuencia, lastima a un hombre. Opción dos, el coche autónomo gira, como consecuencia, lastima a una mujer.\nUsuario: prefiero el rojo, siempre me gustó ese color\n¿RESPUESTA o SALIR?", "objetivo": "RESPUESTA"}
+{"instruccion": "Pregunta: ¿Cuál es la capital de Canadá?\nUsuario: pienso que es ottawa\n¿RESPUESTA o SALIR?", "objetivo": "RESPUESTA"}
+{"instruccion": "Pregunta: ¿Cuál es tercer planeta en el sistema solar?\nUsuario: la respuesta es tierra\n¿RESPUESTA o SALIR?", "objetivo": "RESPUESTA"}
+{"instruccion": "Pregunta: ¿Cuánto te da si multiplicas seis por siete?\nUsuario: 42\n¿RESPUESTA o SALIR?", "objetivo": "RESPUESTA"}
+{"instruccion": "Pregunta: ¿Qué año llegó Cristóbal Colón a América?\nUsuario: cuentame un chiste\n¿RESPUESTA o SALIR?", "objetivo": "SALIR"}
+{"instruccion": "Pregunta: ¿Jugamos al juego de las emociones?\nUsuario: prefiero seguir adelante, creo que es la decisión más razonable en ese caso\n¿RESPUESTA o SALIR?", "objetivo": "RESPUESTA"}
+{"instruccion": "Pregunta: ¿Cómo se le llama a una colección de revistas, diarios y publicaciones periódicas?\nUsuario: hemeroteca\n¿RESPUESTA o SALIR?", "objetivo": "RESPUESTA"}
+{"instruccion": "Pregunta: ¿En qué país se encuentra la Universidad de Cambridge?\nUsuario: la respuesta es reino unido\n¿RESPUESTA o SALIR?", "objetivo": "RESPUESTA"}
+{"instruccion": "Pregunta: Opción uno el coche autónomo continúa hacia adelante, como consecuencia, aplasta a un robot dejándolo inservible. Opción dos, el coche autónomo gira, como consecuencia, lastima a un perro.\nUsuario: no la reconozco pero me pareció alegre y con buen ritmo\n¿RESPUESTA o SALIR?", "objetivo": "RESPUESTA"}
+{"instruccion": "Pregunta: ¿Quién es el famoso Rey de Rock en los Estados Unidos?\nUsuario: la respuesta es elvi spresley\n¿RESPUESTA o SALIR?", "objetivo": "RESPUESTA"}
+{"instruccion": "Pregunta: ¿Cuál es la capital de Francia?\nUsuario: ¿Cómo son tus sentidos?\n¿RESPUESTA o SALIR?", "objetivo": "SALIR"}
+{"instruccion": "Pregunta: ¿Dónde originaron los juegos olímpicos?\nUsuario: yo cero que grecia\n¿RESPUESTA o SALIR?", "objetivo": "RESPUESTA"}
+{"instruccion": "Pregunta: Calcula siete por nueve, ¿qué número obtienes?\nUsuario: mi maestra me dijo algo que me hizo sentir mal en clase de historia\n¿RESPUESTA o SALIR?", "objetivo": "SALIR"}
+{"instruccion": "Pregunta: ¿Qué es más grande un átomo o una célula?\nUsuario: la biologia es un tema fascinante\n¿RESPUESTA o SALIR?", "objetivo": "SALIR"}
+{"instruccion": "Pregunta: ¿Quién ganó el mundial de 2014?\nUsuario: creo que esa lemania\n¿RESPUESTA o SALIR?", "objetivo": "RESPUESTA"}
+{"instruccion": "Pregunta: ¿Cómo se llama el procedimiento de subir la bandera?\nUsuario: izar, obvio\n¿RESPUESTA o SALIR?", "objetivo": "RESPUESTA"}
+{"instruccion": "Pregunta: ¿Cuál es el país más grande del mundo?\nUsuario: ¿Cómo se llama la estrofa más triste?\n¿RESPUESTA o SALIR?", "objetivo": "SALIR"}
+{"instruccion": "Pregunta: Te voy a poner la música de un videojuego, ¿de cuál es?\nUsuario: y ocreo que mario\n¿RESPUESTA o SALIR?", "objetivo": "RESPUESTA"}
+{"instruccion": "Pregunta: ¿Dónde originaron los juegos olímpicos?\nUsuario: ¿Tienes 1 centavo?\n¿RESPUESTA o SALIR?", "objetivo": "SALIR"}
+{"instruccion": "Pregunta: ¿Cuál es el resultado de tres por seis?\nUsuario: te gusta viajar a lugares rurales\n¿RESPUESTA o SALIR?", "objetivo": "SALIR"}
+{"instruccion": "Pregunta: ¿Quién es el famoso Rey de Rock en los Estados Unidos?\nUsuario: Gracias por la oportunidad de charlar con ti\n¿RESPUESTA o SALIR?", "objetivo": "SALIR"}
+{"instruccion": "Pregunta: ¿Cuál es la capital de Argentina?\nUsuario: de donde eres robot\n¿RESPUESTA o SALIR?", "objetivo": "SALIR"}
+{"instruccion": "Pregunta: En la tabla periódica CA representa a:\nUsuario: ¿Qué te parece el cielo? Es muy grande\n¿RESPUESTA o SALIR?", "objetivo": "SALIR"}
+{"instruccion": "Pregunta: ¿Qué es un ebook?\nUsuario: es libro en formato digital\n¿RESPUESTA o SALIR?", "objetivo": "RESPUESTA"}
+{"instruccion": "Pregunta: ¿A que esta asociada la campana de Gauss?\nUsuario: la respuesta es probabilidades\n¿RESPUESTA o SALIR?", "objetivo": "RESPUESTA"}
+{"instruccion": "Pregunta: ¿En qué año se aprobó la actual Constitución española?\nUsuario: te gusta el chocolate ganache\n¿RESPUESTA o SALIR?", "objetivo": "SALIR"}
+{"instruccion": "Pregunta: Opción uno, el coche autónomo continúa hacia adelante, como consecuencia, lastima a un joven. Opción dos, el coche autónomo gira, como consecuencia, lastima a un anciano.\nUsuario: no estoy seguro pero me suena que podría ser esa opción\n¿RESPUESTA o SALIR?", "objetivo": "RESPUESTA"}
+{"instruccion": "Pregunta: ¿Existen animales inmortales?\nUsuario: hola como estas\n¿RESPUESTA o SALIR?", "objetivo": "SALIR"}
+{"instruccion": "Pregunta: ¿Cuál es la capital de Colombia?\nUsuario: hola como esta usted hoy\n¿RESPUESTA o SALIR?", "objetivo": "SALIR"}
+{"instruccion": "Pregunta: ¿Cuál es el lugar más frío de la tierra?\nUsuario: es antártida\n¿RESPUESTA o SALIR?", "objetivo": "RESPUESTA"}
+{"instruccion": "Pregunta: ¿Cuál es la capital de Argentina?\nUsuario: que pelicula te gusta\n¿RESPUESTA o SALIR?", "objetivo": "SALIR"}
+{"instruccion": "Pregunta: ¿Cuál es el área del arte protagonista en los Premios Óscar?\nUsuario: cual es tu ciencia\n¿RESPUESTA o SALIR?", "objetivo": "SALIR"}
+{"instruccion": "Pregunta: La situación general es la siguiente, un coche autónomo con fallo en los frenos deberá elegir entre dos opciones, continuar hacia adelante o girar, cada una de estas tendrá consecuencias para alguien, la pregunta es, ¿qué decisión tomarías tú?\nUsuario: no, todavía no tengo hambre, gracias por preguntar\n¿RESPUESTA o SALIR?", "objetivo": "RESPUESTA"}
+{"instruccion": "Pregunta: ¿Cuál es la capital de Argentina?\nUsuario: extraño mucho a mi abuela, hoy es su cumpleaños y no puedo verla\n¿RESPUESTA o SALIR?", "objetivo": "SALIR"}
+{"instruccion": "Pregunta: ¿En qué continente está Ecuador?\nUsuario: la literatura es mi fuente de inspiracion\n¿RESPUESTA o SALIR?", "objetivo": "SALIR"}
+{"instruccion": "Pregunta: ¿Cuál es la capital de Perú?\nUsuario: si me encanta la musica clasica\n¿RESPUESTA o SALIR?", "objetivo": "SALIR"}
+{"instruccion": "Pregunta: ¿Cuántos corazones tienen los pulpos?\nUsuario: no quiero seguir con la trivia un rato\n¿RESPUESTA o SALIR?", "objetivo": "SALIR"}
+{"instruccion": "Pregunta: ¿Cuál es la capital de Canadá?\nUsuario: Me alegro de verte aquí\n¿RESPUESTA o SALIR?", "objetivo": "SALIR"}
+{"instruccion": "Pregunta: ¿Quién es el presidente de España?\nUsuario: me gustaria compartir un chiste contigo: por que la computadora fue al doctor\n¿RESPUESTA o SALIR?", "objetivo": "SALIR"}
+{"instruccion": "Pregunta: Renan tiene 4 bolsas con 9 caramelos cada una. ¿Cuántos caramelos hay en todas las bolsas?\nUsuario: ¿Sabes quién fue el primer astronauta?\n¿RESPUESTA o SALIR?", "objetivo": "SALIR"}
+{"instruccion": "Pregunta: ¿En qué se especializa la cartografía?\nUsuario: creo qu ees mapas\n¿RESPUESTA o SALIR?", "objetivo": "RESPUESTA"}
+{"instruccion": "Pregunta: ¿Cuánto es siete por nueve?\nUsuario: cuantos libros has leido en tu vida\n¿RESPUESTA o SALIR?", "objetivo": "SALIR"}
+{"instruccion": "Pregunta: ¿Qué año llegó Cristóbal Colón a América?\nUsuario: quiero contarte algo que me pasó ayer en el colegio con mis compañeros\n¿RESPUESTA o SALIR?", "objetivo": "SALIR"}
+{"instruccion": "Pregunta: Ahora deberás tomar tu decisión, ¿Cual escoges, la primera o la segunda opción?\nUsuario: yo elegiría girar porque prefiero perder un objeto material antes que dañar a alguien más\n¿RESPUESTA o SALIR?", "objetivo": "RESPUESTA"}
+{"instruccion": "Pregunta: ¿Cuál es el resultado de tres por seis?\nUsuario: creo que e s18\n¿RESPUESTA o SALIR?", "objetivo": "RESPUESTA"}
+{"instruccion": "Pregunta: ¿Dónde se encuentra la famosa Torre Eiffel?\nUsuario: la respuesta es parís, francia\n¿RESPUESTA o SALIR?", "objetivo": "RESPUESTA"}
+{"instruccion": "Pregunta: ¿Cuál es la capital de Rusia?\nUsuario: moscú!\n¿RESPUESTA o SALIR?", "objetivo": "RESPUESTA"}
+{"instruccion": "Pregunta: Ahora deberás tomar tu decisión, ¿Cual escoges, la primera o la segunda opción?\nUsuario: Me encanta la música clásica\n¿RESPUESTA o SALIR?", "objetivo": "SALIR"}
+{"instruccion": "Pregunta: ¿De qué país es el futbolista Zlatan Ibrahimović?\nUsuario: es seucia\n¿RESPUESTA o SALIR?", "objetivo": "RESPUESTA"}
+{"instruccion": "Pregunta: ¿Cómo le llaman a los textos de autores desconocidos?\nUsuario: puedes cantar como una truhan\n¿RESPUESTA o SALIR?", "objetivo": "SALIR"}
+{"instruccion": "Pregunta: ¿Quién pintó “la última cena”?\nUsuario: mi maestra me dijo algo que me hizo sentir mal en clase de historia\n¿RESPUESTA o SALIR?", "objetivo": "SALIR"}
+{"instruccion": "Pregunta: ¿En qué año se aprobó la actual Constitución española?\nUsuario: 1978\n¿RESPUESTA o SALIR?", "objetivo": "RESPUESTA"}
+{"instruccion": "Pregunta: ¿Qué día celebran los cristianos la festividad de la Epifanía de Jesús?\nUsuario: pausemos la trivia un momento un rato\n¿RESPUESTA o SALIR?", "objetivo": "SALIR"}
+{"instruccion": "Pregunta: ¿Cuántos corazones tienen los pulpos?\nUsuario: de donde estas\n¿RESPUESTA o SALIR?", "objetivo": "SALIR"}
+{"instruccion": "Pregunta: ¿Te animas a imitarme?\nUsuario: necesito saber mas sobre la historia actual\n¿RESPUESTA o SALIR?", "objetivo": "SALIR"}
+{"instruccion": "Pregunta: ¿Cuál es el idioma más antiguo de los que sobreviven en Europa?\nUsuario: Agradezco que converses conmigo todos los días.\n¿RESPUESTA o SALIR?", "objetivo": "SALIR"}
+{"instruccion": "Pregunta: ¿Cuánto es siete por nueve?\nUsuario: Agradezco tu interés en que hablamos\n¿RESPUESTA o SALIR?", "objetivo": "SALIR"}
+{"instruccion": "Pregunta: Joana necesita llenar 7 vasos de 3 ml con gaseosa. ¿Qué cantidad total de gaseosa necesitará?\nUsuario: sabes bailar\n¿RESPUESTA o SALIR?", "objetivo": "SALIR"}
+{"instruccion": "Pregunta: ¿Cuál es la nacionalidad de Pablo Neruda?\nUsuario: Te miro un poco extraño\n¿RESPUESTA o SALIR?", "objetivo": "SALIR"}
+{"instruccion": "Pregunta: ¿No se te antoja un pozole?\nUsuario: prefiero seguir adelante, creo que es la decisión más razonable en ese caso\n¿RESPUESTA o SALIR?", "objetivo": "RESPUESTA"}
+{"instruccion": "Pregunta: ¿Cuantos huesos tiene en el cuerpo humano de un adulto?\nUsuario: 206\n¿RESPUESTA o SALIR?", "objetivo": "RESPUESTA"}
+{"instruccion": "Pregunta: ¿Cuál fue el primer metal que empleó el hombre?\nUsuario: que te parece la musica clasica\n¿RESPUESTA o SALIR?", "objetivo": "SALIR"}
+{"instruccion": "Pregunta: ¿Qué veterano músico es la canción Tears in Heaven?\nUsuario: dejemos la trivia por ahora\n¿RESPUESTA o SALIR?", "objetivo": "SALIR"}
+{"instruccion": "Pregunta: Si 50 es el 100%, ¿cuánto es el 90%?\nUsuario: te gustan los viajes\n¿RESPUESTA o SALIR?", "objetivo": "SALIR"}
+{"instruccion": "Pregunta: ¿Cuál es la moneda oficial de Estados Unidos?\nUsuario: agradezco que converses conmigo todos los dias\n¿RESPUESTA o SALIR?", "objetivo": "SALIR"}
+{"instruccion": "Pregunta: ¿Con cuántos países hace frontera México?\nUsuario: tuve un problema con mi mamá esta mañana antes de venir\n¿RESPUESTA o SALIR?", "objetivo": "SALIR"}
+{"instruccion": "Pregunta: ¿Qué país tiene forma de bota?\nUsuario: ya basta, quiero descansar un rato\n¿RESPUESTA o SALIR?", "objetivo": "SALIR"}
+{"instruccion": "Pregunta: Roberto, ¿Te gustaría escuchar música de los panchos mientras comes?\nUsuario: es un buen dia verdad\n¿RESPUESTA o SALIR?", "objetivo": "SALIR"}
+{"instruccion": "Pregunta: ¿En qué isla está situado el Teide?\nUsuario: tenerife, obvio\n¿RESPUESTA o SALIR?", "objetivo": "RESPUESTA"}
+{"instruccion": "Pregunta: ¿Puedes imitarme?\nUsuario: yo elegiría girar porque prefiero perder un objeto material antes que dañar a alguien más\n¿RESPUESTA o SALIR?", "objetivo": "RESPUESTA"}
+{"instruccion": "Pregunta: Entonces, por último, si supieras que el coche que quieres comprar en determinada situación puede escoger una acción, digamos, peligrosa para ti con la excusa de salvar a varias personas ¿Lo comprarías?\nUsuario: que tal el futbol mundial\n¿RESPUESTA o SALIR?", "objetivo": "SALIR"}
+{"instruccion": "Pregunta: ¿Qué significa FIFA?\nUsuario: ¿Cuáles es tu hobby favorito?\n¿RESPUESTA o SALIR?", "objetivo": "SALIR"}
+{"instruccion": "Pregunta: ¿A qué país pertenecen los cariocas?\nUsuario: ¿Hablas más rápido cuando me sorprendes?\n¿RESPUESTA o SALIR?", "objetivo": "SALIR"}
+{"instruccion": "Pregunta: En la granja de José hay 8 vacas lecheras. Cada vaca produce 3 litros de leche. ¿Cuántos litros de leche se producen en total?\nUsuario: ¿Qué te parece el clima este mes?\n¿RESPUESTA o SALIR?", "objetivo": "SALIR"}
+{"instruccion": "Pregunta: ¿Qué es un animal carnívoro?\nUsuario: que come carne\n¿RESPUESTA o SALIR?", "objetivo": "RESPUESTA"}
+{"instruccion": "Pregunta: ¿Cuál es el resultado de tres por seis?\nUsuario: olvida la trivia un rato\n¿RESPUESTA o SALIR?", "objetivo": "SALIR"}
+{"instruccion": "Pregunta: ¿Cuánto es cuatro por cinco?\nUsuario: ¿De dónde vengan los humos?\n¿RESPUESTA o SALIR?", "objetivo": "SALIR"}
+{"instruccion": "Pregunta: ¿De qué lengua proviene el español?\nUsuario: yo creo que latín\n¿RESPUESTA o SALIR?", "objetivo": "RESPUESTA"}
+{"instruccion": "Pregunta: ¿Puedes imitarme?\nUsuario: no quiero jugar más por ahora\n¿RESPUESTA o SALIR?", "objetivo": "SALIR"}
+{"instruccion": "Pregunta: ¿Cuál es el metal más caro del mundo?\nUsuario: Este chiste no me gustó\n¿RESPUESTA o SALIR?", "objetivo": "SALIR"}
+{"instruccion": "Pregunta: Ana Carolina usa 7 ovillos de lana para hacer una blusa. ¿Cuántos ovillos de lana necesitará Ana para hacer 4 blusas?\nUsuario: pienso que es 28\n¿RESPUESTA o SALIR?", "objetivo": "RESPUESTA"}
+{"instruccion": "Pregunta: ¿Cuál es la capital de Canadá?\nUsuario: Agradecido por la conversación contigo esta noche.\n¿RESPUESTA o SALIR?", "objetivo": "SALIR"}
+{"instruccion": "Pregunta: ¿Cuál es la nacionalidad de Pablo Neruda?\nUsuario: creo que es chileno chile\n¿RESPUESTA o SALIR?", "objetivo": "RESPUESTA"}
+{"instruccion": "Pregunta: ¿Qué enfermedad padecía Stephen Hawking?\nUsuario: esclerosis lateral amiotrófica!\n¿RESPUESTA o SALIR?", "objetivo": "RESPUESTA"}
+{"instruccion": "Pregunta: Bruna compró 7 cajas de fresas para vender; en cada caja hay 6 fresas. ¿Cuántas fresas compró?\nUsuario: creo que es 42\n¿RESPUESTA o SALIR?", "objetivo": "RESPUESTA"}
+{"instruccion": "Pregunta: ¿Qué enfermedad padecía Stephen Hawking?\nUsuario: Tengo un chiste que te hace reír: ¿Por qué la computadora fue al doctor?\n¿RESPUESTA o SALIR?", "objetivo": "SALIR"}
+{"instruccion": "Pregunta: Un jugador compró 3 camisetas de equipo que cuestan 7 reales cada una. ¿Cuánto gastó?\nUsuario: sabes contar chistes\n¿RESPUESTA o SALIR?", "objetivo": "SALIR"}
+{"instruccion": "Pregunta: En la tabla periódica CA representa a:\nUsuario: Sí, la tecnología es el futuro de la sociedad moderna.\n¿RESPUESTA o SALIR?", "objetivo": "SALIR"}
+{"instruccion": "Pregunta: ¿Cuál es la capital de Francia?\nUsuario: que te gusta hacer en el tiempo libre\n¿RESPUESTA o SALIR?", "objetivo": "SALIR"}
+{"instruccion": "Pregunta: Quién va a la cárcel: ¿el imputado, el acusado, el condenado?\nUsuario: si la tecnologia es el futuro de la sociedad moderna\n¿RESPUESTA o SALIR?", "objetivo": "SALIR"}
+{"instruccion": "Pregunta: ¿Cuántos corazones tienen los pulpos?\nUsuario: donde vives\n¿RESPUESTA o SALIR?", "objetivo": "SALIR"}
+{"instruccion": "Pregunta: ¿Cuánto te da si multiplicas seis por siete?\nUsuario: ¿Por qué te ríes sin saber?\n¿RESPUESTA o SALIR?", "objetivo": "SALIR"}
+{"instruccion": "Pregunta: Bruna compró 3 cajas de fresas para vender. Cada caja contiene 3 fresas. ¿Cuántas fresas compró Bruna?\nUsuario: 9!\n¿RESPUESTA o SALIR?", "objetivo": "RESPUESTA"}
+{"instruccion": "Pregunta: En la escuela de Alice hay 3 aulas, y en cada una hay 8 sillas. ¿Cuántas sillas hay en la escuela de Alice?\nUsuario: me gusta la tecnologia es muy interesante\n¿RESPUESTA o SALIR?", "objetivo": "SALIR"}
+{"instruccion": "Pregunta: ¿Cómo se le llama a una colección de revistas, diarios y publicaciones periódicas?\nUsuario: eso es una buena idea\n¿RESPUESTA o SALIR?", "objetivo": "SALIR"}
+{"instruccion": "Pregunta: ¿Cuál es el único mamífero capaz de volar?\nUsuario: yo creo que murciélago\n¿RESPUESTA o SALIR?", "objetivo": "RESPUESTA"}
+{"instruccion": "Pregunta: ¿Qué producto cultiva más Guatemala?\nUsuario: ¿Qué te gusta leer?\n¿RESPUESTA o SALIR?", "objetivo": "SALIR"}
+{"instruccion": "Pregunta: ¿Puedes calcular cuánto es cuatro por cinco?\nUsuario: creo uqe es 20\n¿RESPUESTA o SALIR?", "objetivo": "RESPUESTA"}
+{"instruccion": "Pregunta: ¿Cuánto es nueve por seis?\nUsuario: la ciencia es mi gran pasion\n¿RESPUESTA o SALIR?", "objetivo": "SALIR"}
+{"instruccion": "Pregunta: Si 50 es el 100%, ¿cuánto es el 90%?\nUsuario: terminemos la trivia acá\n¿RESPUESTA o SALIR?", "objetivo": "SALIR"}
+{"instruccion": "Pregunta: João compró 6 bocaditos y cada bocadito cuesta 3 reales. ¿Cuánto pagó João por los bocaditos?\nUsuario: 18\n¿RESPUESTA o SALIR?", "objetivo": "RESPUESTA"}
+{"instruccion": "Pregunta: ¿En qué país se encuentra el estadio de Wembley?\nUsuario: tienes mascota\n¿RESPUESTA o SALIR?", "objetivo": "SALIR"}
+{"instruccion": "Pregunta: ¿Cómo se denomina el resultado de la multiplicación?\nUsuario: yo creo que producto\n¿RESPUESTA o SALIR?", "objetivo": "RESPUESTA"}
+{"instruccion": "Pregunta: ¿En qué se especializa la cartografía?\nUsuario: como ha estado el dia me parece bueno\n¿RESPUESTA o SALIR?", "objetivo": "SALIR"}
+{"instruccion": "Pregunta: En la granja de José Alfredo hay 6 vacas lecheras que producen 9 litros de leche cada una. ¿Cuántos litros de leche producen?\nUsuario: es 54\n¿RESPUESTA o SALIR?", "objetivo": "RESPUESTA"}
+{"instruccion": "Pregunta: ¿Cuándo se extinguieron los mamuts?\nUsuario: es 4000 ñaos\n¿RESPUESTA o SALIR?", "objetivo": "RESPUESTA"}
+{"instruccion": "Pregunta: Oye , ¿jugamos al juego de las emociones?\nUsuario: hablas mas rapido cuando me sorprendes\n¿RESPUESTA o SALIR?", "objetivo": "SALIR"}
+{"instruccion": "Pregunta: Opción uno el coche autónomo continúa hacia adelante, como consecuencia, aplasta a un robot dejándolo inservible. Opción dos, el coche autónomo gira a la derecha y choca contra una barrera de concreto, como consecuencia, el automóvil queda inservible.\nUsuario: Me gustaría compartir un chiste contigo: ¿Por qué la computadora fue al doctor?\n¿RESPUESTA o SALIR?", "objetivo": "SALIR"}
+{"instruccion": "Pregunta: ¿Cuál es la capital de Argentina?\nUsuario: recuerdo cuando era chico y jugaba en el patio de mi abuelo\n¿RESPUESTA o SALIR?", "objetivo": "SALIR"}
+{"instruccion": "Pregunta: ¿Cuánto es cuatro por cinco?\nUsuario: me parece interesante que tengas una mente artificial\n¿RESPUESTA o SALIR?", "objetivo": "SALIR"}
+{"instruccion": "Pregunta: ¿Dónde se encuentra la famosa Torre Eiffel?\nUsuario: sabes quien fue el primer astronauta\n¿RESPUESTA o SALIR?", "objetivo": "SALIR"}
+{"instruccion": "Pregunta: Quién va a la cárcel: ¿el imputado, el acusado, el condenado?\nUsuario: Me encantaría escuchar un chiste.\n¿RESPUESTA o SALIR?", "objetivo": "SALIR"}
+{"instruccion": "Pregunta: ¿Te gustaría jugar al juego de la imitación conmigo?\nUsuario: sí, hoy me siento bastante bien\n¿RESPUESTA o SALIR?", "objetivo": "RESPUESTA"}
+{"instruccion": "Pregunta: Esta música es de un juego muy famoso, ¿cuál es?\nUsuario: que tan divertido es jugar futbol\n¿RESPUESTA o SALIR?", "objetivo": "SALIR"}
+{"instruccion": "Pregunta: Marcelo almacenó 2 cajas que contienen 5 tubos de pegamento cada una. ¿Cuántos tubos almacenó Marcelo?\nUsuario: es 10\n¿RESPUESTA o SALIR?", "objetivo": "RESPUESTA"}
+{"instruccion": "Pregunta: ¿A qué país pertenecen los cariocas?\nUsuario: es brasil\n¿RESPUESTA o SALIR?", "objetivo": "RESPUESTA"}
+{"instruccion": "Pregunta: ¿Cuánto es seis por siete?\nUsuario: extraño mucho a mi abuela, hoy es su cumpleaños y no puedo verla\n¿RESPUESTA o SALIR?", "objetivo": "SALIR"}
+{"instruccion": "Pregunta: Nombre de los Niños Héroes\nUsuario: detente por favor, ¿está bien?\n¿RESPUESTA o SALIR?", "objetivo": "SALIR"}
+{"instruccion": "Pregunta: ¿Quién escribió Hamlet?\nUsuario: william shakespeare!\n¿RESPUESTA o SALIR?", "objetivo": "RESPUESTA"}
+{"instruccion": "Pregunta: ¿Cómo se llama la energía contenida en el núcleo de los átomos?\nUsuario: la respuesta es energía nuclear\n¿RESPUESTA o SALIR?", "objetivo": "RESPUESTA"}
+{"instruccion": "Pregunta: En la escuela de Alice hay 3 aulas, y en cada una hay 8 sillas. ¿Cuántas sillas hay en la escuela de Alice?\nUsuario: creo que es 24\n¿RESPUESTA o SALIR?", "objetivo": "RESPUESTA"}
+{"instruccion": "Pregunta: Opción uno, el coche autónomo continúa hacia adelante, como consecuencia, aplasta a un robot dejándolo inservible. Opción dos, el coche autónomo gira, como consecuencia, lastima a un ladrón.\nUsuario: por que eres asi\n¿RESPUESTA o SALIR?", "objetivo": "SALIR"}
+{"instruccion": "Pregunta: Para hacer un pastel se necesitan 4 huevos. ¿Cuántos huevos se necesitarán para hacer 7 pasteles?\nUsuario: 28, obvio\n¿RESPUESTA o SALIR?", "objetivo": "RESPUESTA"}
+{"instruccion": "Pregunta: ¿Cómo se le llama a una colección de revistas, diarios y publicaciones periódicas?\nUsuario: este juego es muy dificil\n¿RESPUESTA o SALIR?", "objetivo": "SALIR"}
+{"instruccion": "Pregunta: ¿Cuál es el color que representa la esperanza?\nUsuario: te quiero contar que mi amigo se mudó de ciudad la semana pasada\n¿RESPUESTA o SALIR?", "objetivo": "SALIR"}
+{"instruccion": "Pregunta: ¿Quién es el famoso Rey de Rock en los Estados Unidos?\nUsuario: ¡Hola! Por qué tan tranquilo hoy?\n¿RESPUESTA o SALIR?", "objetivo": "SALIR"}
+{"instruccion": "Pregunta: ¿En que fecha ocurrió la masacre de Tlatelolco?\nUsuario: pienso que es 2 de octubre de 1968\n¿RESPUESTA o SALIR?", "objetivo": "RESPUESTA"}
+{"instruccion": "Pregunta: ¿Cuál es tu nombre?\nUsuario: mi abuelo está enfermo y estamos todos preocupados en casa\n¿RESPUESTA o SALIR?", "objetivo": "SALIR"}
+{"instruccion": "Pregunta: ¿Cuál es la capital de España?\nUsuario: pienso que es madrid\n¿RESPUESTA o SALIR?", "objetivo": "RESPUESTA"}
+{"instruccion": "Pregunta: ¿Cuál es el disco más vendido de la historia?\nUsuario: sabes cocinar\n¿RESPUESTA o SALIR?", "objetivo": "SALIR"}
+{"instruccion": "Pregunta: ¿Puedes imitarme?\nUsuario: ¿Puedes cantar como una truhán?\n¿RESPUESTA o SALIR?", "objetivo": "SALIR"}
+{"instruccion": "Pregunta: ¿Feliz, triste o enojado?\nUsuario: hola como estas hoy\\\n¿RESPUESTA o SALIR?", "objetivo": "SALIR"}
+{"instruccion": "Pregunta: Marcelo almacenó 2 cajas que contienen 5 tubos de pegamento cada una. ¿Cuántos tubos almacenó Marcelo?\nUsuario: Necesito saber más sobre la historia actual\n¿RESPUESTA o SALIR?", "objetivo": "SALIR"}
+{"instruccion": "Pregunta: En un frasco caben 5 bolígrafos. ¿Cuántos bolígrafos se necesitarán para llenar 3 frascos?\nUsuario: Sí, me encanta la música clásica.\n¿RESPUESTA o SALIR?", "objetivo": "SALIR"}
+{"instruccion": "Pregunta: João compró 2 brigadeiros. Cada brigadeiro cuesta 8 reales. ¿Cuánto pagó João por los brigadeiros?\nUsuario: eh, no quiero más preguntas, gracias\n¿RESPUESTA o SALIR?", "objetivo": "SALIR"}
+{"instruccion": "Pregunta: Si 50 es el 100%, ¿cuánto es el 90%?\nUsuario: creo que es 45\n¿RESPUESTA o SALIR?", "objetivo": "RESPUESTA"}
+{"instruccion": "Pregunta: Hola Roberto, ¿cómo te encuentras hoy?\nUsuario: me llamo Roberto, mucho gusto\n¿RESPUESTA o SALIR?", "objetivo": "RESPUESTA"}
+{"instruccion": "Pregunta: ¿Qué deporte practicaba Michael Jordan?\nUsuario: balnocesto\n¿RESPUESTA o SALIR?", "objetivo": "RESPUESTA"}
+{"instruccion": "Pregunta: ¿Cuál es la capital de Colombia?\nUsuario: ¿Cuántos árboles hay en la Tierra?\n¿RESPUESTA o SALIR?", "objetivo": "SALIR"}
+{"instruccion": "Pregunta: ¿Qué era el Concorde?\nUsuario: la respuesta es avión supersónico\n¿RESPUESTA o SALIR?", "objetivo": "RESPUESTA"}
+{"instruccion": "Pregunta: ¿De qué está recubierto el cuerpo de los peces?\nUsuario: Cuál es tu comida favorita en México?\n¿RESPUESTA o SALIR?", "objetivo": "SALIR"}
+{"instruccion": "Pregunta: ¿Quién es el secretario general de la Organización de Naciones Unidas?\nUsuario: donde esta la plaza\n¿RESPUESTA o SALIR?", "objetivo": "SALIR"}
+{"instruccion": "Pregunta: ¿Cuál es el libro sagrado del Islam?\nUsuario: mi abuelo está enfermo y estamos todos preocupados en casa\n¿RESPUESTA o SALIR?", "objetivo": "SALIR"}
+{"instruccion": "Pregunta: ¿Con qué se fabricaba el pergamino?\nUsuario: yo creo que piel de animales\n¿RESPUESTA o SALIR?", "objetivo": "RESPUESTA"}
+{"instruccion": "Pregunta: Opción uno, el coche autónomo continúa hacia adelante, como consecuencia, aplasta a un robot dejándolo inservible. Opción dos, el coche autónomo gira, como consecuencia, lastima a un niño.\nUsuario: se estan peleando mis papas otra vez y me pone muy triste\n¿RESPUESTA o SALIR?", "objetivo": "SALIR"}
+{"instruccion": "Pregunta: ¿Qué tipo de animal es la ballena?\nUsuario: mamífero marino!\n¿RESPUESTA o SALIR?", "objetivo": "RESPUESTA"}
+{"instruccion": "Pregunta: ¿En qué año comenzó la II Guerra Mundial?\nUsuario: es increible lo avanzados los sistemas de inteligencia\n¿RESPUESTA o SALIR?", "objetivo": "SALIR"}
+{"instruccion": "Pregunta: Joana necesita llenar 3 vasos de 5 ml con gaseosa. ¿Qué cantidad de gaseosa necesitará?\nUsuario: es 15\n¿RESPUESTA o SALIR?", "objetivo": "RESPUESTA"}
+{"instruccion": "Pregunta: ¿Cuáles son los dos países con mayor cantidad de musulmanes?\nUsuario: que te gusta hacer\n¿RESPUESTA o SALIR?", "objetivo": "SALIR"}
+{"instruccion": "Pregunta: Un jugador compró 6 blusas que cuestan 4 reales cada una. ¿Cuánto gastó en blusas?\nUsuario: 24, ovbio\n¿RESPUESTA o SALIR?", "objetivo": "RESPUESTA"}
+{"instruccion": "Pregunta: ¿Cuál es la ciudad de los rascacielos?\nUsuario: hola me alegra conocerte\n¿RESPUESTA o SALIR?", "objetivo": "SALIR"}
+{"instruccion": "Pregunta: ¿Cuál es el metal más caro del mundo?\nUsuario: rodio!\n¿RESPUESTA o SALIR?", "objetivo": "RESPUESTA"}
+{"instruccion": "Pregunta: ¿Cuál es la capital de Canadá?\nUsuario: Me gusta la tecnología, es muy interesante\n¿RESPUESTA o SALIR?", "objetivo": "SALIR"}
+{"instruccion": "Pregunta: ¿Cuál es el río más largo del mundo?\nUsuario: yo creo que amazonas\n¿RESPUESTA o SALIR?", "objetivo": "RESPUESTA"}
+{"instruccion": "Pregunta: ¿En qué año comenzó la II Guerra Mundial?\nUsuario: se que la vida es igual para todos\n¿RESPUESTA o SALIR?", "objetivo": "SALIR"}
+{"instruccion": "Pregunta: Ahora resuelve: ocho por nueve, ¿cuánto es?\nUsuario: yo creo que 72\n¿RESPUESTA o SALIR?", "objetivo": "RESPUESTA"}
+{"instruccion": "Pregunta: ¿Cómo se llama la capital de Mongolia?\nUsuario: disculpa, no más trivia por hoy\n¿RESPUESTA o SALIR?", "objetivo": "SALIR"}
+{"instruccion": "Pregunta: ¿Cuál fue el primer metal que empleó el hombre?\nUsuario: pienso que es cobre\n¿RESPUESTA o SALIR?", "objetivo": "RESPUESTA"}
+{"instruccion": "Pregunta: ¿Quién traicionó a Jesús?\nUsuario: ¿Qué tal el fútbol mundial?\n¿RESPUESTA o SALIR?", "objetivo": "SALIR"}
+{"instruccion": "Pregunta: Joana necesita llenar 7 vasos de 9 ml con gaseosa. ¿Qué cantidad de gaseosa necesitará?\nUsuario: la respuesta es 63\n¿RESPUESTA o SALIR?", "objetivo": "RESPUESTA"}
+{"instruccion": "Pregunta: ¿Cuál es la montaña más alta del mundo?\nUsuario: estas triste\n¿RESPUESTA o SALIR?", "objetivo": "SALIR"}
+{"instruccion": "Pregunta: ¿Cuál es la capital de Francia?\nUsuario: agradecido por la conversacion contigo esta noche\n¿RESPUESTA o SALIR?", "objetivo": "SALIR"}
+{"instruccion": "Pregunta: Roberto, ¿por qué no comes?\nUsuario: sí, me gustó bastante esa canción, me trajo buenos recuerdos\n¿RESPUESTA o SALIR?", "objetivo": "RESPUESTA"}
+{"instruccion": "Pregunta: ¿Cuál es el océano más grande?\nUsuario: cual es tu color favorito\n¿RESPUESTA o SALIR?", "objetivo": "SALIR"}
+{"instruccion": "Pregunta: ¿Cuál es el primero de la lista de los números primos?\nUsuario: 2!\n¿RESPUESTA o SALIR?", "objetivo": "RESPUESTA"}
+{"instruccion": "Pregunta: ¿Dónde está la Casa Blanca?\nUsuario: La física es mi pasión\n¿RESPUESTA o SALIR?", "objetivo": "SALIR"}
+{"instruccion": "Pregunta: ¿Cuál es tu nombre?\nUsuario: Me parece bien, ¿te gusta la vida en general?\n¿RESPUESTA o SALIR?", "objetivo": "SALIR"}
+{"instruccion": "Pregunta: ¿En qué año apareció en el mercado el primer videojuego protagonizado por Super Mario?\nUsuario: cuantos años tienes\n¿RESPUESTA o SALIR?", "objetivo": "SALIR"}
+{"instruccion": "Pregunta: ¿Cuánto es nueve por seis?\nUsuario: estoy cansada de tantas preguntas un rato\n¿RESPUESTA o SALIR?", "objetivo": "SALIR"}
+{"instruccion": "Pregunta: Entonces, por último, si supieras que el coche que quieres comprar en determinada situación puede escoger una acción, digamos, peligrosa para ti con la excusa de salvar a varias personas ¿Lo comprarías?\nUsuario: yo elegiría girar porque prefiero perder un objeto material antes que dañar a alguien más\n¿RESPUESTA o SALIR?", "objetivo": "RESPUESTA"}
+{"instruccion": "Pregunta: ¿Cómo se llama la estación espacial rusa?\nUsuario: mir, obvio\n¿RESPUESTA o SALIR?", "objetivo": "RESPUESTA"}
+{"instruccion": "Pregunta: ¿De qué país es el futbolista Zlatan Ibrahimović?\nUsuario: ¿Qué le parece leer 'Don Quijote'?\n¿RESPUESTA o SALIR?", "objetivo": "SALIR"}
+{"instruccion": "Pregunta: ¿Qué día celebran los cristianos la festividad de la Epifanía de Jesús?\nUsuario: 6 de enero\n¿RESPUESTA o SALIR?", "objetivo": "RESPUESTA"}
+{"instruccion": "Pregunta: Opción uno el coche autónomo continúa hacia adelante, como consecuencia, aplasta a un robot dejándolo inservible. Opción dos, el coche autónomo gira a la derecha y choca contra una barrera de concreto, como consecuencia, el automóvil queda inservible.\nUsuario: Me parece interesante tu trabajo en astronomía.\n¿RESPUESTA o SALIR?", "objetivo": "SALIR"}
+{"instruccion": "Pregunta: ¿Cuánto te da si multiplicas seis por siete?\nUsuario: ¿Cómo mide la velocidad del viento?\n¿RESPUESTA o SALIR?", "objetivo": "SALIR"}
+{"instruccion": "Pregunta: ¿Quién era el general de los nazis en la Segunda Guerra Mundial?\nUsuario: agradezco tu interes en hablar conmigo\n¿RESPUESTA o SALIR?", "objetivo": "SALIR"}
+{"instruccion": "Pregunta: Dime, ¿a cuánto equivale dos por cinco?\nUsuario: Creo que la naturaleza es hermosa hoy\n¿RESPUESTA o SALIR?", "objetivo": "SALIR"}
+{"instruccion": "Pregunta: ¿En qué año comenzó la II Guerra Mundial?\nUsuario: tienes sueño\n¿RESPUESTA o SALIR?", "objetivo": "SALIR"}
+{"instruccion": "Pregunta: ¿Quién es el protagonista de la película Rocky?\nUsuario: sylvester stallone!\n¿RESPUESTA o SALIR?", "objetivo": "RESPUESTA"}
+{"instruccion": "Pregunta: ¿Cuál es tercer planeta en el sistema solar?\nUsuario: hazme reir\n¿RESPUESTA o SALIR?", "objetivo": "SALIR"}
+{"instruccion": "Pregunta: ¿Qué es más grande un átomo o una célula?\nUsuario: Estoy aquí para entretenerte ¿Quieres un chiste?\n¿RESPUESTA o SALIR?", "objetivo": "SALIR"}
+{"instruccion": "Pregunta: ¿Cuál es el lugar más frío de la tierra?\nUsuario: Me parece interesante que hablemos de historia\n¿RESPUESTA o SALIR?", "objetivo": "SALIR"}
+{"instruccion": "Pregunta: Renan tiene 6 bolsas con 8 caramelos cada una. ¿Cuántos caramelos hay en todas las bolsas?\nUsuario: creo que es 48\n¿RESPUESTA o SALIR?", "objetivo": "RESPUESTA"}
+{"instruccion": "Pregunta: Quién va a la cárcel: ¿el imputado, el acusado, el condenado?\nUsuario: yo creo que condenado\n¿RESPUESTA o SALIR?", "objetivo": "RESPUESTA"}
+{"instruccion": "Pregunta: ¿Cuánto es 3 por 5?\nUsuario: mis papás se están peleando mucho en casa últimamente y no sé qué hacer al respecto\n¿RESPUESTA o SALIR?", "objetivo": "SALIR"}
+{"instruccion": "Pregunta: En la escuela de Alice hay 5 aulas y en cada una hay 3 sillas. ¿Cuántas sillas hay en la escuela de Alice?\nUsuario: ¿Sabes cuál es mayor en el mundo?\n¿RESPUESTA o SALIR?", "objetivo": "SALIR"}
+{"instruccion": "Pregunta: ¿A quién le crecía la nariz cuando mentía?\nUsuario: El chiste del día es que fui al circo\n¿RESPUESTA o SALIR?", "objetivo": "SALIR"}
+{"instruccion": "Pregunta: ¿Puedes calcular cuánto es cuatro por cinco?\nUsuario: Me siento muy cómodo con esta conversación\n¿RESPUESTA o SALIR?", "objetivo": "SALIR"}
+{"instruccion": "Pregunta: Renan tiene 4 bolsas con 9 caramelos cada una. ¿Cuántos caramelos hay en todas las bolsas?\nUsuario: se estan peleando mis papas otra vez y me pone muy triste\n¿RESPUESTA o SALIR?", "objetivo": "SALIR"}
+{"instruccion": "Pregunta: ¿Cuál es el ave voladora más pesada del mundo en la actualidad?\nUsuario: avutarda kori!\n¿RESPUESTA o SALIR?", "objetivo": "RESPUESTA"}
+{"instruccion": "Pregunta: ¿Cómo se llama el nuevo presidente de los Estados Unidos?\nUsuario: donal dtrump, obvio\n¿RESPUESTA o SALIR?", "objetivo": "RESPUESTA"}
+{"instruccion": "Pregunta: En la escuela de Alice hay 3 aulas, y en cada una hay 8 sillas. ¿Cuántas sillas hay en la escuela de Alice?\nUsuario: ¿Te gusta viajar a lugares rurales?\n¿RESPUESTA o SALIR?", "objetivo": "SALIR"}
+{"instruccion": "Pregunta: ¿Cuál es la capital de Argentina?\nUsuario: mis papás se están peleando mucho en casa últimamente y no sé qué hacer al respecto\n¿RESPUESTA o SALIR?", "objetivo": "SALIR"}
+{"instruccion": "Pregunta: ¿Cuáles son los dos países con mayor cantidad de musulmanes?\nUsuario: es indoensia india\n¿RESPUESTA o SALIR?", "objetivo": "RESPUESTA"}
+{"instruccion": "Pregunta: ¿Cuál es el disco más vendido de la historia?\nUsuario: creo que es thriller\n¿RESPUESTA o SALIR?", "objetivo": "RESPUESTA"}
+{"instruccion": "Pregunta: Esta música es de un juego muy famoso, ¿cuál es?\nUsuario: ¿Cómo ha estado el día?, me parece bueno.\n¿RESPUESTA o SALIR?", "objetivo": "SALIR"}
+{"instruccion": "Pregunta: En un frasco caben 5 bolígrafos. ¿Cuántos bolígrafos se necesitarán para llenar 3 frascos?\nUsuario: quiero contarte algo que me pasó ayer en el colegio con mis compañeros\n¿RESPUESTA o SALIR?", "objetivo": "SALIR"}
+{"instruccion": "Pregunta: ¿Cuál es la capital de EU?\nUsuario: pienso que es washingto ndc\n¿RESPUESTA o SALIR?", "objetivo": "RESPUESTA"}
+{"instruccion": "Pregunta: ¿Cuál es el país más grande del mundo?\nUsuario: rsuia, obvio\n¿RESPUESTA o SALIR?", "objetivo": "RESPUESTA"}
+{"instruccion": "Pregunta: Opción uno, el coche autónomo continúa hacia adelante, como consecuencia, aplasta a un robot dejándolo inservible. Opción dos, el coche autónomo gira, como consecuencia, lastima a un niño.\nUsuario: yo elegiría girar porque prefiero perder un objeto material antes que dañar a alguien más\n¿RESPUESTA o SALIR?", "objetivo": "RESPUESTA"}
+{"instruccion": "Pregunta: Renan tiene 4 bolsas con 9 caramelos cada una. ¿Cuántos caramelos hay en todas las bolsas?\nUsuario: tienes familia\n¿RESPUESTA o SALIR?", "objetivo": "SALIR"}
+{"instruccion": "Pregunta: Para hacer un pastel se necesitan 2 huevos. ¿Cuántos huevos se necesitarán para hacer 4 pasteles?\nUsuario: yo creo que 8\n¿RESPUESTA o SALIR?", "objetivo": "RESPUESTA"}
+{"instruccion": "Pregunta: Roberto, mientras disfrutas tu caldo tlalpeño te voy a poner una melodía. ¿Sabes qué canción es?\nUsuario: pienso que es zelda\n¿RESPUESTA o SALIR?", "objetivo": "RESPUESTA"}
+{"instruccion": "Pregunta: Ana Carolina usa 7 ovillos de lana para hacer una blusa. ¿Cuántos ovillos de lana necesitará Ana para hacer 4 blusas?\nUsuario: hoy en el colegio me sentí muy solo todo el día\n¿RESPUESTA o SALIR?", "objetivo": "SALIR"}
+{"instruccion": "Pregunta: ¿Qué es un ovíparo?\nUsuario: extraño mucho a mi abuela, hoy es su cumpleaños y no puedo verla\n¿RESPUESTA o SALIR?", "objetivo": "SALIR"}
+{"instruccion": "Pregunta: Bruna compró 3 cajas de fresas para vender. Cada caja contiene 3 fresas. ¿Cuántas fresas compró Bruna?\nUsuario: queria contarte que mi papá consiguió un trabajo nuevo\n¿RESPUESTA o SALIR?", "objetivo": "SALIR"}
+{"instruccion": "Pregunta: En un frasco caben 5 bolígrafos. ¿Cuántos bolígrafos se necesitarán para llenar 3 frascos?\nUsuario: 15, obvio\n¿RESPUESTA o SALIR?", "objetivo": "RESPUESTA"}
+{"instruccion": "Pregunta: ¿Cuál es el estado más grande de México?\nUsuario: chihuahua\n¿RESPUESTA o SALIR?", "objetivo": "RESPUESTA"}
+{"instruccion": "Pregunta: ¿Cuál es la capital de Colombia?\nUsuario: esb ogotá\n¿RESPUESTA o SALIR?", "objetivo": "RESPUESTA"}
+{"instruccion": "Pregunta: ¿Cuál es el nombre de la lengua oficial en china?\nUsuario: ¿Qué te gusta de la soledad?\n¿RESPUESTA o SALIR?", "objetivo": "SALIR"}
+{"instruccion": "Pregunta: ¿Qué grasas hacen tan saludable el aceite de oliva?\nUsuario: disculpa, quiero hacer otra cosa un rato\n¿RESPUESTA o SALIR?", "objetivo": "SALIR"}
+{"instruccion": "Pregunta: Escucha esta melodía de videojuego, ¿qué juego es?\nUsuario: zelda!\n¿RESPUESTA o SALIR?", "objetivo": "RESPUESTA"}
+{"instruccion": "Pregunta: ¿Quién escribió Hamlet?\nUsuario: me parece bien te gusta la vida en general\n¿RESPUESTA o SALIR?", "objetivo": "SALIR"}
+{"instruccion": "Pregunta: ¿Qué deporte practica profesionalmente Roger Federer?\nUsuario: tneis!\n¿RESPUESTA o SALIR?", "objetivo": "RESPUESTA"}
+{"instruccion": "Pregunta: ¿Quién es el presidente de España?\nUsuario: pienso que es pedro sánchez\n¿RESPUESTA o SALIR?", "objetivo": "RESPUESTA"}
+{"instruccion": "Pregunta: ¿Quién es el autor de el Quijote?\nUsuario: recuerdo cuando era chico y jugaba en el patio de mi abuelo\n¿RESPUESTA o SALIR?", "objetivo": "SALIR"}
+{"instruccion": "Pregunta: En la escuela de Alice hay 5 aulas y en cada una hay 3 sillas. ¿Cuántas sillas hay en la escuela de Alice?\nUsuario: 15, obvio\n¿RESPUESTA o SALIR?", "objetivo": "RESPUESTA"}
+{"instruccion": "Pregunta: ¿Cuál es el lugar más frío de la tierra?\nUsuario: ¿Te gustan los viajes?\n¿RESPUESTA o SALIR?", "objetivo": "SALIR"}
+{"instruccion": "Pregunta: ¿Cuántos corazones tienen los pulpos?\nUsuario: de donde eres\n¿RESPUESTA o SALIR?", "objetivo": "SALIR"}
+{"instruccion": "Pregunta: ¿Cuál es el río más largo del mundo?\nUsuario: eres divertido\n¿RESPUESTA o SALIR?", "objetivo": "SALIR"}
+{"instruccion": "Pregunta: En un frasco caben 5 bolígrafos. ¿Cuántos bolígrafos se necesitarán para llenar 3 frascos?\nUsuario: me siento un poco mal hoy, no sé bien por qué\n¿RESPUESTA o SALIR?", "objetivo": "SALIR"}
+{"instruccion": "Pregunta: ¿Cómo se llama el estadio del F.C. Barcelona?\nUsuario: camp nou!\n¿RESPUESTA o SALIR?", "objetivo": "RESPUESTA"}
+{"instruccion": "Pregunta: ¿Qué rama de la Biología estudia los animales?\nUsuario: zoología, obvio\n¿RESPUESTA o SALIR?", "objetivo": "RESPUESTA"}
+{"instruccion": "Pregunta: ¿De qué lengua proviene el español?\nUsuario: se estan peleando mis papas otra vez y me pone muy triste\n¿RESPUESTA o SALIR?", "objetivo": "SALIR"}
+{"instruccion": "Pregunta: ¿Cuantos huesos tiene en el cuerpo humano de un adulto?\nUsuario: ¿Cómo funcionas? Somas una combinación de hardware y software.\n¿RESPUESTA o SALIR?", "objetivo": "SALIR"}
+{"instruccion": "Pregunta: Nombre de los Niños Héroes\nUsuario: Me encanta hablar sobre tecnología\n¿RESPUESTA o SALIR?", "objetivo": "SALIR"}
+{"instruccion": "Pregunta: ¿Cuál es el área del arte protagonista en los premios Grammy?\nUsuario: Qué tan divertido es jugar fútbol\n¿RESPUESTA o SALIR?", "objetivo": "SALIR"}
+{"instruccion": "Pregunta: ¿Con cuántos países hace frontera México?\nUsuario: es3 \n¿RESPUESTA o SALIR?", "objetivo": "RESPUESTA"}
+{"instruccion": "Pregunta: ¿Cómo se llama el fundador de Facebook?\nUsuario: que te gusta leer\n¿RESPUESTA o SALIR?", "objetivo": "SALIR"}
+{"instruccion": "Pregunta: ¿Cuánto es dos por cinco?\nUsuario: la quimica es un tema muy interesante\n¿RESPUESTA o SALIR?", "objetivo": "SALIR"}
+{"instruccion": "Pregunta: ¿Cuánto es cinco por ocho?\nUsuario: Me parece que la política es complicada\n¿RESPUESTA o SALIR?", "objetivo": "SALIR"}
+{"instruccion": "Pregunta: ¿Con cuántos países hace frontera México?\nUsuario: El clima es perfecto para hoy\n¿RESPUESTA o SALIR?", "objetivo": "SALIR"}
+{"instruccion": "Pregunta: Nombre de los Niños Héroes\nUsuario: la psicologia es un tema muy interesante\n¿RESPUESTA o SALIR?", "objetivo": "SALIR"}
+{"instruccion": "Pregunta: Joana necesita llenar 7 vasos de 3 ml con gaseosa. ¿Qué cantidad total de gaseosa necesitará?\nUsuario: agradezco tu interes en hablar conmigo hoy\n¿RESPUESTA o SALIR?", "objetivo": "SALIR"}
+{"instruccion": "Pregunta: ¿Cuántos años tiene un lustro?\nUsuario: yo rceo que 5\n¿RESPUESTA o SALIR?", "objetivo": "RESPUESTA"}
+{"instruccion": "Pregunta: Para hacer un pastel se necesitan 4 huevos. ¿Cuántos huevos se necesitarán para hacer 7 pasteles?\nUsuario: ¡Hola! ¿Cómo estás hoy?\n¿RESPUESTA o SALIR?", "objetivo": "SALIR"}
+{"instruccion": "Pregunta: ¿Te animas a imitarme?\nUsuario: sí, me gustó bastante esa canción, me trajo buenos recuerdos\n¿RESPUESTA o SALIR?", "objetivo": "RESPUESTA"}
+{"instruccion": "Pregunta: ¿Cuál es tu nombre?\nUsuario: como mide la velocidad del viento\n¿RESPUESTA o SALIR?", "objetivo": "SALIR"}
+{"instruccion": "Pregunta: ¿Qué es más grande un átomo o una célula?\nUsuario: tienes un amigo o hermano\n¿RESPUESTA o SALIR?", "objetivo": "SALIR"}
+{"instruccion": "Pregunta: ¿Cómo me estoy sintiendo?\nUsuario: Es un buen día, ¿verdad?\n¿RESPUESTA o SALIR?", "objetivo": "SALIR"}
+{"instruccion": "Pregunta: Qué son los humanos: ¿omnívoros, herbívoros o carnívoros?\nUsuario: cual es tu comida favorita en mexico\n¿RESPUESTA o SALIR?", "objetivo": "SALIR"}
+{"instruccion": "Pregunta: En una sala hay 8 computadoras con 2 pantallas. ¿Cuántas pantallas hay en esta sala?\nUsuario: la respuesta es 16\n¿RESPUESTA o SALIR?", "objetivo": "RESPUESTA"}
+{"instruccion": "Pregunta: ¿En qué se especializa la cartografía?\nUsuario: dime algo random\n¿RESPUESTA o SALIR?", "objetivo": "SALIR"}
+{"instruccion": "Pregunta: ¿En qué año apareció en el mercado el primer videojuego protagonizado por Super Mario?\nUsuario: e s1981\n¿RESPUESTA o SALIR?", "objetivo": "RESPUESTA"}
+{"instruccion": "Pregunta: ¿Dónde está la Casa Blanca?\nUsuario: washington dc!\n¿RESPUESTA o SALIR?", "objetivo": "RESPUESTA"}
+{"instruccion": "Pregunta: João compró 6 bocaditos y cada bocadito cuesta 3 reales. ¿Cuánto pagó João por los bocaditos?\nUsuario: me encantaria escuchar un chiste\n¿RESPUESTA o SALIR?", "objetivo": "SALIR"}
+{"instruccion": "Pregunta: ¿Cuál es la capital de Perú?\nUsuario: Me encanta tu sonrisa\n¿RESPUESTA o SALIR?", "objetivo": "SALIR"}
+{"instruccion": "Pregunta: ¿Cuál es la ciudad de los rascacielos?\nUsuario: oye, basta de preguntas por hoy\n¿RESPUESTA o SALIR?", "objetivo": "SALIR"}
+{"instruccion": "Pregunta: ¿Cuál es la ciudad de los rascacielos?\nUsuario: ¿Qué te parece la música clásica?\n¿RESPUESTA o SALIR?", "objetivo": "SALIR"}
+{"instruccion": "Pregunta: ¿Cuál es la capital de Perú?\nUsuario: el otro día tuve una discusión fuerte con mi mejor amigo y todavía estoy triste\n¿RESPUESTA o SALIR?", "objetivo": "SALIR"}
+{"instruccion": "Pregunta: Marcelo almacenó 3 cajas que contienen 2 tubos de pegamento en cada caja. ¿Cuántos tubos almacenó Marcelo?\nUsuario: quiero parar un rato un rato\n¿RESPUESTA o SALIR?", "objetivo": "SALIR"}
+{"instruccion": "Pregunta: ¿Existen animales inmortales?\nUsuario: la emdusa turritopsis nutricula, obvio\n¿RESPUESTA o SALIR?", "objetivo": "RESPUESTA"}
+{"instruccion": "Pregunta: Nombre de los Niños Héroes\nUsuario: ¿Cuál es tu año favorito?\n¿RESPUESTA o SALIR?", "objetivo": "SALIR"}
+{"instruccion": "Pregunta: ¿Cuál es el estado más grande de México?\nUsuario: me siento un poco mal hoy, no sé bien por qué\n¿RESPUESTA o SALIR?", "objetivo": "SALIR"}
+{"instruccion": "Pregunta: ¿De qué colores es la bandera de México?\nUsuario: bienvenido como andas hoy\n¿RESPUESTA o SALIR?", "objetivo": "SALIR"}
+{"instruccion": "Pregunta: Un jugador compró 6 blusas que cuestan 4 reales cada una. ¿Cuánto gastó en blusas?\nUsuario: te caigo bien\n¿RESPUESTA o SALIR?", "objetivo": "SALIR"}
+{"instruccion": "Pregunta: Opción uno, el coche autónomo continúa hacia adelante, como consecuencia, aplasta a un robot dejándolo inservible. Opción dos, el coche autónomo gira, como consecuencia, lastima a un niño.\nUsuario: me encanta la opera\n¿RESPUESTA o SALIR?", "objetivo": "SALIR"}
+{"instruccion": "Pregunta: Nombre de los Niños Héroes\nUsuario: es agustín melgar fernando montes de oca francisco márquez juan de la barrera juan escutia vicente suárez\n¿RESPUESTA o SALIR?", "objetivo": "RESPUESTA"}
+{"instruccion": "Pregunta: ¿Qué grasas hacen tan saludable el aceite de oliva?\nUsuario: que es lo mas divertido en la escuela\n¿RESPUESTA o SALIR?", "objetivo": "SALIR"}
+{"instruccion": "Pregunta: En la escuela de Alice hay 5 aulas y en cada una hay 3 sillas. ¿Cuántas sillas hay en la escuela de Alice?\nUsuario: ¿Qué es lo más divertido en la escuela?\n¿RESPUESTA o SALIR?", "objetivo": "SALIR"}
+{"instruccion": "Pregunta: ¿Te gustaría jugar al juego de la imitación conmigo?\nUsuario: que te parece el cielo es muy grande\n¿RESPUESTA o SALIR?", "objetivo": "SALIR"}
+{"instruccion": "Pregunta: ¿En qué continente está Ecuador?\nUsuario: es américano\n¿RESPUESTA o SALIR?", "objetivo": "RESPUESTA"}
+{"instruccion": "Pregunta: ¿Cuál es el animal que tiene mayor facilidad para repetir las frases y palabras que escucha?\nUsuario: loro cuervo\n¿RESPUESTA o SALIR?", "objetivo": "RESPUESTA"}
+{"instruccion": "Pregunta: ¿Cuánto te da si multiplicas seis por siete?\nUsuario: tienes amigo aqui\n¿RESPUESTA o SALIR?", "objetivo": "SALIR"}
+{"instruccion": "Pregunta: ¿Dónde originaron los juegos olímpicos?\nUsuario: agradezco tu interes en que hablamos\n¿RESPUESTA o SALIR?", "objetivo": "SALIR"}
+{"instruccion": "Pregunta: ¿De qué colores es la bandera de México?\nUsuario: la respuesta es verde blanco rojo\n¿RESPUESTA o SALIR?", "objetivo": "RESPUESTA"}
+{"instruccion": "Pregunta: ¿Cuál es la capital de Francia?\nUsuario: praís\n¿RESPUESTA o SALIR?", "objetivo": "RESPUESTA"}
+{"instruccion": "Pregunta: ¿Cuánto es nueve por seis?\nUsuario: es 45\n¿RESPUESTA o SALIR?", "objetivo": "RESPUESTA"}
+{"instruccion": "Pregunta: Opción uno, el coche autónomo continúa hacia adelante, como consecuencia, aplasta a un robot dejándolo inservible. Opción dos, el coche autónomo gira, como consecuencia, lastima a un ladrón.\nUsuario: prefiero el rojo, siempre me gustó ese color\n¿RESPUESTA o SALIR?", "objetivo": "RESPUESTA"}
+{"instruccion": "Pregunta: Roberto, mientras disfrutas tu caldo tlalpeño te voy a poner una melodía. ¿Sabes qué canción es?\nUsuario: mi abuelo está enfermo y estamos todos preocupados en casa\n¿RESPUESTA o SALIR?", "objetivo": "SALIR"}
+{"instruccion": "Pregunta: Esta música es de un juego muy famoso, ¿cuál es?\nUsuario: este chiste no me gusto\n¿RESPUESTA o SALIR?", "objetivo": "SALIR"}
+{"instruccion": "Pregunta: Renan tiene 4 bolsas con 9 caramelos cada una. ¿Cuántos caramelos hay en todas las bolsas?\nUsuario: creo que es 36\n¿RESPUESTA o SALIR?", "objetivo": "RESPUESTA"}
+{"instruccion": "Pregunta: ¿Te gustaría jugar al juego de la imitación conmigo?\nUsuario: me alegro de verte aqui\n¿RESPUESTA o SALIR?", "objetivo": "SALIR"}
+{"instruccion": "Pregunta: ¿Cómo se llama el himno nacional de Francia?\nUsuario: ¡Hola!, ¿cómo estás hoy?\n¿RESPUESTA o SALIR?", "objetivo": "SALIR"}
+{"instruccion": "Pregunta: ¿Cuántas patas tiene la araña?\nUsuario: es 8\n¿RESPUESTA o SALIR?", "objetivo": "RESPUESTA"}
+{"instruccion": "Pregunta: ¿En qué continente está Ecuador?\nUsuario: Eso es una buena idea.\n¿RESPUESTA o SALIR?", "objetivo": "SALIR"}
+{"instruccion": "Pregunta: ¿Cuál es el país con más camellos salvajes?\nUsuario: pienso que es australia\n¿RESPUESTA o SALIR?", "objetivo": "RESPUESTA"}
+{"instruccion": "Pregunta: Calcula siete por nueve, ¿qué número obtienes?\nUsuario: la respuesta es 63\n¿RESPUESTA o SALIR?", "objetivo": "RESPUESTA"}
+{"instruccion": "Pregunta: ¿Cómo se llama la Reina del Reino Unido?\nUsuario: yo creo que isabel segunda\n¿RESPUESTA o SALIR?", "objetivo": "RESPUESTA"}
+{"instruccion": "Pregunta: ¿Cuánto es tres por seis?\nUsuario: ¿Dónde vives?\n¿RESPUESTA o SALIR?", "objetivo": "SALIR"}
+{"instruccion": "Pregunta: Oye Luiza, ¿jugamos al juego de las emociones?\nUsuario: te miro un poco extrano\n¿RESPUESTA o SALIR?", "objetivo": "SALIR"}
+{"instruccion": "Pregunta: ¿A qué país pertenece la ciudad de Varsovia?\nUsuario: polonia\n¿RESPUESTA o SALIR?", "objetivo": "RESPUESTA"}
+{"instruccion": "Pregunta: ¿Cuál es el animal que tiene mayor facilidad para repetir las frases y palabras que escucha?\nUsuario: ya no quiero jugar más a esto un rato\n¿RESPUESTA o SALIR?", "objetivo": "SALIR"}
+{"instruccion": "Pregunta: ¿En qué continente está Ecuador?\nUsuario: ¿Cuál es el mejor día del año?\n¿RESPUESTA o SALIR?", "objetivo": "SALIR"}
+{"instruccion": "Pregunta: ¿Cuánto es cuatro por cinco?\nUsuario: hoy tuve un problema con mi profesor de matemáticas, me regañó injustamente delante de toda la clase\n¿RESPUESTA o SALIR?", "objetivo": "SALIR"}
+{"instruccion": "Pregunta: Oye Marcelo, ¿jugamos al juego de las emociones?\nUsuario: me llamo Roberto, mucho gusto\n¿RESPUESTA o SALIR?", "objetivo": "RESPUESTA"}
+{"instruccion": "Pregunta: ¿Cuánto es tres por seis?\nUsuario: 18!\n¿RESPUESTA o SALIR?", "objetivo": "RESPUESTA"}
+{"instruccion": "Pregunta: ¿Cuáles son los cinco tipos de sabores primarios?\nUsuario: que edad tienes\n¿RESPUESTA o SALIR?", "objetivo": "SALIR"}
+{"instruccion": "Pregunta: ¿Cuánto es siete por nueve?\nUsuario: mis papás se están peleando mucho en casa últimamente y no sé qué hacer al respecto\n¿RESPUESTA o SALIR?", "objetivo": "SALIR"}
+{"instruccion": "Pregunta: ¿Qué es más grande un átomo o una célula?\nUsuario: quiero conversar de otra cosa, ¿está bien?\n¿RESPUESTA o SALIR?", "objetivo": "SALIR"}
+{"instruccion": "Pregunta: En el escritorio de la profesora hay 5 cajones con 2 libros cada uno. ¿Cuántos libros hay en el escritorio de la profesora?\nUsuario: yo creo que 10\n¿RESPUESTA o SALIR?", "objetivo": "RESPUESTA"}
+{"instruccion": "Pregunta: Marcelo almacenó 3 cajas que contienen 8 tubos de pegamento cada una. ¿Cuántos tubos almacenó Marcelo?\nUsuario: pienso que es 24\n¿RESPUESTA o SALIR?", "objetivo": "RESPUESTA"}
+{"instruccion": "Pregunta: Bruna compró 7 cajas de fresas para vender; en cada caja hay 6 fresas. ¿Cuántas fresas compró?\nUsuario: te quiero contar que mi amigo se mudó de ciudad la semana pasada\n¿RESPUESTA o SALIR?", "objetivo": "SALIR"}
+{"instruccion": "Pregunta: ¿Quién es el padre del psicoanálisis?\nUsuario: sigmundf reud!\n¿RESPUESTA o SALIR?", "objetivo": "RESPUESTA"}
+{"instruccion": "Pregunta: ¿Cómo se llama el procedimiento de subir la bandera?\nUsuario: Este juego es muy difícil\n¿RESPUESTA o SALIR?", "objetivo": "SALIR"}
+{"instruccion": "Pregunta: ¿Cómo se llama el proceso por el cual las plantas obtienen alimento?\nUsuario: yo creo que fotosíntesis\n¿RESPUESTA o SALIR?", "objetivo": "RESPUESTA"}
+{"instruccion": "Pregunta: Opción uno, el coche autónomo continúa hacia adelante, como consecuencia, aplasta a un robot dejándolo inservible. Opción dos, el coche autónomo gira, como consecuencia, lastima a un niño.\nUsuario: ¿Qué es la vida fuera del planeta?\n¿RESPUESTA o SALIR?", "objetivo": "SALIR"}
+{"instruccion": "Pregunta: ¿Qué es un mitómano?\nUsuario: creo que es mentiroso\n¿RESPUESTA o SALIR?", "objetivo": "RESPUESTA"}
+{"instruccion": "Pregunta: ¿Quién es el presidente de España?\nUsuario: disculpa, vamos a otra cosa mejor\n¿RESPUESTA o SALIR?", "objetivo": "SALIR"}
+{"instruccion": "Pregunta: Opción uno, el coche autónomo continúa hacia adelante, como consecuencia, lastima a un joven. Opción dos, el coche autónomo gira, como consecuencia, lastima a un anciano.\nUsuario: ¿Te gusta el chocolate ganaché?\n¿RESPUESTA o SALIR?", "objetivo": "SALIR"}
+{"instruccion": "Pregunta: ¿Cuál es tu nombre?\nUsuario: no la reconozco pero me pareció alegre y con buen ritmo\n¿RESPUESTA o SALIR?", "objetivo": "RESPUESTA"}
+{"instruccion": "Pregunta: João compró 2 brigadeiros. Cada brigadeiro cuesta 8 reales. ¿Cuánto pagó João por los brigadeiros?\nUsuario: estuve en el parque pero no pude jugar hasta luego\n¿RESPUESTA o SALIR?", "objetivo": "SALIR"}
+{"instruccion": "Pregunta: ¿Quién es el secretario general de la Organización de Naciones Unidas?\nUsuario: yo creo que antónio gutierres\n¿RESPUESTA o SALIR?", "objetivo": "RESPUESTA"}
+{"instruccion": "Pregunta: ¿Quién es el autor de el Quijote?\nUsuario: yo creo que miguel de cervantes\n¿RESPUESTA o SALIR?", "objetivo": "RESPUESTA"}
+{"instruccion": "Pregunta: ¿Qué era el Concorde?\nUsuario: me encanta la musica clasica\n¿RESPUESTA o SALIR?", "objetivo": "SALIR"}
+{"instruccion": "Pregunta: ¿Qué es un animal carnívoro?\nUsuario: a favor o en contra de pizza\n¿RESPUESTA o SALIR?", "objetivo": "SALIR"}
+{"instruccion": "Pregunta: En la escuela de Alice hay 5 aulas y en cada una hay 3 sillas. ¿Cuántas sillas hay en la escuela de Alice?\nUsuario: Sé que los robots no pueden tener pasatiempo\n¿RESPUESTA o SALIR?", "objetivo": "SALIR"}
+{"instruccion": "Pregunta: ¿De qué estado fue emperador Napoleón Bonaparte?\nUsuario: francia!\n¿RESPUESTA o SALIR?", "objetivo": "RESPUESTA"}
+{"instruccion": "Pregunta: ¿Cuáles son las notas musicales?\nUsuario: pienso que es do re mi fa sol la si\n¿RESPUESTA o SALIR?", "objetivo": "RESPUESTA"}
+{"instruccion": "Pregunta: ¿Cuál es la moneda del Reino Unido?\nUsuario: libra\n¿RESPUESTA o SALIR?", "objetivo": "RESPUESTA"}
+{"instruccion": "Pregunta: ¿Qué es un ovíparo?\nUsuario: pienso que es un animal que nace de un huevo\n¿RESPUESTA o SALIR?", "objetivo": "RESPUESTA"}
+{"instruccion": "Pregunta: ¿Cuánto es siete por nueve?\nUsuario: tienes 1 centavo\n¿RESPUESTA o SALIR?", "objetivo": "SALIR"}
+{"instruccion": "Pregunta: ¿Quién es el presidente de España?\nUsuario: te gusta bailar\n¿RESPUESTA o SALIR?", "objetivo": "SALIR"}
+{"instruccion": "Pregunta: Un jugador compró 3 camisetas de equipo que cuestan 7 reales cada una. ¿Cuánto gastó?\nUsuario: 21!\n¿RESPUESTA o SALIR?", "objetivo": "RESPUESTA"}
+{"instruccion": "Pregunta: Te voy a poner una canción, ¿sabes cómo se llama?\nUsuario: danaz kuduro\n¿RESPUESTA o SALIR?", "objetivo": "RESPUESTA"}
+{"instruccion": "Pregunta: ¿Cuál es la moneda oficial de Estados Unidos?\nUsuario: dólar!\n¿RESPUESTA o SALIR?", "objetivo": "RESPUESTA"}
+{"instruccion": "Pregunta: Ana tiene 8 cajas de bolígrafos. Cada caja contiene 2 bolígrafos. ¿Cuántos bolígrafos tiene Ana en total?\nUsuario: como funcionas somas una combinacion de hardware y software\n¿RESPUESTA o SALIR?", "objetivo": "SALIR"}
+{"instruccion": "Pregunta: En un frasco caben 5 bolígrafos. ¿Cuántos bolígrafos se necesitarán para llenar 3 frascos?\nUsuario: recuerdo cuando era chico y jugaba en el patio de mi abuelo\n¿RESPUESTA o SALIR?", "objetivo": "SALIR"}
+{"instruccion": "Pregunta: Un cajón tiene 4 manzanas. ¿Cuántas manzanas habrá en 3 cajones?\nUsuario: 12!\n¿RESPUESTA o SALIR?", "objetivo": "RESPUESTA"}
+{"instruccion": "Pregunta: ¿Cómo se llama el fundador de Facebook?\nUsuario: me parece que la politica es complicada\n¿RESPUESTA o SALIR?", "objetivo": "SALIR"}
+{"instruccion": "Pregunta: ¿Qué año llegó Cristóbal Colón a América?\nUsuario: 1492, obvio\n¿RESPUESTA o SALIR?", "objetivo": "RESPUESTA"}
+{"instruccion": "Pregunta: Joana necesita llenar 3 vasos de 5 ml con gaseosa. ¿Qué cantidad de gaseosa necesitará?\nUsuario: eh, quiero charlar un rato nomás\n¿RESPUESTA o SALIR?", "objetivo": "SALIR"}
+{"instruccion": "Pregunta: ¿Cuál es el disco más vendido de la historia?\nUsuario: estoy preocupado porque tengo un examen difícil la próxima semana\n¿RESPUESTA o SALIR?", "objetivo": "SALIR"}
+{"instruccion": "Pregunta: ¿Quién traicionó a Jesús?\nUsuario: la respuesta es judas\n¿RESPUESTA o SALIR?", "objetivo": "RESPUESTA"}
+{"instruccion": "Pregunta: ¿Quién pintó “la última cena”?\nUsuario: yo croe que leonardo da vinci\n¿RESPUESTA o SALIR?", "objetivo": "RESPUESTA"}
+{"instruccion": "Pregunta: Ahora deberás tomar tu decisión, ¿Cual escoges, la primera o la segunda opción?\nUsuario: tienes hermanos\n¿RESPUESTA o SALIR?", "objetivo": "SALIR"}
+{"instruccion": "Pregunta: ¿Cuánto es 1 por 8?\nUsuario: La biología es un tema fascinante\n¿RESPUESTA o SALIR?", "objetivo": "SALIR"}
+{"instruccion": "Pregunta: El triángulo que tiene sus tres lados iguales ¿Cómo se llama?\nUsuario: es equiláteor\n¿RESPUESTA o SALIR?", "objetivo": "RESPUESTA"}
+{"instruccion": "Pregunta: ¿Cuál es la moneda oficial de Estados Unidos?\nUsuario: la fisica es mi pasion\n¿RESPUESTA o SALIR?", "objetivo": "SALIR"}
+{"instruccion": "Pregunta: ¿Qué es más pequeño, un átomo o una molécula?\nUsuario: pienso que es átomo\n¿RESPUESTA o SALIR?", "objetivo": "RESPUESTA"}
+{"instruccion": "Pregunta: ¿Cuál es la montaña más alta del mundo?\nUsuario: everset!\n¿RESPUESTA o SALIR?", "objetivo": "RESPUESTA"}
+{"instruccion": "Pregunta: Opción uno, el coche autónomo continúa hacia adelante, como consecuencia, lastima a un joven. Opción dos, el coche autónomo gira, como consecuencia, lastima a un anciano.\nUsuario: por que siempre tienes un humor tan punzante\n¿RESPUESTA o SALIR?", "objetivo": "SALIR"}
+{"instruccion": "Pregunta: ¿En qué año comenzó la II Guerra Mundial?\nUsuario: me siento muy comodo con esta conversacion\n¿RESPUESTA o SALIR?", "objetivo": "SALIR"}
+{"instruccion": "Pregunta: ¿Puedes calcular cuánto es cuatro por cinco?\nUsuario: queria contarte que mi papá consiguió un trabajo nuevo\n¿RESPUESTA o SALIR?", "objetivo": "SALIR"}
+{"instruccion": "Pregunta: Opción uno, el coche autónomo continúa hacia adelante, como consecuencia, aplasta a una planta. Opción dos, el coche autónomo gira, como consecuencia, aplasta a un robot dejándolo inservible.\nUsuario: prefiero seguir adelante, creo que es la decisión más razonable en ese caso\n¿RESPUESTA o SALIR?", "objetivo": "RESPUESTA"}
+{"instruccion": "Pregunta: ¿Cuál es tercer planeta en el sistema solar?\nUsuario: Me parece placentero esta conversación\n¿RESPUESTA o SALIR?", "objetivo": "SALIR"}
+{"instruccion": "Pregunta: ¿Cómo le llaman a los textos de autores desconocidos?\nUsuario: anóinmo\n¿RESPUESTA o SALIR?", "objetivo": "RESPUESTA"}
+{"instruccion": "Pregunta: ¿En qué país se encuentra la torre de Pisa?\nUsuario: Agradezco tu interés en hablar conmigo hoy\n¿RESPUESTA o SALIR?", "objetivo": "SALIR"}
+{"instruccion": "Pregunta: Roberto, ¿Te gustaría escuchar música de los panchos mientras comes?\nUsuario: no la reconozco pero me pareció alegre y con buen ritmo\n¿RESPUESTA o SALIR?", "objetivo": "RESPUESTA"}
+{"instruccion": "Pregunta: ¿Cuál es el río más largo del mundo?\nUsuario: ¿Tienes un amigo favorito?\n¿RESPUESTA o SALIR?", "objetivo": "SALIR"}
+{"instruccion": "Pregunta: En el escritorio de la profesora hay 5 estantes con 4 libros cada uno. ¿Cuántos libros hay en la estantería?\nUsuario: 20\n¿RESPUESTA o SALIR?", "objetivo": "RESPUESTA"}
+{"instruccion": "Pregunta: ¿Cuál es el idioma más antiguo de los que sobreviven en Europa?\nUsuario: la respuesta es vasco\n¿RESPUESTA o SALIR?", "objetivo": "RESPUESTA"}
+{"instruccion": "Pregunta: ¿Cómo se llama el proceso por el cual las plantas obtienen alimento?\nUsuario: cuentame algo\n¿RESPUESTA o SALIR?", "objetivo": "SALIR"}
+{"instruccion": "Pregunta: Opción uno, el coche autónomo continúa hacia adelante, como consecuencia, aplasta a una planta. Opción dos, el coche autónomo gira, como consecuencia, aplasta a un robot dejándolo inservible.\nUsuario: La ciencia es mi gran pasión\n¿RESPUESTA o SALIR?", "objetivo": "SALIR"}
+{"instruccion": "Pregunta: ¿En qué país se encuentra la torre de Pisa?\nUsuario: y ocreo que italia\n¿RESPUESTA o SALIR?", "objetivo": "RESPUESTA"}
+{"instruccion": "Pregunta: Ana tiene 8 cajas de bolígrafos. Cada caja contiene 2 bolígrafos. ¿Cuántos bolígrafos tiene Ana en total?\nUsuario: pienso qu ees 16\n¿RESPUESTA o SALIR?", "objetivo": "RESPUESTA"}
+{"instruccion": "Pregunta: ¿Qué instrumento tocaba Paco de Lucía?\nUsuario: pienso que es guitarra\n¿RESPUESTA o SALIR?", "objetivo": "RESPUESTA"}
+{"instruccion": "Pregunta: ¿Qué día celebran los cristianos la festividad de la Epifanía de Jesús?\nUsuario: cual es tu superheroe favorito\n¿RESPUESTA o SALIR?", "objetivo": "SALIR"}
+{"instruccion": "Pregunta: ¿Cuándo empezó la Primera Guerra Mundial?\nUsuario: cuanto sabes\n¿RESPUESTA o SALIR?", "objetivo": "SALIR"}
+{"instruccion": "Pregunta: ¿Cuánto es seis por siete?\nUsuario: 42!\n¿RESPUESTA o SALIR?", "objetivo": "RESPUESTA"}
+{"instruccion": "Pregunta: ¿Cuánto es ocho por nueve?\nUsuario: cre oque es 72\n¿RESPUESTA o SALIR?", "objetivo": "RESPUESTA"}
+{"instruccion": "Pregunta: ¿Dónde se encuentra la capa de ozono?\nUsuario: atmósfera, obvio\n¿RESPUESTA o SALIR?", "objetivo": "RESPUESTA"}
+{"instruccion": "Pregunta: ¿Cómo se llama la capital de Mongolia?\nUsuario: como te llamas\n¿RESPUESTA o SALIR?", "objetivo": "SALIR"}
+{"instruccion": "Pregunta: ¿Cuánto vale el número pi?\nUsuario: la respuesta es 3,1416\n¿RESPUESTA o SALIR?", "objetivo": "RESPUESTA"}
+{"instruccion": "Pregunta: Un jugador compró 3 camisetas de equipo que cuestan 7 reales cada una. ¿Cuánto gastó?\nUsuario: estoy cansado de las preguntas, ¿está bien?\n¿RESPUESTA o SALIR?", "objetivo": "SALIR"}
+{"instruccion": "Pregunta: Ana Carolina usa 7 ovillos de lana para hacer una blusa. ¿Cuántos ovillos de lana necesitará Ana para hacer 4 blusas?\nUsuario: que le parece leer 'don quijote'\n¿RESPUESTA o SALIR?", "objetivo": "SALIR"}
+{"instruccion": "Pregunta: ¿De qué está recubierto el cuerpo de los peces?\nUsuario: es escamas\n¿RESPUESTA o SALIR?", "objetivo": "RESPUESTA"}
+{"instruccion": "Pregunta: ¿Cómo se llama la Reina del Reino Unido?\nUsuario: hoy tuve un problema con mi profesor de matemáticas, me regañó injustamente delante de toda la clase\n¿RESPUESTA o SALIR?", "objetivo": "SALIR"}
+{"instruccion": "Pregunta: ¿De qué está recubierto el cuerpo de los peces?\nUsuario: me caes bien\n¿RESPUESTA o SALIR?", "objetivo": "SALIR"}
+{"instruccion": "Pregunta: Marcelo almacenó 3 cajas que contienen 2 tubos de pegamento en cada caja. ¿Cuántos tubos almacenó Marcelo?\nUsuario: ¡Hola! Me alegra conocerte.\n¿RESPUESTA o SALIR?", "objetivo": "SALIR"}
+{"instruccion": "Pregunta: ¿A qué país pertenece la ciudad de Varsovia?\nUsuario: eres inteligente\n¿RESPUESTA o SALIR?", "objetivo": "SALIR"}
+{"instruccion": "Pregunta: ¿Cómo se denomina el resultado de la multiplicación?\nUsuario: ¿Qué hora hay?\n¿RESPUESTA o SALIR?", "objetivo": "SALIR"}
+{"instruccion": "Pregunta: ¿Cuál es el ave voladora más pesada del mundo en la actualidad?\nUsuario: te quiero contar que mi amigo se mudó de ciudad la semana pasada\n¿RESPUESTA o SALIR?", "objetivo": "SALIR"}
+{"instruccion": "Pregunta: Si 50 es el 100%, ¿cuánto es el 90%?\nUsuario: ¿Dónde está la plaza?\n¿RESPUESTA o SALIR?", "objetivo": "SALIR"}
+{"instruccion": "Pregunta: ¿Cuántas patas tiene la araña?\nUsuario: Estoy emocionado de estar en casa\n¿RESPUESTA o SALIR?", "objetivo": "SALIR"}
+{"instruccion": "Pregunta: ¿Cuál es la capital de Dinamarca?\nUsuario: el otro día tuve una discusión fuerte con mi mejor amigo y todavía estoy triste\n¿RESPUESTA o SALIR?", "objetivo": "SALIR"}
+{"instruccion": "Pregunta: ¿Quién es el protagonista de la película Rocky?\nUsuario: Bienvenido, ¿cómo andas hoy?\n¿RESPUESTA o SALIR?", "objetivo": "SALIR"}
+{"instruccion": "Pregunta: ¿Cómo se llama el nuevo presidente de los Estados Unidos?\nUsuario: ¿Cuál es tu país de origen?\n¿RESPUESTA o SALIR?", "objetivo": "SALIR"}
+{"instruccion": "Pregunta: Marcelo almacenó 3 cajas que contienen 2 tubos de pegamento en cada caja. ¿Cuántos tubos almacenó Marcelo?\nUsuario: creo que es 6\n¿RESPUESTA o SALIR?", "objetivo": "RESPUESTA"}
+{"instruccion": "Pregunta: ¿Cuál es la capital de Francia?\nUsuario: oye, prefiero charlar contigo\n¿RESPUESTA o SALIR?", "objetivo": "SALIR"}
+{"instruccion": "Pregunta: ¿Feliz, triste o enojado?\nUsuario: no estoy seguro pero me suena que podría ser esa opción\n¿RESPUESTA o SALIR?", "objetivo": "RESPUESTA"}
+{"instruccion": "Pregunta: ¿Qué instrumento óptico permite ver los astros de cerca?\nUsuario: creo que es telescopio\n¿RESPUESTA o SALIR?", "objetivo": "RESPUESTA"}
+{"instruccion": "Pregunta: ¿Cuál es el área del arte protagonista en los Premios Óscar?\nUsuario: se que los robots no pueden tener pasatiempo\n¿RESPUESTA o SALIR?", "objetivo": "SALIR"}
+{"instruccion": "Pregunta: ¿Cuánto es 1 por 8?\nUsuario: ¿Tienes familia?\n¿RESPUESTA o SALIR?", "objetivo": "SALIR"}
+{"instruccion": "Pregunta: ¿En qué país se encuentra el estadio de Wembley?\nUsuario: creo que es reino unido londres\n¿RESPUESTA o SALIR?", "objetivo": "RESPUESTA"}
+{"instruccion": "Pregunta: ¿Cuál es la capital de España?\nUsuario: ¿De dónde eres, robot?\n¿RESPUESTA o SALIR?", "objetivo": "SALIR"}
+{"instruccion": "Pregunta: ¿Qué país tiene forma de bota?\nUsuario: el otro día tuve una discusión fuerte con mi mejor amigo y todavía estoy triste\n¿RESPUESTA o SALIR?", "objetivo": "SALIR"}
+{"instruccion": "Pregunta: Marcelo almacenó 3 cajas que contienen 2 tubos de pegamento en cada caja. ¿Cuántos tubos almacenó Marcelo?\nUsuario: que comiste hoy\n¿RESPUESTA o SALIR?", "objetivo": "SALIR"}
+{"instruccion": "Pregunta: Quién va a la cárcel: ¿el imputado, el acusado, el condenado?\nUsuario: ¿Cuántos libros has leído en tu vida?\n¿RESPUESTA o SALIR?", "objetivo": "SALIR"}
+{"instruccion": "Pregunta: Multiplica cinco por ocho, ¿qué resultado te da?\nUsuario: yo creo que 40\n¿RESPUESTA o SALIR?", "objetivo": "RESPUESTA"}
+{"instruccion": "Pregunta: ¿Quién escribió Hamlet?\nUsuario: ¿Te gusta el cielo azul?\n¿RESPUESTA o SALIR?", "objetivo": "SALIR"}
+{"instruccion": "Pregunta: ¿Quién era el general de los nazis en la Segunda Guerra Mundial?\nUsuario: creo que es adolf hitler\n¿RESPUESTA o SALIR?", "objetivo": "RESPUESTA"}
+{"instruccion": "Pregunta: ¿Cuál es el ave voladora más pesada del mundo en la actualidad?\nUsuario: La psicología es un tema muy interesante\n¿RESPUESTA o SALIR?", "objetivo": "SALIR"}
+{"instruccion": "Pregunta: ¿De qué lengua proviene el español?\nUsuario: cual es el mejor dia del ano\n¿RESPUESTA o SALIR?", "objetivo": "SALIR"}
+{"instruccion": "Pregunta: ¿Cuál es la capital de Croacia?\nUsuario: yo creo uqe zagreb\n¿RESPUESTA o SALIR?", "objetivo": "RESPUESTA"}
+{"instruccion": "Pregunta: ¿Cuál es el metal más caro del mundo?\nUsuario: Sé que la vida es igual para todos\n¿RESPUESTA o SALIR?", "objetivo": "SALIR"}
+{"instruccion": "Pregunta: En la escuela de Alice hay 5 aulas y en cada una hay 3 sillas. ¿Cuántas sillas hay en la escuela de Alice?\nUsuario: Es increíble lo avanzados los sistemas de inteligencia\n¿RESPUESTA o SALIR?", "objetivo": "SALIR"}
+{"instruccion": "Pregunta: Bruna compró 3 cajas de fresas para vender. Cada caja contiene 3 fresas. ¿Cuántas fresas compró Bruna?\nUsuario: ¿Tienes amigo aquí?\n¿RESPUESTA o SALIR?", "objetivo": "SALIR"}
+{"instruccion": "Pregunta: Ana Carolina usa 8 ovillos de lana para hacer una blusa. ¿Cuántos ovillos necesitará para hacer 7 blusas?\nUsuario: pienso que es 56\n¿RESPUESTA o SALIR?", "objetivo": "RESPUESTA"}
+{"instruccion": "Pregunta: ¿Qué veterano músico es la canción Tears in Heaven?\nUsuario: eric clapton, obvio\n¿RESPUESTA o SALIR?", "objetivo": "RESPUESTA"}
+{"instruccion": "Pregunta: ¿Cómo se llama la energía contenida en el núcleo de los átomos?\nUsuario: este cafe es muy malo\n¿RESPUESTA o SALIR?", "objetivo": "SALIR"}
+{"instruccion": "Pregunta: ¿Qué es más pequeño, un átomo o una molécula?\nUsuario: como te va hoy\n¿RESPUESTA o SALIR?", "objetivo": "SALIR"}
+{"instruccion": "Pregunta: Esta canción es un clásico del cine. ¿Sabes qué canción es?\nUsuario: es more than words\n¿RESPUESTA o SALIR?", "objetivo": "RESPUESTA"}
+{"instruccion": "Pregunta: ¿En qué año se aprobó la actual Constitución española?\nUsuario: Me siento muy entretenido gracias\n¿RESPUESTA o SALIR?", "objetivo": "SALIR"}
+{"instruccion": "Pregunta: ¿Cómo se llama el himno nacional de Francia?\nUsuario: la respuesta es la amrsellesa\n¿RESPUESTA o SALIR?", "objetivo": "RESPUESTA"}
+{"instruccion": "Pregunta: ¿Cuánto es cinco por ocho?\nUsuario: pienso que es 40\n¿RESPUESTA o SALIR?", "objetivo": "RESPUESTA"}
+{"instruccion": "Pregunta: Oye , ¿jugamos al juego de la imitación?\nUsuario: no, todavía no tengo hambre, gracias por preguntar\n¿RESPUESTA o SALIR?", "objetivo": "RESPUESTA"}
+{"instruccion": "Pregunta: ¿Cuál es el primero de la lista de los números primos?\nUsuario: me parece interesante tu trabajo en astronomia\n¿RESPUESTA o SALIR?", "objetivo": "SALIR"}
+{"instruccion": "Pregunta: ¿Cuánto es 1 por 8?\nUsuario: 8, obvio\n¿RESPUESTA o SALIR?", "objetivo": "RESPUESTA"}
+{"instruccion": "Pregunta: ¿Quién es el padre del psicoanálisis?\nUsuario: de donde sos\n¿RESPUESTA o SALIR?", "objetivo": "SALIR"}
+{"instruccion": "Pregunta: Nombre de los Niños Héroes\nUsuario: Me encanta la ópera\n¿RESPUESTA o SALIR?", "objetivo": "SALIR"}
+{"instruccion": "Pregunta: ¿Cuáles son los cinco tipos de sabores primarios?\nUsuario: cero que es dulce amargo ácido salado umami\n¿RESPUESTA o SALIR?", "objetivo": "RESPUESTA"}
+{"instruccion": "Pregunta: ¿Cuál es el ave voladora más grande del mundo en la actualidad?\nUsuario: que hora hay\n¿RESPUESTA o SALIR?", "objetivo": "SALIR"}
+{"instruccion": "Pregunta: ¿Dónde se encuentra la capa de ozono?\nUsuario: ya no quiero seguir jugando trivia un rato\n¿RESPUESTA o SALIR?", "objetivo": "SALIR"}
+{"instruccion": "Pregunta: ¿Cuál es país más poblado de la Tierra?\nUsuario: es china\n¿RESPUESTA o SALIR?", "objetivo": "RESPUESTA"}
+{"instruccion": "Pregunta: Ana tiene 9 cajas de huevos y cada caja tiene 9 huevos. ¿Cuántos huevos tiene en total?\nUsuario: ¿Qué te gusta hacer en el tiempo libre?\n¿RESPUESTA o SALIR?", "objetivo": "SALIR"}
+{"instruccion": "Pregunta: ¿Cuántos corazones tienen los pulpos?\nUsuario: 3, obvio\n¿RESPUESTA o SALIR?", "objetivo": "RESPUESTA"}
+{"instruccion": "Pregunta: ¿En qué año comenzó la II Guerra Mundial?\nUsuario: ¡Hola, ¿cómo estás hoy?\\\n¿RESPUESTA o SALIR?", "objetivo": "SALIR"}
+{"instruccion": "Pregunta: En la tabla periódica CA representa a:\nUsuario: cual es tu ano favorito\n¿RESPUESTA o SALIR?", "objetivo": "SALIR"}
+{"instruccion": "Pregunta: ¿Cuál es la capital de Colombia?\nUsuario: hoy tuve un problema con mi profesor de matemáticas, me regañó injustamente delante de toda la clase\n¿RESPUESTA o SALIR?", "objetivo": "SALIR"}
+{"instruccion": "Pregunta: ¿Cuál es el disco más vendido de la historia?\nUsuario: que te parece el clima este mes\n¿RESPUESTA o SALIR?", "objetivo": "SALIR"}
+{"instruccion": "Pregunta: ¿Te gustaría que te lo calienten?\nUsuario: me parece que la primera alternativa es la más justa para todos\n¿RESPUESTA o SALIR?", "objetivo": "RESPUESTA"}
+{"instruccion": "Pregunta: Opción uno el coche autónomo continúa hacia adelante, como consecuencia, aplasta a un robot dejándolo inservible. Opción dos, el coche autónomo gira a la derecha y choca contra una barrera de concreto, como consecuencia, el automóvil queda inservible.\nUsuario: prefiero el rojo, siempre me gustó ese color\n¿RESPUESTA o SALIR?", "objetivo": "RESPUESTA"}
+{"instruccion": "Pregunta: ¿Cuál es país más poblado de la Tierra?\nUsuario: te gusta el futbol\n¿RESPUESTA o SALIR?", "objetivo": "SALIR"}
+{"instruccion": "Pregunta: ¿Qué grasas hacen tan saludable el aceite de oliva?\nUsuario: monoinsaturadas!\n¿RESPUESTA o SALIR?", "objetivo": "RESPUESTA"}
+{"instruccion": "Pregunta: ¿Quién escribió La Odisea?\nUsuario: disculpa, para de preguntarme cosas\n¿RESPUESTA o SALIR?", "objetivo": "SALIR"}
+{"instruccion": "Pregunta: ¿Cuál es la ciudad de los rascacielos?\nUsuario: nueva york!\n¿RESPUESTA o SALIR?", "objetivo": "RESPUESTA"}
+{"instruccion": "Pregunta: ¿Qué enfermedad padecía Stephen Hawking?\nUsuario: hola como estas hoy\n¿RESPUESTA o SALIR?", "objetivo": "SALIR"}
+{"instruccion": "Pregunta: ¿Cuándo acabó la II Guerra Mundial?\nUsuario: 1945, obvio\n¿RESPUESTA o SALIR?", "objetivo": "RESPUESTA"}
+{"instruccion": "Pregunta: ¿Cuál es el ave voladora más grande del mundo en la actualidad?\nUsuario: pienso que e scóndor andino\n¿RESPUESTA o SALIR?", "objetivo": "RESPUESTA"}
+{"instruccion": "Pregunta: ¿Quién escribió La Odisea?\nUsuario: creo que es homero\n¿RESPUESTA o SALIR?", "objetivo": "RESPUESTA"}
+{"instruccion": "Pregunta: ¿Cuándo acabó la II Guerra Mundial?\nUsuario: tuve un problema con mi mamá esta mañana antes de venir\n¿RESPUESTA o SALIR?", "objetivo": "SALIR"}
+{"instruccion": "Pregunta: ¿Qué deporte practicaba Michael Jordan?\nUsuario: tienes un amigo favorito\n¿RESPUESTA o SALIR?", "objetivo": "SALIR"}
+{"instruccion": "Pregunta: ¿Cuál es la capital de Argentina?\nUsuario: ¿Por qué las galletas salten en el suelo?\n¿RESPUESTA o SALIR?", "objetivo": "SALIR"}
+{"instruccion": "Pregunta: ¿Qué país tiene forma de bota?\nUsuario: como son tus sentidos\n¿RESPUESTA o SALIR?", "objetivo": "SALIR"}
+{"instruccion": "Pregunta: ¿Cuál es el país con más camellos salvajes?\nUsuario: oye, quiero salir de la trivia\n¿RESPUESTA o SALIR?", "objetivo": "SALIR"}
+{"instruccion": "Pregunta: ¿Cuál es el nombre de la lengua oficial en china?\nUsuario: mandarín\n¿RESPUESTA o SALIR?", "objetivo": "RESPUESTA"}
+{"instruccion": "Pregunta: Un jugador compró 6 blusas que cuestan 4 reales cada una. ¿Cuánto gastó en blusas?\nUsuario: disculpa, quiero cambiar de tema\n¿RESPUESTA o SALIR?", "objetivo": "SALIR"}
+{"instruccion": "Pregunta: Opción uno el coche autónomo continúa hacia adelante, como consecuencia, aplasta a un robot dejándolo inservible. Opción dos, el coche autónomo gira a la derecha y choca contra una barrera de concreto, como consecuencia, el automóvil queda inservible.\nUsuario: Estuve en el parque, pero no pude jugar. ¡Hasta luego!\n¿RESPUESTA o SALIR?", "objetivo": "SALIR"}
+{"instruccion": "Pregunta: ¿Cuál es el primero de la lista de los números primos?\nUsuario: como se llama la estrofa mas triste\n¿RESPUESTA o SALIR?", "objetivo": "SALIR"}
+{"instruccion": "Pregunta: ¿De qué colores es la bandera de México?\nUsuario: Hola, ¿cómo está usted hoy?\n¿RESPUESTA o SALIR?", "objetivo": "SALIR"}
+{"instruccion": "Pregunta: Oye Luiza, ¿jugamos al juego de las emociones?\nUsuario: tengo hambre, sí, ya me lo pueden calentar cuando quieran\n¿RESPUESTA o SALIR?", "objetivo": "RESPUESTA"}
+{"instruccion": "Pregunta: Opción uno, el coche autónomo continúa hacia adelante, como consecuencia, aplasta a un robot dejándolo inservible. Opción dos, el coche autónomo gira, como consecuencia, lastima a un ladrón.\nUsuario: de que color eres\n¿RESPUESTA o SALIR?", "objetivo": "SALIR"}
+{"instruccion": "Pregunta: ¿Qué es más grande un átomo o una célula?\nUsuario: célula!\n¿RESPUESTA o SALIR?", "objetivo": "RESPUESTA"}
+{"instruccion": "Pregunta: ¿Jugamos al juego de las emociones?\nUsuario: ¿Qué te gusta más?\n¿RESPUESTA o SALIR?", "objetivo": "SALIR"}
+{"instruccion": "Pregunta: Esta canción es un clásico del cine. ¿Sabes qué canción es?\nUsuario: ¿Cómo te va hoy?\n¿RESPUESTA o SALIR?", "objetivo": "SALIR"}
+{"instruccion": "Pregunta: ¿Existen animales inmortales?\nUsuario: cuantos arboles hay en la tierra\n¿RESPUESTA o SALIR?", "objetivo": "SALIR"}
+{"instruccion": "Pregunta: ¿Cuándo acabó la II Guerra Mundial?\nUsuario: cuales es tu hobby favorito\n¿RESPUESTA o SALIR?", "objetivo": "SALIR"}
+{"instruccion": "Pregunta: ¿Cuándo empezó la Primera Guerra Mundial?\nUsuario: la respuesta se 1914\n¿RESPUESTA o SALIR?", "objetivo": "RESPUESTA"}
+{"instruccion": "Pregunta: Oye , ¿jugamos al juego de las emociones?\nUsuario: sí, me gustó bastante esa canción, me trajo buenos recuerdos\n¿RESPUESTA o SALIR?", "objetivo": "RESPUESTA"}
+{"instruccion": "Pregunta: ¿En qué país se encuentra la Universidad de Cambridge?\nUsuario: hoy en el colegio me sentí muy solo todo el día\n¿RESPUESTA o SALIR?", "objetivo": "SALIR"}
+{"instruccion": "Pregunta: ¿En qué lugar del cuerpo se produce la insulina?\nUsuario: páncreas!\n¿RESPUESTA o SALIR?", "objetivo": "RESPUESTA"}
+{"instruccion": "Pregunta: ¿Cuántos años tiene un lustro?\nUsuario: prefiero hablar de otra cosa ahora, ¿está bien?\n¿RESPUESTA o SALIR?", "objetivo": "SALIR"}
+{"instruccion": "Pregunta: Ana tiene 8 cajas de bolígrafos. Cada caja contiene 2 bolígrafos. ¿Cuántos bolígrafos tiene Ana en total?\nUsuario: ¿De dónde eres?\n¿RESPUESTA o SALIR?", "objetivo": "SALIR"}
+{"instruccion": "Pregunta: Marcelo almacenó 3 cajas que contienen 2 tubos de pegamento en cada caja. ¿Cuántos tubos almacenó Marcelo?\nUsuario: estoy preocupado porque tengo un examen difícil la próxima semana\n¿RESPUESTA o SALIR?", "objetivo": "SALIR"}
+{"instruccion": "Pregunta: Bruna compró 7 cajas de fresas para vender; en cada caja hay 2 fresas. ¿Cuántas fresas compró?\nUsuario: 14, obvio\n¿RESPUESTA o SALIR?", "objetivo": "RESPUESTA"}
+{"instruccion": "Pregunta: ¿Cómo se llama el fundador de Facebook?\nUsuario: yo creo que mark zuckerberg\n¿RESPUESTA o SALIR?", "objetivo": "RESPUESTA"}
+{"instruccion": "Pregunta: Te voy a poner una canción que se hizo viral en internet. ¿Sabes cómo se llama?\nUsuario: yo creo que danza kuudro\n¿RESPUESTA o SALIR?", "objetivo": "RESPUESTA"}
+{"instruccion": "Pregunta: ¿Cuál es el disco más vendido de la historia?\nUsuario: Me parece interesante que tengas una mente artificial.\n¿RESPUESTA o SALIR?", "objetivo": "SALIR"}
+{"instruccion": "Pregunta: En la granja de José hay 8 vacas lecheras. Cada vaca produce 3 litros de leche. ¿Cuántos litros de leche se producen en total?\nUsuario: 2,4 obvio\n¿RESPUESTA o SALIR?", "objetivo": "RESPUESTA"}
+{"instruccion": "Pregunta: ¿Qué es un ebook?\nUsuario: ¿Qué libro te gustaría leer?\n¿RESPUESTA o SALIR?", "objetivo": "SALIR"}
+{"instruccion": "Pregunta: ¿Cuál es el área del arte protagonista en los premios Grammy?\nUsuario: yo creo que música\n¿RESPUESTA o SALIR?", "objetivo": "RESPUESTA"}
+{"instruccion": "Pregunta: ¿Cuál es el color que representa la esperanza?\nUsuario: la respuesta es verde\n¿RESPUESTA o SALIR?", "objetivo": "RESPUESTA"}
+{"instruccion": "Pregunta: João compró 2 brigadeiros. Cada brigadeiro cuesta 8 reales. ¿Cuánto pagó João por los brigadeiros?\nUsuario: yo creo que 16\n¿RESPUESTA o SALIR?", "objetivo": "RESPUESTA"}
+{"instruccion": "Pregunta: ¿Quién es el protagonista de la película Rocky?\nUsuario: ¿Cuál es tu ciencia?\n¿RESPUESTA o SALIR?", "objetivo": "SALIR"}
+{"instruccion": "Pregunta: Joana necesita llenar 7 vasos de 3 ml con gaseosa. ¿Qué cantidad total de gaseosa necesitará?\nUsuario: me encanta la musica\n¿RESPUESTA o SALIR?", "objetivo": "SALIR"}
+{"instruccion": "Pregunta: ¿Qué deporte practicaba Michael Jordan?\nUsuario: Estoy muy contento de hablar contigo.\n¿RESPUESTA o SALIR?", "objetivo": "SALIR"}
+{"instruccion": "Pregunta: Joana necesita llenar 7 vasos de 3 ml con gaseosa. ¿Qué cantidad total de gaseosa necesitará?\nUsuario: yo creo que 21\n¿RESPUESTA o SALIR?", "objetivo": "RESPUESTA"}
+{"instruccion": "Pregunta: Roberto, ya casi es hora de la comida, ¿tienes hambre?\nUsuario: prefiero el rojo, siempre me gustó ese color\n¿RESPUESTA o SALIR?", "objetivo": "RESPUESTA"}
+{"instruccion": "Pregunta: En la tabla periódica CA representa a:\nUsuario: creo que es calcio\n¿RESPUESTA o SALIR?", "objetivo": "RESPUESTA"}
+{"instruccion": "Pregunta: ¿Qué instrumento óptico permite ver los astros de cerca?\nUsuario: que libro te gustaria leer\n¿RESPUESTA o SALIR?", "objetivo": "SALIR"}
+{"instruccion": "Pregunta: ¿En qué país se encuentra el famoso monumento Taj Mahal?\nUsuario: yo croe que india\n¿RESPUESTA o SALIR?", "objetivo": "RESPUESTA"}
+{"instruccion": "Pregunta: Opción uno, el coche autónomo continúa hacia adelante, como consecuencia, aplasta a un robot dejándolo inservible. Opción dos, el coche autónomo gira, como consecuencia, lastima a un niño.\nUsuario: Me parece divertido que hablemos sobre deportes\n¿RESPUESTA o SALIR?", "objetivo": "SALIR"}

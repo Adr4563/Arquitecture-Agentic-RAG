@@ -1,5 +1,4 @@
 requests
-httpx
 rank_bm25
 flask
 edge-tts

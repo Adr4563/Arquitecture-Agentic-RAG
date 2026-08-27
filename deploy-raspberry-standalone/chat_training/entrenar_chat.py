@@ -1,10 +1,16 @@
 # -*- coding: utf-8 -*-
-"""Fine-tuning LoRA de Qwen2.5-0.5B-Instruct especializado SOLO en Chat
-libre + Búsqueda web (responder()/responder_busqueda_web() en
-Orchestrator_Management.py) -- a diferencia de personalidad_training/
-(que entrena sobre las 4 categorías) y trivia_training/ (solo trivia),
-este solo ve los 130 ejemplos de chat/búsqueda, para un modelo
-especializado en el rol de CHAT_MODEL (ver Clients/Llama_Client.py).
+"""Fine-tuning LoRA de Qwen2.5-0.5B-Instruct especializado en Chat libre
+(responder() en Orchestrator_Management.py) -- a diferencia de
+personalidad_training/ (que entrena sobre las 4 categorías) y
+trivia_training/ (solo trivia), este solo ve los ejemplos de chat, para un
+modelo especializado en el rol de CHAT_MODEL (ver Clients/Llama_Client.py).
+
+⚠️ Búsqueda web se sacó del proyecto después de entrenar el
+`lora-chat` que ya está en producción -- ese dataset original (130
+ejemplos) todavía mezclaba chat + búsqueda web, así que el modelo ya
+desplegado vio algunos de esos ejemplos. No rompe nada (sigue sirviendo
+bien para Chat libre), pero si se reentrena desde cero conviene primero
+sacar del dataset los ejemplos de búsqueda web que ya no aplican.
 
 Mismo enfoque que trivia_training/entrenar_trivia.py y personalidad_
 training/entrenar_personalidad.py (léelos primero si esto es lo primero
@@ -19,18 +25,18 @@ por CPU y los dos tardan mucho más -- mejor uno por vez.
 
 Pipeline completo (este script es solo el paso 1, igual que los otros 2):
     1. python entrenar_chat.py
-       -> deja el modelo fusionado en D:/ereberus-chat-merged
+       -> deja el modelo fusionado en D:/lora-chat-merged
           (configurable por env var, ver más abajo)
     2. Convertir a GGUF (ver personalidad_training/entrenar_personalidad.py
        para el detalle completo de este paso y el siguiente -- es idéntico):
-       python llama.cpp/convert_hf_to_gguf.py D:/ereberus-chat-merged \
-           --outfile ereberus-chat-f16.gguf --outtype f16
+       python llama.cpp/convert_hf_to_gguf.py D:/lora-chat-merged \
+           --outfile lora-chat-f16.gguf --outtype f16
     3. Cuantizar con llama-quantize (release prebuilt, sin compilar):
-       llama-quantize ereberus-chat-f16.gguf \
-           ereberus-chat-q4_k_m.gguf Q4_K_M
+       llama-quantize lora-chat-f16.gguf \
+           lora-chat-q4_k_m.gguf Q4_K_M
     4. Importar a Ollama (Modelfile en esta carpeta):
-       ollama create ereberus-chat -f Modelfile
-    5. En deploy-raspberry-standalone: export CHAT_MODEL=ereberus-chat
+       ollama create lora-chat -f Modelfile
+    5. En deploy-raspberry-standalone: export CHAT_MODEL=lora-chat
        (por default CHAT_MODEL apunta a "qwen2.5:0.5b" -- este es un
        reemplazo más especializado, opcional).
 """
@@ -51,13 +57,13 @@ from transformers import (
 BASE_MODEL = "Qwen/Qwen2.5-0.5B-Instruct"
 HERE = os.path.dirname(os.path.abspath(__file__))
 DATASET_PATH = os.path.join(HERE, "dataset_chat.jsonl")
-SALIDA_ADAPTER = os.environ.get("CHAT_SALIDA_ADAPTER", "D:/ereberus-chat-lora-adapter")
-SALIDA_MERGED = os.environ.get("CHAT_SALIDA_MERGED", "D:/ereberus-chat-merged")
+SALIDA_ADAPTER = os.environ.get("CHAT_SALIDA_ADAPTER", "D:/lora-chat-lora-adapter")
+SALIDA_MERGED = os.environ.get("CHAT_SALIDA_MERGED", "D:/lora-chat-merged")
 
 # Mismo system prompt corto que los otros dos (ver personalidad_training/ y
 # trivia_training/): se mantiene igual a propósito -- lo único que cambia
 # entre los 3 modelos es CON QUÉ EJEMPLOS se entrenó cada uno.
-SYSTEM_PROMPT_CORTO = "Eres Ereberus, un robot con personalidad seca y directa. Respondés en español, corto y natural."
+SYSTEM_PROMPT_CORTO = "Eres Lora, un robot con personalidad seca y directa. Respondés en español, corto y natural."
 
 MAX_LEN = 384
 
@@ -105,7 +111,7 @@ def main():
     collator = DataCollatorForSeq2Seq(tokenizer, padding=True, label_pad_token_id=-100)
 
     args = TrainingArguments(
-        output_dir=os.environ.get("CHAT_CHECKPOINTS", "D:/ereberus-chat-checkpoints"),
+        output_dir=os.environ.get("CHAT_CHECKPOINTS", "D:/lora-chat-checkpoints"),
         num_train_epochs=3,
         per_device_train_batch_size=2,
         gradient_accumulation_steps=4,

@@ -18,20 +18,20 @@ Raspberry Pi. El resultado se copia a la Pi como un modelo más de Ollama.
 Pipeline completo (este script es solo el paso 1, igual que en
 personalidad_training/):
     1. python entrenar_trivia.py
-       -> deja el modelo fusionado en D:/ereberus-trivia-merged
+       -> deja el modelo fusionado en D:/lora-trivia-merged
           (configurable por env var, ver más abajo)
     2. Convertir a GGUF (llama.cpp/convert_hf_to_gguf.py, ver
        personalidad_training/entrenar_personalidad.py para el detalle
        completo de este paso y el siguiente -- es idéntico):
-       python llama.cpp/convert_hf_to_gguf.py D:/ereberus-trivia-merged \
-           --outfile ereberus-trivia-f16.gguf --outtype f16
+       python llama.cpp/convert_hf_to_gguf.py D:/lora-trivia-merged \
+           --outfile lora-trivia-f16.gguf --outtype f16
     3. Cuantizar con llama-quantize (release prebuilt, sin compilar):
-       llama-quantize ereberus-trivia-f16.gguf \
-           ereberus-trivia-q4_k_m.gguf Q4_K_M
+       llama-quantize lora-trivia-f16.gguf \
+           lora-trivia-q4_k_m.gguf Q4_K_M
     4. Importar a Ollama (Modelfile en esta carpeta):
-       ollama create ereberus-trivia -f Modelfile
-    5. En deploy-raspberry-standalone: export TRIVIA_MODEL=ereberus-trivia
-       (por default TRIVIA_MODEL ya apunta a "ereberus-personalidad", el
+       ollama create lora-trivia -f Modelfile
+    5. En deploy-raspberry-standalone: export TRIVIA_MODEL=lora-trivia
+       (por default TRIVIA_MODEL ya apunta a "lora-personalidad", el
        modelo general -- este es un reemplazo más especializado, opcional).
 """
 import json
@@ -51,14 +51,14 @@ from transformers import (
 BASE_MODEL = "Qwen/Qwen2.5-0.5B-Instruct"
 HERE = os.path.dirname(os.path.abspath(__file__))
 DATASET_PATH = os.path.join(HERE, "dataset_trivia.jsonl")
-SALIDA_ADAPTER = os.environ.get("TRIVIA_SALIDA_ADAPTER", "D:/ereberus-trivia-lora-adapter")
-SALIDA_MERGED = os.environ.get("TRIVIA_SALIDA_MERGED", "D:/ereberus-trivia-merged")
+SALIDA_ADAPTER = os.environ.get("TRIVIA_SALIDA_ADAPTER", "D:/lora-trivia-lora-adapter")
+SALIDA_MERGED = os.environ.get("TRIVIA_SALIDA_MERGED", "D:/lora-trivia-merged")
 
 # Mismo system prompt corto que personalidad_training/ (ver ese archivo):
 # se mantiene igual a propósito, para que ambos modelos sean intercambiables
 # desde el punto de vista de Orchestrator_Management.py -- lo único que
 # cambia es CON QUÉ EJEMPLOS se entrenó cada uno, no la instrucción base.
-SYSTEM_PROMPT_CORTO = "Eres Ereberus, un robot con personalidad seca y directa. Respondés en español, corto y natural."
+SYSTEM_PROMPT_CORTO = "Eres Lora, un robot con personalidad seca y directa. Respondés en español, corto y natural."
 
 MAX_LEN = 384
 
@@ -110,7 +110,7 @@ def main():
     collator = DataCollatorForSeq2Seq(tokenizer, padding=True, label_pad_token_id=-100)
 
     args = TrainingArguments(
-        output_dir=os.environ.get("TRIVIA_CHECKPOINTS", "D:/ereberus-trivia-checkpoints"),
+        output_dir=os.environ.get("TRIVIA_CHECKPOINTS", "D:/lora-trivia-checkpoints"),
         num_train_epochs=4,  # dataset mas chico (121 vs 251) -- una epoca mas para compensar
         per_device_train_batch_size=2,
         gradient_accumulation_steps=4,

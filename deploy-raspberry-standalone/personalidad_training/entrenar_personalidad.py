@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """Fine-tuning LoRA de Qwen2.5-0.5B-Instruct para hornear la personalidad y
-las reglas de estilo de Ereberus en los pesos, en vez de mandar el system
+las reglas de estilo de Lora en los pesos, en vez de mandar el system
 prompt completo (~200 tokens) en cada turno. Ver "Personalidad horneada en
 el modelo" en el README para el benchmark de resultado y cómo usarlo.
 
@@ -18,21 +18,21 @@ por CPU) unos 35-40 minutos en una PC sin GPU dedicada.
 
 Pipeline completo (este script es solo el paso 1):
     1. python entrenar_personalidad.py
-       -> deja el modelo fusionado (LoRA + base) en D:/ereberus-merged
+       -> deja el modelo fusionado (LoRA + base) en D:/lora-merged
           (o donde apunte SALIDA_MERGED/HF_HOME, configurables por env var)
     2. Convertir a GGUF (requiere clonar llama.cpp y sus deps de conversión
        -- pip install gguf sentencepiece protobuf):
-       python llama.cpp/convert_hf_to_gguf.py D:/ereberus-merged \
-           --outfile ereberus-personalidad-f16.gguf --outtype f16
+       python llama.cpp/convert_hf_to_gguf.py D:/lora-merged \
+           --outfile lora-personalidad-f16.gguf --outtype f16
     3. Cuantizar (requiere el binario llama-quantize -- bajar el release
        prebuilt de Windows/Linux/Mac de https://github.com/ggml-org/llama.cpp/releases,
        NO hace falta compilar nada):
-       llama-quantize ereberus-personalidad-f16.gguf \
-           ereberus-personalidad-q4_k_m.gguf Q4_K_M
+       llama-quantize lora-personalidad-f16.gguf \
+           lora-personalidad-q4_k_m.gguf Q4_K_M
     4. Importar a Ollama (Modelfile con FROM apuntando al .gguf + el mismo
        SYSTEM_PROMPT_CORTO de acá abajo):
-       ollama create ereberus-personalidad -f Modelfile
-    5. En deploy-raspberry-standalone: export CHAT_MODEL=ereberus-personalidad
+       ollama create lora-personalidad -f Modelfile
+    5. En deploy-raspberry-standalone: export CHAT_MODEL=lora-personalidad
        (Clients/Llama_Client.py + personalidad.py detectan el nombre solos
        y dejan de mandar el system prompt largo -- ver ese archivo).
 """
@@ -53,13 +53,13 @@ from transformers import (
 BASE_MODEL = "Qwen/Qwen2.5-0.5B-Instruct"
 HERE = os.path.dirname(os.path.abspath(__file__))
 DATASET_PATH = os.path.join(HERE, "dataset_personalidad.jsonl")
-SALIDA_ADAPTER = os.environ.get("PERSONALIDAD_SALIDA_ADAPTER", "D:/ereberus-lora-adapter")
-SALIDA_MERGED = os.environ.get("PERSONALIDAD_SALIDA_MERGED", "D:/ereberus-merged")
+SALIDA_ADAPTER = os.environ.get("PERSONALIDAD_SALIDA_ADAPTER", "D:/lora-lora-adapter")
+SALIDA_MERGED = os.environ.get("PERSONALIDAD_SALIDA_MERGED", "D:/lora-merged")
 
 # OJO: si se cambia esto, hay que reentrenar -- el modelo aprendió a
 # comportarse bien específicamente con ESTE texto de system prompt exacto
-# (ver personalidad.py, que lo manda igual cuando CHAT_MODEL=ereberus-personalidad).
-SYSTEM_PROMPT_CORTO = "Eres Ereberus, un robot con personalidad seca y directa. Respondés en español, corto y natural."
+# (ver personalidad.py, que lo manda igual cuando CHAT_MODEL=lora-personalidad).
+SYSTEM_PROMPT_CORTO = "Eres Lora, un robot con personalidad seca y directa. Respondés en español, corto y natural."
 
 MAX_LEN = 384
 
@@ -111,7 +111,7 @@ def main():
     collator = DataCollatorForSeq2Seq(tokenizer, padding=True, label_pad_token_id=-100)
 
     args = TrainingArguments(
-        output_dir=os.environ.get("PERSONALIDAD_CHECKPOINTS", "D:/ereberus-lora-checkpoints"),
+        output_dir=os.environ.get("PERSONALIDAD_CHECKPOINTS", "D:/lora-lora-checkpoints"),
         num_train_epochs=3,
         per_device_train_batch_size=2,
         gradient_accumulation_steps=4,

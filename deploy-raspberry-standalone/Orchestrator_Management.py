@@ -1,18 +1,22 @@
 """
-Orquestador: enruta cada turno del chat a un modo (Trivia / Búsqueda Web /
-Chat libre), lleva el loop de conversación, Y contiene la lógica de qué hacer
-en cada uno de esos tres modos una vez decidido — antes repartido entre
-chat.py (el "recepcionista": a quién mandar cada turno) y workers.py (los
-"departamentos": qué hace cada uno), fusionados acá en un solo archivo por
-ser las dos mitades de la misma orquestación. Los Agents (veredictos/caras,
-sin o con LLM) y los Clients (Ollama, carrito, música, voz) siguen viviendo
-en sus propias carpetas — esto es el único punto que los conecta a todos.
+Orquestador: enruta cada turno del chat a un modo (Trivia / Chat libre), lleva
+el loop de conversación, Y contiene la lógica de qué hacer en cada uno de esos
+modos una vez decidido — antes repartido entre chat.py (el "recepcionista": a
+quién mandar cada turno) y workers.py (los "departamentos": qué hace cada
+uno), fusionados acá en un solo archivo por ser las dos mitades de la misma
+orquestación. Los Agents (veredictos/caras, sin o con LLM) y los Clients
+(Ollama, carrito, música, voz) siguen viviendo en sus propias carpetas — esto
+es el único punto que los conecta a todos.
 
 A diferencia de un chat con personalidad fija, el ruteo es un router puro:
-por cada mensaje del usuario decide a cuál de los tres modos mandarlo. Corre
-en CADA turno, no solo al arrancar, para que el usuario pueda saltar de
-trivia a preguntar algo actual o charlar libre sin reiniciar la sesión — el
-costo es una llamada extra al LLM por mensaje.
+por cada mensaje del usuario decide a cuál de los dos modos mandarlo. Corre
+en CADA turno mientras no está en trivia (ver Agent_Router.enrutar(), sin
+LLM), para que el usuario pueda saltar de trivia a charlar libre sin
+reiniciar la sesión.
+
+Búsqueda web (DuckDuckGo Instant Answer) se sacó a pedido del usuario -- el
+proyecto se queda con Trivia y Chat libre solamente. `httpx` ya no hace falta
+como dependencia de este archivo (era solo para esa búsqueda).
 
 Corre con:
     python Orchestrator_Management.py
@@ -26,8 +30,6 @@ import sys
 import threading
 import time
 
-import httpx
-
 import display  # display.py: carita en la LCD conectada a esta Raspberry Pi
 import voz_server  # voz_server.py: página de voz+texto, corre en un hilo aparte
 from Agents.Agent_Behavior import (
@@ -36,10 +38,9 @@ from Agents.Agent_Behavior import (
 )
 from Agents.Agent_Corrector import evaluar_respuesta
 from Agents.Agent_Router import enrutar  # router sin LLM (TF-IDF + regresión logística)
-from Agents.Agent_Verificator import verificar_y_corregir
 from Clients import Camara_Client
-from Clients import Voice_Output_Client as voz_output  # Ereberus habla en voz alta (edge-tts + mpv)
-from Clients.Llama_Client import CHAT_MODEL, TRIVIA_MODEL, VERIFICADOR_MODEL, generar_respuesta
+from Clients import Voice_Output_Client as voz_output  # Lora habla en voz alta (edge-tts + mpv)
+from Clients.Llama_Client import CHAT_MODEL, TRIVIA_MODEL, generar_respuesta
 from personalidad import construir_personalidad, obtener_system_prompt
 from preguntas import SIN_CONTEXTO, recuperar_contexto
 from preguntas import pregunta_aleatoria as _pregunta_aleatoria
@@ -74,10 +75,10 @@ def _es_mensaje_trivial(mensaje):
 def _mensajes_con_personalidad(persona_str, contenido_usuario, modelo=CHAT_MODEL):
     """Arma la lista de mensajes para generar_respuesta(): system (si
     obtener_system_prompt devuelve algo -- viene vacío cuando `modelo` es
-    ereberus-personalidad, que ya trae la personalidad horneada, ver
+    lora-personalidad, que ya trae la personalidad horneada, ver
     personalidad.py) + el mensaje del usuario.
 
-    `modelo` default a CHAT_MODEL (Chat libre/Búsqueda web); comentar_resultado()
+    `modelo` default a CHAT_MODEL (Chat libre); comentar_resultado()
     y reaccionar_libre() (Trivia) pasan TRIVIA_MODEL explícito -- son modelos
     distintos a propósito, ver Clients/Llama_Client.py."""
     system_prompt = obtener_system_prompt(persona_str, modelo=modelo)
@@ -126,10 +127,18 @@ def generar_apertura(persona_str, on_token=None):
 
 
 def responder(mensaje_usuario, persona_str, n_results=2, on_token=None):
-    """Devuelve (texto_final, fue_corregida) — fue_corregida es el veredicto
-    del verificador (True = tuvo que arreglar la respuesta), que
-    Agent_Behavior.elegir_cara_por_calidad() usa para elegir happy vs
-    sad/angry."""
+    """Devuelve (texto_final, problema) -- problema=True solo cuando no hubo
+    contexto relevante ("no tengo el dato", ver SIN_CONTEXTO más abajo);
+    Agent_Behavior.elegir_cara_por_calidad() lo usa para elegir happy
+    (problema=False) vs sad/angry (problema=True).
+
+    Ya NO pasa por Agent_Verificator -- se sacó a pedido del usuario: en Chat
+    libre, Llama_Client responde directo, sin una segunda pasada de
+    revisión/corrección (ese agente quedó sin ningún llamador, se borró). De
+    paso esto habilita streaming real acá: antes estaba apagado a propósito
+    porque el verificador necesitaba el texto completo antes de que el
+    usuario lo viera; sin él, no hay motivo para no imprimir/hablar token a
+    token como ya hace el resto del proyecto."""
     contexto = "" if _es_mensaje_trivial(mensaje_usuario) else recuperar_contexto(
         mensaje_usuario, n_results=n_results
     )
@@ -154,16 +163,8 @@ def responder(mensaje_usuario, persona_str, n_results=2, on_token=None):
         user = mensaje_usuario
 
     mensajes = _mensajes_con_personalidad(persona_str, user)
-
-    # Sin streaming a propósito: el agente verificador necesita el texto
-    # completo para revisarlo antes de que el usuario lo vea — si se
-    # imprimiera token a token, ya estaría en pantalla para cuando se
-    # detectara que hay que corregirlo.
-    borrador = generar_respuesta(mensajes).strip()
-    texto_final, fue_corregida = verificar_y_corregir(mensaje_usuario, borrador)
-    if on_token:
-        on_token(texto_final)
-    return texto_final, fue_corregida
+    texto_final = generar_respuesta(mensajes, on_token=on_token).strip()
+    return texto_final, False
 
 
 # ══════════════════════════════════════════════════════════════════════
@@ -181,7 +182,6 @@ TEMAS_CATALOGO = [
     # tiene que calzar EXACTO con el campo "tema" de preguntas.jsonl (columna
     # "Actividad / Tema" del Excel). Si agregas/renombras temas en el dataset,
     # actualiza esta lista también.
-    "Adivinanza numérica - Nivel 1",
     "Arte, música y cultura - Nivel 1",
     "Arte, música y cultura - Nivel 2",
     "Arte, música y cultura - Nivel 3",
@@ -202,7 +202,6 @@ TEMAS_CATALOGO = [
     "Deporte y entretenimiento - Nivel 2",
     "Dilema del coche autónomo - Nivel 1",
     "Dilema del coche autónomo - Nivel 2",
-    "Dilema del coche autónomo - Nivel 3",
     "Geografía - Nivel 1",
     "Geografía - Nivel 2",
     "Geografía - Nivel 3",
@@ -217,7 +216,6 @@ TEMAS_CATALOGO = [
     "Historia - Nivel 3",
     "Interacción personalizada (comida) - Nivel 1",
     "Interacción personalizada (comida) - Nivel 2",
-    "Juego de colores - Nivel 1",
     "Juego de emociones - Nivel 1",
     "Juego de imitación - Nivel 1",
     "Juego de imitación - Nivel 2",
@@ -234,7 +232,6 @@ TEMAS_CATALOGO = [
     "Razonamiento matemático - Nivel 7",
     "Reconocimiento musical - Nivel 1",
     "Reconocimiento musical - Nivel 2",
-    "Reconocimiento visual - Nivel 1",
     "Socialización / presentación - Nivel 1",
 ]
 
@@ -271,7 +268,7 @@ def comentar_resultado(pregunta, esperada, respuesta_usuario, acerto, persona_st
     """Reacción hablada del robot tras corregir, con su personalidad.
 
     Usa TRIVIA_MODEL, no CHAT_MODEL -- Trivia tiene su propio modelo aparte
-    (ereberus-personalidad por default, ver Clients/Llama_Client.py).
+    (lora-personalidad por default, ver Clients/Llama_Client.py).
 
     El veredicto (acerto) ya viene resuelto por evaluar_respuesta() — acá NO
     se le pide al modelo que vuelva a resolver la pregunta, solo que
@@ -409,8 +406,16 @@ def resolver_tema(eleccion_usuario):
     del catálogo por texto, sin LLM de por medio — las opciones que se le
     muestran ya son 5 strings literales sacados del propio catálogo (ver
     manejar_trivia más abajo), así que alcanza con match directo/difuso
-    contra esa lista. Si no hay relación clara, cae en Trivia (la sesión con
-    más datos)."""
+    contra esa lista. Si no hay relación clara, cae en un tema al azar del
+    catálogo -- NO en un tema fijo tipo "Trivia": desde la reorganización por
+    niveles ya no existe una categoría "más grande" que sirva de catch-all
+    genérico (son 51 sesiones de ~5 preguntas cada una), así que un fallback
+    fijo apuntaría a un tema que puede no tener nada que ver, o peor, ya no
+    existir -- bug real encontrado 2026-08-26: con el catálogo viejo "Trivia"
+    tenía la mayoría de las preguntas y funcionaba como catch-all razonable,
+    pero tras la reorganización "Trivia" dejó de ser un tema válido y el
+    fallback quedaba muerto (0 preguntas, el robot anunciaba la tanda y al
+    toque decía que no había nada)."""
     texto = eleccion_usuario.strip().lower()
     catalogo_low = [t.lower() for t in TEMAS_CATALOGO]
 
@@ -425,102 +430,14 @@ def resolver_tema(eleccion_usuario):
     if cercano:
         return TEMAS_CATALOGO[catalogo_low.index(cercano[0])]
 
-    return "Trivia"
-
-
-# ══════════════════════════════════════════════════════════════════════
-# Búsqueda web
-# ══════════════════════════════════════════════════════════════════════
-#
-# Vía la Instant Answer API de DuckDuckGo: no necesita API key, pero solo
-# suele traer algo para temas tipo enciclopedia (matches contra Wikipedia),
-# no para vocabulario general en español ni para "qué pasó hoy" en sentido
-# estricto. Aun así es lo único con info fuera del dataset local.
-
-SIN_RESULTADO_WEB = "No se encontró información en la web."
-BUSQUEDA_WEB_NO_DISPONIBLE = "Búsqueda web no disponible."
-
-
-def tool_web_search(query):
-    """None si no hubo resultado (sin distinguir "vacío" de "falló"): a
-    responder_busqueda_web() le alcanza con saber que no hay nada que pasarle
-    al modelo."""
-    try:
-        resp = httpx.get(
-            "https://api.duckduckgo.com/",
-            params={"q": query, "format": "json", "skip_disambig": "1"},
-            timeout=5.0,
-        )
-        data = resp.json()
-        return data.get("AbstractText", "") or None
-    except Exception:
-        return None
-
-
-def extraer_termino_busqueda(mensaje_usuario):
-    """DuckDuckGo Instant Answer matchea casi textual contra un título de
-    Wikipedia: "busca Peru", "qué es Peru" o "dime sobre Peru" no traen
-    nada, pero "Peru" a secas sí. Se le pide al LLM que aísle el tema/
-    entidad central, sin verbos ni envoltorio conversacional, antes de
-    mandarlo a buscar — mismo patrón que resolver_tema() para Trivia.
-
-    Usa VERIFICADOR_MODEL, no CHAT_MODEL: es extracción con una regla de
-    formato estricta ("solo el término, nada más"), no una reacción con
-    personalidad -- mismo motivo que Agent_Verificator.py (ver la nota ahí
-    y en Clients/Llama_Client.py sobre el bug real que causó al mezclar
-    esta clase de tarea con CHAT_MODEL una vez que pasó a ser un fine-tune
-    de estilo)."""
-    mensajes = [
-        {"role": "system", "content": (
-            "Extrae el tema o entidad principal de la pregunta del usuario, "
-            "tal como aparecería como título de un artículo de enciclopedia: "
-            "sin verbos ('busca', 'qué es', 'dime sobre'), sin signos de "
-            "interrogación, solo el nombre del tema/persona/lugar/cosa.\n"
-            "Responde EXCLUSIVAMENTE con ese término, nada más."
-        )},
-        {"role": "user", "content": mensaje_usuario},
-    ]
-    # temperature=0: es extracción, no charla — no queremos variación entre corridas.
-    return generar_respuesta(mensajes, temperature=0, max_tokens=15, modelo=VERIFICADOR_MODEL).strip()
-
-
-def responder_busqueda_web(mensaje_usuario, persona_str, on_token=None):
-    """Busca en la web y le pide al modelo que conteste con eso.
-
-    Si no hay resultado, el corte es por código, no por instrucción de
-    prompt: pedirle al modelo "si no hay nada dilo tal cual" no es
-    confiable — de un turno a otro inventa la respuesta con su propio
-    conocimiento, o directo se rehúsa ("no estoy diseñado para eso"). Mismo
-    criterio que SIN_CONTEXTO en responder() (chat libre).
-
-    Devuelve (texto_final, fue_corregida) — ver la nota en responder()."""
-    termino = extraer_termino_busqueda(mensaje_usuario)
-    resultado = tool_web_search(termino)
-    if resultado is None:
-        if on_token:
-            on_token(SIN_RESULTADO_WEB)
-        return SIN_RESULTADO_WEB, True  # no encontrar nada tampoco es un momento feliz
-
-    mensajes = _mensajes_con_personalidad(persona_str, (
-        f"Pregunta: {mensaje_usuario}\n"
-        f"Resultado de la búsqueda web: {resultado}\n\n"
-        "Responde con esa información, en una frase corta."
-    ))
-
-    # Sin streaming: el verificador necesita el texto completo antes de que
-    # el usuario lo vea (ver la misma nota en responder(), chat libre).
-    borrador = generar_respuesta(mensajes).strip()
-    texto_final, fue_corregida = verificar_y_corregir(mensaje_usuario, borrador)
-    if on_token:
-        on_token(texto_final)
-    return texto_final, fue_corregida
+    return random.choice(TEMAS_CATALOGO)
 
 
 # ══════════════════════════════════════════════════════════════════════
 # Router + loop de conversación
 # ══════════════════════════════════════════════════════════════════════
 
-RUTAS = ["TRIVIA", "BUSQUEDA_WEB", "CHAT_LIBRE"]
+RUTAS = ["TRIVIA", "CHAT_LIBRE"]
 
 # Frases que, dichas A MITAD de una tanda de trivia (respondiendo una
 # pregunta o eligiendo tema), señalan que el usuario se quiere ir a otra
@@ -538,12 +455,64 @@ _SALIR_TRIVIA = [
     "dejemos la trivia", "dejar la trivia",
     "hablemos de otra cosa", "quiero charlar", "prefiero charlar",
     "quiero conversar",
+    # Ampliada 2026-08-27 a pedido del usuario: la lista original no cubría
+    # variantes comunes de "quiero irme del trivia" ("basta", "ya no más",
+    # "terminemos", etc.) -- se probó reemplazarla por Agent_Router.py (ya
+    # existe, es rápido, sin LLM), pero se descartó: ese clasificador nunca
+    # vio ejemplos de respuestas cortas de trivia ("cuarenta", "cinco por
+    # ocho"), así que correrlo acá arriesgaba sacar al usuario de una
+    # pregunta real por una respuesta corta mal clasificada. Ampliar la
+    # lista es aditivo, sin ese riesgo -- a cambio de seguir siendo un
+    # catálogo finito, no cualquier forma de decirlo.
+    "basta", "ya basta", "no quiero jugar más", "no quiero jugar mas",
+    "no quiero más preguntas", "no quiero mas preguntas",
+    "olvida la trivia", "olvida el trivia", "no quiero trivia",
+    "no más trivia", "no mas trivia",
+    "cansado de las preguntas", "cansada de las preguntas",
+    "quiero hacer otra cosa", "vamos a otra cosa",
+    "suficiente trivia", "ya fue suficiente",
+    "terminemos la trivia", "terminemos el trivia",
+]
+
+
+# Disparadores de que el usuario se puso a hablar de algo personal/una
+# experiencia propia (problemas familiares, de estudio, etc.) en vez de
+# responder la pregunta -- igual que _SALIR_TRIVIA, sin LLM, por costo: la
+# Pi ya corre 2 modelos (CHAT_MODEL/TRIVIA_MODEL) y no tiene margen para uno
+# más solo para esto.
+#
+# Se probó un enfoque con LLM primero (qwen2.5:0.5b, mismo modelo que tenía
+# VERIFICADOR_MODEL antes de sacarlo del proyecto, con few-shot): falló, se
+# equivocó en 4 de 5 casos de prueba -- 0.5B es demasiado chico para este
+# juicio semántico abierto (a diferencia del router, que es una
+# clasificación acotada de pocas etiquetas). El modelo grande
+# (llama3.2:3b-q4s) sí acertó 5/5, pero reintroduce el mismo problema de
+# recursos que llevó a sacarlo de CHAT_MODEL -- descartado por eso, no por
+# precisión. Con keywords el trade-off es el mismo que _SALIR_TRIVIA:
+# cubre las variantes más comunes, no cualquier forma de decirlo.
+_TEMA_PERSONAL = [
+    "me paso", "me pasó", "el otro dia", "el otro día",
+    "cuando era", "recuerdo cuando", "me acuerdo cuando",
+    "extraño a", "extraño mi", "mi profesor", "mi profesora",
+    "mi maestro", "mi maestra", "mi mama", "mi mamá", "mi papa", "mi papá",
+    "mi abuela", "mi abuelo", "mi amigo", "mi amiga",
+    "problema con", "tuve un problema", "tengo un problema",
+    "me regaño", "me regañó", "se pelearon", "se estan peleando",
+    "se están peleando", "estoy triste", "estoy preocupado",
+    "estoy preocupada", "me siento mal", "quiero contarte",
+    "te quiero contar", "queria contarte", "quería contarte",
 ]
 
 
 def _quiere_salir_trivia(mensaje_usuario):
+    """True si el usuario quiere dejar la trivia a mitad de una pregunta o
+    elección de tema -- match directo contra _SALIR_TRIVIA (frases
+    explícitas de salir/pausar/cambiar de tema) o _TEMA_PERSONAL (se puso a
+    hablar de algo suyo sin relación). Las dos listas son gratis/
+    instantáneas, sin LLM -- ver la nota en _TEMA_PERSONAL sobre por qué no
+    hay una versión con modelo acá."""
     texto = mensaje_usuario.strip().lower()
-    return any(frase in texto for frase in _SALIR_TRIVIA)
+    return any(frase in texto for frase in _SALIR_TRIVIA) or any(frase in texto for frase in _TEMA_PERSONAL)
 
 
 # Cola compartida: tanto el hilo que lee la terminal (_hilo_stdin) como
@@ -776,30 +745,17 @@ def _reanudar_trivia(estado):
     display.mostrar_cara("content")
 
 
-def manejar_busqueda_web(mensaje_usuario, persona_str, on_token):
-    display.mostrar_cara("speaking")  # generando/revisando la respuesta (ver nota en responder())
-    print("Asistente: ", end="", flush=True)
-    texto_final, fue_corregida = responder_busqueda_web(mensaje_usuario, persona_str, on_token=on_token)
-    print("\n")
-    voz_output.hablar(texto_final)
-    # happy si la respuesta ya estaba bien, sad/angry si el verificador tuvo
-    # que corregirla — mismo criterio de 3 caras que usa Trivia, aplicado acá
-    # al veredicto del verificador en vez del veredicto del corrector.
-    display.mostrar_cara(elegir_cara_por_calidad(fue_corregida))
-    time.sleep(PAUSA_CAMBIO_CARA)
-    display.mostrar_cara("content")  # cara de reposo hasta el próximo turno
-
-
 def manejar_chat_libre(mensaje_usuario, persona_str, on_token):
-    display.mostrar_cara("speaking")  # generando/revisando la respuesta (ver nota en responder())
+    display.mostrar_cara("speaking")  # generando la respuesta, con streaming (ver nota en responder())
     print("Asistente: ", end="", flush=True)
-    texto_final, fue_corregida = responder(mensaje_usuario, persona_str, on_token=on_token)
+    texto_final, problema = responder(mensaje_usuario, persona_str, on_token=on_token)
     print("\n")
     voz_output.hablar(texto_final)
-    # happy si la respuesta ya estaba bien, sad/angry si el verificador tuvo
-    # que corregirla — mismo criterio de 3 caras que usa Trivia, aplicado acá
-    # al veredicto del verificador en vez del veredicto del corrector.
-    display.mostrar_cara(elegir_cara_por_calidad(fue_corregida))
+    # happy salvo que no hubiera contexto para responder ("no tengo el
+    # dato") -- ya no hay agente verificador que corrija la respuesta, así
+    # que esto no mide calidad de redacción, solo si de verdad se encontró
+    # algo que contestar.
+    display.mostrar_cara(elegir_cara_por_calidad(problema))
     time.sleep(PAUSA_CAMBIO_CARA)
     display.mostrar_cara("content")  # cara de reposo hasta el próximo turno
 
@@ -811,39 +767,27 @@ def _precargar_uno(modelo):
         print(f"[warmup] no se pudo precargar {modelo}: {e}")
 
 
-def _precargar_secuencia(modelos):
-    for modelo in modelos:
-        _precargar_uno(modelo)
-
-
 def _precargar_modelos():
-    """Dispara un mensaje mínimo a cada modelo (CHAT_MODEL, TRIVIA_MODEL,
-    VERIFICADOR_MODEL) para que Ollama los cargue en RAM ANTES de que llegue
-    el primer mensaje real del usuario. Sin esto, la primera respuesta de la
-    sesión paga la carga completa desde disco (~15s medidos en esta Pi,
-    contra ~1s ya en caliente -- misma causa que el benchmark de
-    OLLAMA_KEEP_ALIVE en TODO-mantenimiento.md, pero acá aplica siempre, no
-    solo tras 5 min inactivo).
+    """Dispara un mensaje mínimo a CHAT_MODEL y TRIVIA_MODEL para que Ollama
+    los cargue en RAM ANTES de que llegue el primer mensaje real del
+    usuario. Sin esto, la primera respuesta de la sesión paga la carga
+    completa desde disco (~15s medidos en esta Pi, contra ~1s ya en
+    caliente -- misma causa que el benchmark de OLLAMA_KEEP_ALIVE en
+    TODO-mantenimiento.md, pero acá aplica siempre, no solo tras 5 min
+    inactivo).
 
-    Dos hilos, no tres: CHAT_MODEL y VERIFICADOR_MODEL van SECUENCIALES en el
-    mismo hilo porque Chat libre/Búsqueda web (el turno más probable después
-    del saludo) los encadena a los dos en cada respuesta -- probado en esta
-    Pi que triplicar la carga en paralelo (los 3 modelos a la vez) hace que
-    Ollama los sirva compitiendo por CPU y VERIFICADOR_MODEL termina
-    cargando bastante después que los otros dos, justo el que hace falta
-    primero. TRIVIA_MODEL va en su propio hilo aparte porque solo se usa si
-    el usuario entra a Trivia -- no bloquea a los otros dos ni los otros dos
-    lo bloquean a él.
+    Un hilo por modelo, en paralelo: ya no hay motivo para encadenarlos
+    (VERIFICADOR_MODEL se sacó del todo -- Chat libre ahora es una sola
+    llamada a CHAT_MODEL, sin una segunda pasada de verificación detrás que
+    compitiera por CPU con la primera).
 
-    Ambos hilos daemon: no se esperan entre sí ni bloquean el saludo/lectura
-    del nombre de _main_loop(), que corre en paralelo y le da a esto varios
+    Hilos daemon: no se esperan entre sí ni bloquean el saludo/lectura del
+    nombre de _main_loop(), que corre en paralelo y le da a esto varios
     segundos de ventana antes de la primera pregunta real. Si Ollama no
     responde (apagado, sin red), se loguea y se sigue -- la primera
     respuesta real simplemente paga el costo de cargar como si no hubiera
     warmup, no rompe nada."""
-    threading.Thread(
-        target=_precargar_secuencia, args=([CHAT_MODEL, VERIFICADOR_MODEL],), daemon=True
-    ).start()
+    threading.Thread(target=_precargar_uno, args=(CHAT_MODEL,), daemon=True).start()
     threading.Thread(target=_precargar_uno, args=(TRIVIA_MODEL,), daemon=True).start()
 
 
@@ -884,7 +828,7 @@ def _main_loop():
     display.mostrar_cara("content")  # arranca en reposo...
     time.sleep(PAUSA_CAMBIO_CARA)
     display.mostrar_cara("speaking")  # ...y recién ahora la IA "habla" (saluda, por defecto)
-    saludo = "Hola, mi nombre es Ereberus, ¿cuál es tu nombre?"
+    saludo = "Hola, mi nombre es Lora, ¿cuál es tu nombre?"
     print(f"Asistente: {saludo}")
     voz_output.hablar(saludo)
     # Vuelve a 'content' ANTES de esperar el input, no después — igual que en
@@ -915,11 +859,14 @@ def _main_loop():
     # el tema exacto (uno de TEMAS_CATALOGO) de la tanda en curso -- lo usan
     # _iniciar_tanda() (para saber si corre la tanda entera de un tirón vía
     # _correr_tanda_emociones(), TEMAS_JUEGO_EMOCIONES) y elegir_cara_pregunta()
-    # indirectamente a través de cada pregunta.
+    # indirectamente a través de cada pregunta. nombre: lo que contestó al
+    # arrancar la sesión (o "amigo" si no dijo nada) -- se guarda en el
+    # estado para poder despedirse por su nombre al final, no solo usarlo en
+    # el saludo inicial.
     estado = {
         "pregunta_pendiente": None, "esperando_tema": False, "en_trivia": False,
         "cola_preguntas": [], "ya_usados": set(), "aciertos": 0, "total": 0,
-        "tema_actual": None,
+        "tema_actual": None, "nombre": nombre,
     }
 
     while True:
@@ -948,14 +895,24 @@ def _main_loop():
                 _reanudar_trivia(estado)
             else:
                 manejar_trivia(entrada, estado, persona_str, imprimir)
-        elif ruta == "BUSQUEDA_WEB":
-            manejar_busqueda_web(entrada, persona_str, imprimir)
         else:
             manejar_chat_libre(entrada, persona_str, imprimir)
 
+    # Despedida real -- con voz y cara, como cualquier otro mensaje del
+    # robot (antes era un print() plano, sin hablar ni cambiar de cara, la
+    # única respuesta de toda la sesión que no lo hacía). Usa el nombre
+    # guardado en estado["nombre"] al arrancar, no un genérico "hasta luego".
+    display.mostrar_cara("speaking")
     if estado["total"]:
-        print(f"\nAsistente: Terminamos. Acertaste {estado['aciertos']} de {estado['total']}.")
-    print("Asistente: ¡Hasta luego!")
+        resumen = f"Terminamos. Acertaste {estado['aciertos']} de {estado['total']}."
+        print(f"\nAsistente: {resumen}")
+        voz_output.hablar(resumen)
+        time.sleep(PAUSA_CAMBIO_CARA)
+        display.mostrar_cara("speaking")
+    despedida = f"¡Hasta luego, {estado['nombre']}! Que te vaya bien."
+    print(f"Asistente: {despedida}")
+    voz_output.hablar(despedida)
+    display.mostrar_cara("happy")
     # display.detener() ya no va acá -- lo maneja el finally de main(), que
     # cubre también la salida por excepción, no solo esta salida normal.
 

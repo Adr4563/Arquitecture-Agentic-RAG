@@ -1,15 +1,20 @@
 """
-Agente router: clasifica cada mensaje del usuario en TRIVIA / BUSQUEDA_WEB /
-CHAT_LIBRE -- SIN LLM. Reemplaza el router anterior (Clients.Llama_Client.
-enrutar(), few-shot sobre qwen2.5:0.5b) por un clasificador clásico
-(TF-IDF de n-gramas de caracteres + regresión logística, scikit-learn)
-entrenado en router_training/ sobre un dataset sintético.
+Agente router: clasifica cada mensaje del usuario en TRIVIA / CHAT_LIBRE --
+SIN LLM. Reemplaza el router anterior (Clients.Llama_Client.enrutar(),
+few-shot sobre qwen2.5:0.5b) por un clasificador clásico (TF-IDF de n-gramas
+de caracteres + regresión logística, scikit-learn) entrenado en
+router_training/ sobre un dataset sintético.
 
-Por qué: enrutar es una clasificación de 3 etiquetas fijas, no generación de
+Binario, no de 3 etiquetas: Búsqueda web (DuckDuckGo) se sacó del proyecto a
+pedido del usuario -- se reentrenó sin esos ~238 ejemplos (ver
+router_training/dataset_router.jsonl) para que el clasificador no siga
+"sabiendo" de una ruta que ya no existe.
+
+Por qué: enrutar es una clasificación de etiquetas fijas, no generación de
 texto -- no hace falta un modelo de lenguaje para eso. El archivo entrenado
-(router_modelo.joblib) pesa ~185KB y corre en microsegundos en CPU, contra
+(router_modelo.joblib) pesa ~68KB y corre en microsegundos en CPU, contra
 los ~400MB y 1-3s de una llamada a Ollama. Ver router_training/entrenar_router.py
-para cómo se armó y benchmark de precisión (~95% held-out, 7/7 en frases
+para cómo se armó y benchmark de precisión (~96% held-out, 6/6 en frases
 nunca vistas por el dataset).
 
 Si algún día hace falta reentrenar (ej. TEMAS_CATALOGO gana un tema nuevo y
@@ -29,7 +34,7 @@ _modelo = joblib.load(_MODELO_PATH)
 _vectorizador = _modelo["vectorizador"]
 _clasificador = _modelo["clasificador"]
 
-RUTAS_VALIDAS = {"TRIVIA", "BUSQUEDA_WEB", "CHAT_LIBRE"}
+RUTAS_VALIDAS = {"TRIVIA", "CHAT_LIBRE"}
 
 
 def enrutar(mensaje_usuario):

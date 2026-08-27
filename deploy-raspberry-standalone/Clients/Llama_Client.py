@@ -31,14 +31,14 @@ CHAT_SERVER_HOST = os.environ.get("CHAT_SERVER_HOST", "http://localhost:11434")
 # grande si el hardware lo banca, sin tocar código — ver
 # deploy-raspberry-standalone/README.md.
 #
-# ereberus-chat (ver chat_training/) por default: fine-tuning LoRA de
-# qwen2.5:0.5b entrenado SOLO con los 130 ejemplos de Chat libre/Búsqueda
-# web (mismo criterio que TRIVIA_MODEL/ereberus-trivia más abajo -- separar
-# el fine-tuning general ereberus-personalidad, que mezclaba las 4
+# lora-chat (ver chat_training/) por default: fine-tuning LoRA de
+# qwen2.5:0.5b entrenado SOLO con los ejemplos de Chat libre (mismo criterio
+# que TRIVIA_MODEL/lora-trivia más abajo -- separar
+# el fine-tuning general lora-personalidad, que mezclaba las 4
 # categorías, en un modelo por rol). Historia de benchmarks que llevaron
 # hasta acá (bench_modelos.py, 7 candidatos x 5 prompts, con el system
 # prompt real de personalidad.py):
-#   - qwen2.5:0.5b (default antes de ereberus-chat): 484MB residente en
+#   - qwen2.5:0.5b (default antes de lora-chat): 484MB residente en
 #     Ollama (`ollama ps`) vs 2.5GB de llama3.2:3b -- ~5x menos RAM.
 #     Respuestas 1-3s en caliente vs 7-12s. 5/5 correctas, sin fugas.
 #   - llama3.2:1b (1.5GB): perdió -- en 2/3 corridas se negó a confirmar una
@@ -47,37 +47,29 @@ CHAT_SERVER_HOST = os.environ.get("CHAT_SERVER_HOST", "http://localhost:11434")
 #   - tinyllama, qwen3:0.6b, smollm2:360m: no siguen el system prompt.
 #   - smollm2:1.7b: 2.7GB residente -- más pesado que qwen2.5:0.5b, sin
 #     sentido como reemplazo "liviano".
-# Bonus: como el router (Agent_Router.py) ya no llama a Ollama para nada,
-# este sigue siendo uno de los pocos modelos que Ollama mantiene cargado en
-# RAM (el otro es TRIVIA_MODEL, ver más abajo). Si hace falta más calidad de
-# prosa y el hardware lo permite, sobreescribir con `export CHAT_MODEL=llama3.2:3b`.
-CHAT_MODEL = os.environ.get("CHAT_MODEL", "ereberus-chat")  # nombre del modelo en `ollama list` — genera las respuestas reales
+# Bonus: como el router (Agent_Router.py) ya no llama a Ollama para nada, y
+# Agent_Verificator.py se sacó del todo (Chat libre ya no tiene una segunda
+# pasada de revisión -- Llama_Client responde directo), este y TRIVIA_MODEL
+# son los únicos dos modelos que Ollama mantiene cargados en RAM. Si hace
+# falta más calidad de prosa y el hardware lo permite, sobreescribir con
+# `export CHAT_MODEL=llama3.2:3b`.
+CHAT_MODEL = os.environ.get("CHAT_MODEL", "lora-chat")  # nombre del modelo en `ollama list` — genera las respuestas reales
 # (no usar una variante -fp16: corre 100% en CPU sin VRAM y es extremadamente lenta;
 # los modelos cuantizados -q4_K_*/-q4s son los viables en CPU)
 
 # Modelo separado SOLO para las reacciones de Trivia (comentar_resultado()/
-# reaccionar_libre() en Orchestrator_Management.py) -- a pedido del usuario,
-# distinto del que atiende Chat libre/Búsqueda web (CHAT_MODEL, sin tocar).
-# Por default ereberus-trivia (ver trivia_training/): fine-tuning LoRA
+# reaccionar_libre() en Orchestrator_Management.py -- hoy definidas pero sin
+# uso, ver la nota "Trivia sin agente de comentario") -- a pedido del
+# usuario, distinto del que atiende Chat libre (CHAT_MODEL, sin tocar).
+# Por default lora-trivia (ver trivia_training/): fine-tuning LoRA
 # entrenado SOLO con los 121 ejemplos de trivia (a diferencia de
-# ereberus-personalidad, que entrena sobre las 4 categorías mezcladas) --
-# más especializado en este rol puntual. Antecesor (ereberus-personalidad)
+# lora-personalidad, que entrena sobre las 4 categorías mezcladas) --
+# más especializado en este rol puntual. Antecesor (lora-personalidad)
 # ya había resultado más confiable que qwen2.5:0.5b + prompt completo (0/8
 # vs 3/8 en "repite la instrucción en vez de reaccionar", ver README
 # "Personalidad horneada en el modelo").
-TRIVIA_MODEL = os.environ.get("TRIVIA_MODEL", "ereberus-trivia")
+TRIVIA_MODEL = os.environ.get("TRIVIA_MODEL", "lora-trivia")
 
-# Modelo para Agent_Verificator.py (juzgar BUENA/MALA + reescribir si hace
-# falta) -- deliberadamente NO usa CHAT_MODEL/TRIVIA_MODEL. Esos dos son
-# fine-tunes especializados en "reaccionar como Ereberus" (ereberus-chat/
-# ereberus-trivia); el verificador necesita lo opuesto, un modelo que siga
-# bien una instrucción de formato arbitraria ("VEREDICTO: BUENA o MALA /
-# TEXTO: ..."), no uno acostumbrado a ignorar instrucciones raras y
-# responder siempre en su estilo entrenado. Bug real encontrado: con
-# CHAT_MODEL=ereberus-chat, el verificador devolvía su propio texto de
-# juicio ("La respuesta es incoherente...") como si fuera la respuesta
-# final -- el fine-tuning de estilo se imponía por sobre el formato pedido.
-VERIFICADOR_MODEL = os.environ.get("VERIFICADOR_MODEL", "qwen2.5:0.5b")
 
 def generar_respuesta(mensajes, temperature=0.3, max_tokens=50, on_token=None, modelo=None):
     """Llama al modelo con streaming. Si se pasa on_token(chunk), se invoca por cada

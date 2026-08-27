@@ -31,8 +31,8 @@ que corre en producción en el robot.
 
 ## `OLLAMA_KEEP_ALIVE`: se probó bajarlo a 2 min, se revirtió al default (5 min)
 
-Con 3 modelos separados por rol (`CHAT_MODEL`=ereberus-chat,
-`TRIVIA_MODEL`=ereberus-trivia, `VERIFICADOR_MODEL`=qwen2.5:0.5b), Ollama
+Con 3 modelos separados por rol (`CHAT_MODEL`=lora-chat,
+`TRIVIA_MODEL`=lora-trivia, `VERIFICADOR_MODEL`=qwen2.5:0.5b), Ollama
 puede mantener los 3 cargados en RAM a la vez (~1.6GB juntos) con su
 `keep_alive` default de 5 minutos. Se probó bajarlo a 2 minutos a nivel de
 servicio systemd (no hay forma de pasar `keep_alive` por request en el

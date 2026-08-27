@@ -36,13 +36,12 @@ _PARAMS_CLASIFICADOR = dict(max_iter=2000, C=5.0, class_weight="balanced")
 # tiene fugas: variantes casuales de la misma frase pueden caer una en train
 # y otra en test, e inflar la métrica artificialmente).
 _PRUEBAS_MANUALES = [
-    ("quien fue el ultimo presidente electo", "BUSQUEDA_WEB"),
     ("hazme jugar algo de imitar animales", "TRIVIA"),
-    ("esta lloviendo afuera ahora mismo", "BUSQUEDA_WEB"),
     ("contame un cuento", "CHAT_LIBRE"),
     ("quiero retomar donde estabamos", "TRIVIA"),
-    ("a que hora sale el sol mañana", "BUSQUEDA_WEB"),
     ("sabes tocar algun instrumento", "CHAT_LIBRE"),
+    ("quien fue el ultimo presidente electo", "CHAT_LIBRE"),
+    ("esta lloviendo afuera ahora mismo", "CHAT_LIBRE"),
 ]
 
 

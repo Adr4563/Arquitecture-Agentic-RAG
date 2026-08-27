@@ -3,8 +3,6 @@
 {"frase": "sigamos con la trivia", "ruta": "TRIVIA"}
 {"frase": "continuemos con las preguntas", "ruta": "TRIVIA"}
 {"frase": "volvamos al juego de preguntas", "ruta": "TRIVIA"}
-{"frase": "que clima hace hoy en lima", "ruta": "BUSQUEDA_WEB"}
-{"frase": "quien gano el partido de anoche", "ruta": "BUSQUEDA_WEB"}
 {"frase": "hola como estas", "ruta": "CHAT_LIBRE"}
 {"frase": "cuentame un chiste", "ruta": "CHAT_LIBRE"}
 {"frase": "¿Puedes hacerme una pregunta, qué tal?", "ruta": "TRIVIA"}
@@ -33,109 +31,6 @@
 {"frase": "¿Puedes hacerme un juego de dilemas?, ¿dónde puedo resolverlos?", "ruta": "TRIVIA"}
 {"frase": "Quiero seguir jugando un juego de reconocimiento musical", "ruta": "TRIVIA"}
 {"frase": "Puedes hacerme un juego de emociones, ¿qué emociones te ofreces?", "ruta": "TRIVIA"}
-{"frase": "¿Por qué ha habido una serie de inundaciones en diferentes partes del mundo últimamente?", "ruta": "BUSQUEDA_WEB"}
-{"frase": "¿Cuál es el actual índice de la bolsa de Nueva York?", "ruta": "BUSQUEDA_WEB"}
-{"frase": "¿Cuándo se llevará a cabo el partido de la Final de la Liga de Campeones?", "ruta": "BUSQUEDA_WEB"}
-{"frase": "¿Qué es lo que está causando que la temperatura del medio ambiente aumente?", "ruta": "BUSQUEDA_WEB"}
-{"frase": "¿Qué es el nombre del nuevo director del equipo de fútbol Madrid?", "ruta": "BUSQUEDA_WEB"}
-{"frase": "¿Cuál es el costo actual de la tarjeta de crédito Visa?", "ruta": "BUSQUEDA_WEB"}
-{"frase": "¿Qué evento deportivo se llevará a cabo en el Estadio Olímpico de Tokio?", "ruta": "BUSQUEDA_WEB"}
-{"frase": "¿Qué es lo que está sucediendo con las tasas de interés en las bancos?", "ruta": "BUSQUEDA_WEB"}
-{"frase": "¿Quién ganó el concurso de la última temporada de la serie de televisión 'American Idol'?", "ruta": "BUSQUEDA_WEB"}
-{"frase": "¿En qué hora de la mañana hay un eclipse de luna?", "ruta": "BUSQUEDA_WEB"}
-{"frase": "¿Cuál es el precio actual de una cama de espuma?", "ruta": "BUSQUEDA_WEB"}
-{"frase": "¿Qué tan grave es la hambruna que está afectando a más de 100 millones de personas?", "ruta": "BUSQUEDA_WEB"}
-{"frase": "¿Cuándo termina el semestre escolar en la Universidad de California?", "ruta": "BUSQUEDA_WEB"}
-{"frase": "¿Qué es el nombre del nuevo actor que se unirá al elenco de la próxima película de James Bond?", "ruta": "BUSQUEDA_WEB"}
-{"frase": "¿En qué país se llevó a cabo el maratón de atletismo más rápido de la historia?", "ruta": "BUSQUEDA_WEB"}
-{"frase": "¿Qué tan influyente es la acción de las protestas que se están llevando a cabo en Madrid?", "ruta": "BUSQUEDA_WEB"}
-{"frase": "¿Qué es el nombre de la novela que se estrella en las búsquedas de Google libros?", "ruta": "BUSQUEDA_WEB"}
-{"frase": "¿En qué día se cumple el décimo aniversario de la Fundación de Microsoft?", "ruta": "BUSQUEDA_WEB"}
-{"frase": "¿Qué tan altas son las tasas de desempleo en los diferentes estados de Estados Unidos?", "ruta": "BUSQUEDA_WEB"}
-{"frase": "¿Quién es el ganador del premio Nobel de Física?", "ruta": "BUSQUEDA_WEB"}
-{"frase": "¿Qué tan efectivos son los tratamientos para una enfermedad rara como la polio?", "ruta": "BUSQUEDA_WEB"}
-{"frase": "¿En qué ciudad se llevó a cabo el concert de la última gira de Madonna?", "ruta": "BUSQUEDA_WEB"}
-{"frase": "¿Qué tan útiles son los modelos de predictos estadísticos en la medicina?", "ruta": "BUSQUEDA_WEB"}
-{"frase": "¿Cuándo terminó el torneo de tenis Masters 1000?", "ruta": "BUSQUEDA_WEB"}
-{"frase": "¿Qué tan altos son los costos de la energía utilizada para iluminar un edificio?", "ruta": "BUSQUEDA_WEB"}
-{"frase": "¿Quién ganó el concurso de la última semana de la serie de televisión 'The Voice'?", "ruta": "BUSQUEDA_WEB"}
-{"frase": "¿En qué ciudad tuvo lugar la última conferencia de prensa de Mark zuckerberg?", "ruta": "BUSQUEDA_WEB"}
-{"frase": "¿Qué tan eficaces son los tratamientos de reemplazo de piezas móviles en la medicina?", "ruta": "BUSQUEDA_WEB"}
-{"frase": "¿Qué tan influyente es la acción de la huida por la rendición militar en algunas partes del mundo?", "ruta": "BUSQUEDA_WEB"}
-{"frase": "¿Cuál es el resultado del partido de fútbol entre Barcelona y Real Madrid del pasado sábado?", "ruta": "BUSQUEDA_WEB"}
-{"frase": "¿Cuál es el precio actual de un litro de gasolina en Madrid?", "ruta": "BUSQUEDA_WEB"}
-{"frase": "¿Cuándo se celebrará el eclipse solar de 2024?", "ruta": "BUSQUEDA_WEB"}
-{"frase": "¿Quién ganó el último campeonato de la NFL?", "ruta": "BUSQUEDA_WEB"}
-{"frase": "¿Cuál es el clima actual en París?", "ruta": "BUSQUEDA_WEB"}
-{"frase": "¿Qué hora es mañana?", "ruta": "BUSQUEDA_WEB"}
-{"frase": "¿Cuál es el precio actual de un kilo de harina en la zona sur de España?", "ruta": "BUSQUEDA_WEB"}
-{"frase": "¿Quién ganó el último campeonato de la Liga de la Nación", "ruta": "BUSQUEDA_WEB"}
-{"frase": "¿Cuándo se estrenará la nueva serie de la ITV?", "ruta": "BUSQUEDA_WEB"}
-{"frase": "¿Cuál es el resultado del partido detenido entre la selección de fútbol mexicana y la selección de fútbol de Estados Unidos?", "ruta": "BUSQUEDA_WEB"}
-{"frase": "¿Cuál es el precio actual de un metro de gas natural en Córdoba?", "ruta": "BUSQUEDA_WEB"}
-{"frase": "¿Quién ganó el primer premio en el last minute del concurso de la radio XFM?", "ruta": "BUSQUEDA_WEB"}
-{"frase": "¿Cuál es el clima actual en Tokio?", "ruta": "BUSQUEDA_WEB"}
-{"frase": "¿Qué hora será la partida del partido de fútbol entre Manchester United y Liverpool en la Champions League?", "ruta": "BUSQUEDA_WEB"}
-{"frase": "¿Cuál es el precio actual de un kilo de cebolla en la zona norte de España?", "ruta": "BUSQUEDA_WEB"}
-{"frase": "¿Quién ganó el último campeonato de la NBA?", "ruta": "BUSQUEDA_WEB"}
-{"frase": "¿Cuándo se celebrará el Festival de Música de Jazz?", "ruta": "BUSQUEDA_WEB"}
-{"frase": "¿Cuál es el precio actual de un litro de leche en la zona sur de España?", "ruta": "BUSQUEDA_WEB"}
-{"frase": "¿Quién ganó el primer premio en el concurso de baile de la televisión?", "ruta": "BUSQUEDA_WEB"}
-{"frase": "¿Cuál es el clima actual en Nueva York?", "ruta": "BUSQUEDA_WEB"}
-{"frase": "¿Qué hora será la cena del evento de gala de la Fundación de la Cultura?", "ruta": "BUSQUEDA_WEB"}
-{"frase": "¿Cuál es el precio actual de un kilo de arroz en la zona central de España?", "ruta": "BUSQUEDA_WEB"}
-{"frase": "¿Quién ganó el último campeonato de la Copa de la UEFA?", "ruta": "BUSQUEDA_WEB"}
-{"frase": "¿Cuándo se estrenará la nueva película de Spielberg?", "ruta": "BUSQUEDA_WEB"}
-{"frase": "¿Cuál es el precio actual de un metro de gasolina en Madrid?", "ruta": "BUSQUEDA_WEB"}
-{"frase": "¿Quién ganó el primer premio en el concurso de la radio de 104 FM?", "ruta": "BUSQUEDA_WEB"}
-{"frase": "¿Cuál es la última noticia sobre el terremoto que afectó a México?", "ruta": "BUSQUEDA_WEB"}
-{"frase": "¿Cuál es el promedio de temperatura en Madrid hoy?", "ruta": "BUSQUEDA_WEB"}
-{"frase": "¿Quién ganó el Mundial de fútbol la temporada pasada?", "ruta": "BUSQUEDA_WEB"}
-{"frase": "¿Cuál es la fecha today?", "ruta": "BUSQUEDA_WEB"}
-{"frase": "¿Qué eventos se celebrarán en la ciudad el 20 de marzo?", "ruta": "BUSQUEDA_WEB"}
-{"frase": "¿Cuál es el resultado del partido de la liga entre Barcelona y Real Madrid?", "ruta": "BUSQUEDA_WEB"}
-{"frase": "¿Quién ganó el Gran Premio de la F1 el pasado fin de semana?", "ruta": "BUSQUEDA_WEB"}
-{"frase": "¿Cuándo es la hora exacta de la medianoche de hoy?", "ruta": "BUSQUEDA_WEB"}
-{"frase": "¿Cuál es el costo actual de un kilogramo de arroz en la tienda?", "ruta": "BUSQUEDA_WEB"}
-{"frase": "¿Qué acto se celebrará en el Estadio Wembley este sábado?", "ruta": "BUSQUEDA_WEB"}
-{"frase": "¿Cuál es la temperatura en París en este momento?", "ruta": "BUSQUEDA_WEB"}
-{"frase": "¿Quién es el ganador del Grammy de la categoría de Mejor álbum pop?", "ruta": "BUSQUEDA_WEB"}
-{"frase": "¿Cuál es la fecha de finalización de la temporada de fútbol de la liga?", "ruta": "BUSQUEDA_WEB"}
-{"frase": "¿Cuál es el precio de un abono de transporte público actual en Madrid?", "ruta": "BUSQUEDA_WEB"}
-{"frase": "¿Qué eventos de patinaje artístico se llevarán a cabo este año?", "ruta": "BUSQUEDA_WEB"}
-{"frase": "¿Cuál es el promedio de humedad relativa en la ciudad este lunes?", "ruta": "BUSQUEDA_WEB"}
-{"frase": "¿Quién ganó el campeonato de tenis en la Copa del Reino?", "ruta": "BUSQUEDA_WEB"}
-{"frase": "¿Cuál es el costo actual de un litro de gasolina con descuento en la estación?", "ruta": "BUSQUEDA_WEB"}
-{"frase": "¿Qué espectáculo musical se representará en el Teatro Colon este mes?", "ruta": "BUSQUEDA_WEB"}
-{"frase": "¿Cuál es la temperatura media de la ciudad de Nueva York en este invierno?", "ruta": "BUSQUEDA_WEB"}
-{"frase": "¿Quién ganó el campeonato de fútbol de la liga?", "ruta": "BUSQUEDA_WEB"}
-{"frase": "¿Cuál es la última noticia sobre la crisis humanitaria en Ucrania?", "ruta": "BUSQUEDA_WEB"}
-{"frase": "¿Cuál es el tiempo esperado para el invierno en Miami?", "ruta": "BUSQUEDA_WEB"}
-{"frase": "¿Quién ganó la liga de fútbol americano la temporada pasada?", "ruta": "BUSQUEDA_WEB"}
-{"frase": "¿A qué hora comienza la reunión del Congreso estadounidense esta semana?", "ruta": "BUSQUEDA_WEB"}
-{"frase": "¿Cuál es el precio actual de un taza de café en el mercado de Nueva York?", "ruta": "BUSQUEDA_WEB"}
-{"frase": "¿Qué sucedió en el último evento deportivo de la FIBA?", "ruta": "BUSQUEDA_WEB"}
-{"frase": "¿Cuándo es el próximo día de ayuno en Egipto?", "ruta": "BUSQUEDA_WEB"}
-{"frase": "¿A qué precio se pueden comprar tickets para el próximo concierto de Ariana Grande?", "ruta": "BUSQUEDA_WEB"}
-{"frase": "¿Cuál es la temperatura actual en el Polo Norte?", "ruta": "BUSQUEDA_WEB"}
-{"frase": "¿Qué dijo el presidente sobre la política de inmigración?", "ruta": "BUSQUEDA_WEB"}
-{"frase": "¿A qué hora se realiza la transmisión del primer partido de la liga de fútbol brasileña?", "ruta": "BUSQUEDA_WEB"}
-{"frase": "¿Cuál es el número de casos confirmados de COVID-19 en Europa?", "ruta": "BUSQUEDA_WEB"}
-{"frase": "¿A qué precio se pueden adquirir dispositivos smartphone de última generación?", "ruta": "BUSQUEDA_WEB"}
-{"frase": "¿Cuándo es el próximo día de protesta en Argentina?", "ruta": "BUSQUEDA_WEB"}
-{"frase": "¿Qué sucedió en el último lanzamiento de un rover espacial?", "ruta": "BUSQUEDA_WEB"}
-{"frase": "¿Cuándo se realiza el próximo concurso de tatuadores en las Américas?", "ruta": "BUSQUEDA_WEB"}
-{"frase": "¿A qué hora comienza la competencia de esgrima en los Juegos Olímpicos?", "ruta": "BUSQUEDA_WEB"}
-{"frase": "¿Cuál es el índice de inflación actual en Japón?", "ruta": "BUSQUEDA_WEB"}
-{"frase": "¿Qué dijo la Reina Isabel II sobre la actualidad política?", "ruta": "BUSQUEDA_WEB"}
-{"frase": "¿Cuándo es el próximo evento de la Serie del Campeonato Mundial de Golf?", "ruta": "BUSQUEDA_WEB"}
-{"frase": "¿A qué precio se pueden comprar tickets para el próximo viaje espacial a la Luna?", "ruta": "BUSQUEDA_WEB"}
-{"frase": "¿Cuál es la velocidad actual del viento en las montañas Rocosas?", "ruta": "BUSQUEDA_WEB"}
-{"frase": "¿Qué sucedió en el último partido de la liga de baloncesto en Europa?", "ruta": "BUSQUEDA_WEB"}
-{"frase": "¿A qué hora se realizará el juicio contra el CEO de una empresa tech?", "ruta": "BUSQUEDA_WEB"}
-{"frase": "¿Cuál es el costo actual de una tonelada de petróleo en el mercado global?", "ruta": "BUSQUEDA_WEB"}
-{"frase": "¿Qué dijo el fundador de una empresa tech sobre la industria?", "ruta": "BUSQUEDA_WEB"}
-{"frase": "¿A qué hora se realizará el lanzamiento del próximo teléfono móvil?", "ruta": "BUSQUEDA_WEB"}
 {"frase": "¡Hola! Me alegra conocerte.", "ruta": "CHAT_LIBRE"}
 {"frase": "Tengo un chiste que te hace reír: ¿Por qué la computadora fue al doctor?", "ruta": "CHAT_LIBRE"}
 {"frase": "¿De dónde eres?", "ruta": "CHAT_LIBRE"}
@@ -348,109 +243,6 @@
 {"frase": "empezar un juego de imitazione que tal", "ruta": "TRIVIA"}
 {"frase": "puedes hacerme un juego de dilemas donde puedo resolverlos", "ruta": "TRIVIA"}
 {"frase": "puedes hacerme un juego de emociones que emociones te ofreces", "ruta": "TRIVIA"}
-{"frase": "por que ha habido una serie de inundaciones en diferentes partes del mundo ultimamente", "ruta": "BUSQUEDA_WEB"}
-{"frase": "cual es el actual indice de la bolsa de nueva york", "ruta": "BUSQUEDA_WEB"}
-{"frase": "cuando se llevara a cabo el partido de la final de la liga de campeones", "ruta": "BUSQUEDA_WEB"}
-{"frase": "que es lo que esta causando que la temperatura del medio ambiente aumente", "ruta": "BUSQUEDA_WEB"}
-{"frase": "que es el nombre del nuevo director del equipo de futbol madrid", "ruta": "BUSQUEDA_WEB"}
-{"frase": "cual es el costo actual de la tarjeta de credito visa", "ruta": "BUSQUEDA_WEB"}
-{"frase": "que evento deportivo se llevara a cabo en el estadio olimpico de tokio", "ruta": "BUSQUEDA_WEB"}
-{"frase": "que es lo que esta sucediendo con las tasas de interes en las bancos", "ruta": "BUSQUEDA_WEB"}
-{"frase": "quien gano el concurso de la ultima temporada de la serie de television 'american idol'", "ruta": "BUSQUEDA_WEB"}
-{"frase": "en que hora de la manana hay un eclipse de luna", "ruta": "BUSQUEDA_WEB"}
-{"frase": "cual es el precio actual de una cama de espuma", "ruta": "BUSQUEDA_WEB"}
-{"frase": "que tan grave es la hambruna que esta afectando a mas de 100 millones de personas", "ruta": "BUSQUEDA_WEB"}
-{"frase": "cuando termina el semestre escolar en la universidad de california", "ruta": "BUSQUEDA_WEB"}
-{"frase": "que es el nombre del nuevo actor que se unira al elenco de la proxima pelicula de james bond", "ruta": "BUSQUEDA_WEB"}
-{"frase": "en que pais se llevo a cabo el maraton de atletismo mas rapido de la historia", "ruta": "BUSQUEDA_WEB"}
-{"frase": "que tan influyente es la accion de las protestas que se estan llevando a cabo en madrid", "ruta": "BUSQUEDA_WEB"}
-{"frase": "que es el nombre de la novela que se estrella en las busquedas de google libros", "ruta": "BUSQUEDA_WEB"}
-{"frase": "en que dia se cumple el decimo aniversario de la fundacion de microsoft", "ruta": "BUSQUEDA_WEB"}
-{"frase": "que tan altas son las tasas de desempleo en los diferentes estados de estados unidos", "ruta": "BUSQUEDA_WEB"}
-{"frase": "quien es el ganador del premio nobel de fisica", "ruta": "BUSQUEDA_WEB"}
-{"frase": "que tan efectivos son los tratamientos para una enfermedad rara como la polio", "ruta": "BUSQUEDA_WEB"}
-{"frase": "en que ciudad se llevo a cabo el concert de la ultima gira de madonna", "ruta": "BUSQUEDA_WEB"}
-{"frase": "que tan utiles son los modelos de predictos estadisticos en la medicina", "ruta": "BUSQUEDA_WEB"}
-{"frase": "cuando termino el torneo de tenis masters 1000", "ruta": "BUSQUEDA_WEB"}
-{"frase": "que tan altos son los costos de la energia utilizada para iluminar un edificio", "ruta": "BUSQUEDA_WEB"}
-{"frase": "quien gano el concurso de la ultima semana de la serie de television 'the voice'", "ruta": "BUSQUEDA_WEB"}
-{"frase": "en que ciudad tuvo lugar la ultima conferencia de prensa de mark zuckerberg", "ruta": "BUSQUEDA_WEB"}
-{"frase": "que tan eficaces son los tratamientos de reemplazo de piezas moviles en la medicina", "ruta": "BUSQUEDA_WEB"}
-{"frase": "que tan influyente es la accion de la huida por la rendicion militar en algunas partes del mundo", "ruta": "BUSQUEDA_WEB"}
-{"frase": "cual es el resultado del partido de futbol entre barcelona y real madrid del pasado sabado", "ruta": "BUSQUEDA_WEB"}
-{"frase": "cual es el precio actual de un litro de gasolina en madrid", "ruta": "BUSQUEDA_WEB"}
-{"frase": "cuando se celebrara el eclipse solar de 2024", "ruta": "BUSQUEDA_WEB"}
-{"frase": "quien gano el ultimo campeonato de la nfl", "ruta": "BUSQUEDA_WEB"}
-{"frase": "cual es el clima actual en paris", "ruta": "BUSQUEDA_WEB"}
-{"frase": "que hora es manana", "ruta": "BUSQUEDA_WEB"}
-{"frase": "cual es el precio actual de un kilo de harina en la zona sur de espana", "ruta": "BUSQUEDA_WEB"}
-{"frase": "quien gano el ultimo campeonato de la liga de la nacion", "ruta": "BUSQUEDA_WEB"}
-{"frase": "cuando se estrenara la nueva serie de la itv", "ruta": "BUSQUEDA_WEB"}
-{"frase": "cual es el resultado del partido detenido entre la seleccion de futbol mexicana y la seleccion de futbol de estados unidos", "ruta": "BUSQUEDA_WEB"}
-{"frase": "cual es el precio actual de un metro de gas natural en cordoba", "ruta": "BUSQUEDA_WEB"}
-{"frase": "quien gano el primer premio en el last minute del concurso de la radio xfm", "ruta": "BUSQUEDA_WEB"}
-{"frase": "cual es el clima actual en tokio", "ruta": "BUSQUEDA_WEB"}
-{"frase": "que hora sera la partida del partido de futbol entre manchester united y liverpool en la champions league", "ruta": "BUSQUEDA_WEB"}
-{"frase": "cual es el precio actual de un kilo de cebolla en la zona norte de espana", "ruta": "BUSQUEDA_WEB"}
-{"frase": "quien gano el ultimo campeonato de la nba", "ruta": "BUSQUEDA_WEB"}
-{"frase": "cuando se celebrara el festival de musica de jazz", "ruta": "BUSQUEDA_WEB"}
-{"frase": "cual es el precio actual de un litro de leche en la zona sur de espana", "ruta": "BUSQUEDA_WEB"}
-{"frase": "quien gano el primer premio en el concurso de baile de la television", "ruta": "BUSQUEDA_WEB"}
-{"frase": "cual es el clima actual en nueva york", "ruta": "BUSQUEDA_WEB"}
-{"frase": "que hora sera la cena del evento de gala de la fundacion de la cultura", "ruta": "BUSQUEDA_WEB"}
-{"frase": "cual es el precio actual de un kilo de arroz en la zona central de espana", "ruta": "BUSQUEDA_WEB"}
-{"frase": "quien gano el ultimo campeonato de la copa de la uefa", "ruta": "BUSQUEDA_WEB"}
-{"frase": "cuando se estrenara la nueva pelicula de spielberg", "ruta": "BUSQUEDA_WEB"}
-{"frase": "cual es el precio actual de un metro de gasolina en madrid", "ruta": "BUSQUEDA_WEB"}
-{"frase": "quien gano el primer premio en el concurso de la radio de 104 fm", "ruta": "BUSQUEDA_WEB"}
-{"frase": "cual es la ultima noticia sobre el terremoto que afecto a mexico", "ruta": "BUSQUEDA_WEB"}
-{"frase": "cual es el promedio de temperatura en madrid hoy", "ruta": "BUSQUEDA_WEB"}
-{"frase": "quien gano el mundial de futbol la temporada pasada", "ruta": "BUSQUEDA_WEB"}
-{"frase": "cual es la fecha today", "ruta": "BUSQUEDA_WEB"}
-{"frase": "que eventos se celebraran en la ciudad el 20 de marzo", "ruta": "BUSQUEDA_WEB"}
-{"frase": "cual es el resultado del partido de la liga entre barcelona y real madrid", "ruta": "BUSQUEDA_WEB"}
-{"frase": "quien gano el gran premio de la f1 el pasado fin de semana", "ruta": "BUSQUEDA_WEB"}
-{"frase": "cuando es la hora exacta de la medianoche de hoy", "ruta": "BUSQUEDA_WEB"}
-{"frase": "cual es el costo actual de un kilogramo de arroz en la tienda", "ruta": "BUSQUEDA_WEB"}
-{"frase": "que acto se celebrara en el estadio wembley este sabado", "ruta": "BUSQUEDA_WEB"}
-{"frase": "cual es la temperatura en paris en este momento", "ruta": "BUSQUEDA_WEB"}
-{"frase": "quien es el ganador del grammy de la categoria de mejor album pop", "ruta": "BUSQUEDA_WEB"}
-{"frase": "cual es la fecha de finalizacion de la temporada de futbol de la liga", "ruta": "BUSQUEDA_WEB"}
-{"frase": "cual es el precio de un abono de transporte publico actual en madrid", "ruta": "BUSQUEDA_WEB"}
-{"frase": "que eventos de patinaje artistico se llevaran a cabo este ano", "ruta": "BUSQUEDA_WEB"}
-{"frase": "cual es el promedio de humedad relativa en la ciudad este lunes", "ruta": "BUSQUEDA_WEB"}
-{"frase": "quien gano el campeonato de tenis en la copa del reino", "ruta": "BUSQUEDA_WEB"}
-{"frase": "cual es el costo actual de un litro de gasolina con descuento en la estacion", "ruta": "BUSQUEDA_WEB"}
-{"frase": "que espectaculo musical se representara en el teatro colon este mes", "ruta": "BUSQUEDA_WEB"}
-{"frase": "cual es la temperatura media de la ciudad de nueva york en este invierno", "ruta": "BUSQUEDA_WEB"}
-{"frase": "quien gano el campeonato de futbol de la liga", "ruta": "BUSQUEDA_WEB"}
-{"frase": "cual es la ultima noticia sobre la crisis humanitaria en ucrania", "ruta": "BUSQUEDA_WEB"}
-{"frase": "cual es el tiempo esperado para el invierno en miami", "ruta": "BUSQUEDA_WEB"}
-{"frase": "quien gano la liga de futbol americano la temporada pasada", "ruta": "BUSQUEDA_WEB"}
-{"frase": "a que hora comienza la reunion del congreso estadounidense esta semana", "ruta": "BUSQUEDA_WEB"}
-{"frase": "cual es el precio actual de un taza de cafe en el mercado de nueva york", "ruta": "BUSQUEDA_WEB"}
-{"frase": "que sucedio en el ultimo evento deportivo de la fiba", "ruta": "BUSQUEDA_WEB"}
-{"frase": "cuando es el proximo dia de ayuno en egipto", "ruta": "BUSQUEDA_WEB"}
-{"frase": "a que precio se pueden comprar tickets para el proximo concierto de ariana grande", "ruta": "BUSQUEDA_WEB"}
-{"frase": "cual es la temperatura actual en el polo norte", "ruta": "BUSQUEDA_WEB"}
-{"frase": "que dijo el presidente sobre la politica de inmigracion", "ruta": "BUSQUEDA_WEB"}
-{"frase": "a que hora se realiza la transmision del primer partido de la liga de futbol brasilena", "ruta": "BUSQUEDA_WEB"}
-{"frase": "cual es el numero de casos confirmados de covid-19 en europa", "ruta": "BUSQUEDA_WEB"}
-{"frase": "a que precio se pueden adquirir dispositivos smartphone de ultima generacion", "ruta": "BUSQUEDA_WEB"}
-{"frase": "cuando es el proximo dia de protesta en argentina", "ruta": "BUSQUEDA_WEB"}
-{"frase": "que sucedio en el ultimo lanzamiento de un rover espacial", "ruta": "BUSQUEDA_WEB"}
-{"frase": "cuando se realiza el proximo concurso de tatuadores en las americas", "ruta": "BUSQUEDA_WEB"}
-{"frase": "a que hora comienza la competencia de esgrima en los juegos olimpicos", "ruta": "BUSQUEDA_WEB"}
-{"frase": "cual es el indice de inflacion actual en japon", "ruta": "BUSQUEDA_WEB"}
-{"frase": "que dijo la reina isabel ii sobre la actualidad politica", "ruta": "BUSQUEDA_WEB"}
-{"frase": "cuando es el proximo evento de la serie del campeonato mundial de golf", "ruta": "BUSQUEDA_WEB"}
-{"frase": "a que precio se pueden comprar tickets para el proximo viaje espacial a la luna", "ruta": "BUSQUEDA_WEB"}
-{"frase": "cual es la velocidad actual del viento en las montanas rocosas", "ruta": "BUSQUEDA_WEB"}
-{"frase": "que sucedio en el ultimo partido de la liga de baloncesto en europa", "ruta": "BUSQUEDA_WEB"}
-{"frase": "a que hora se realizara el juicio contra el ceo de una empresa tech", "ruta": "BUSQUEDA_WEB"}
-{"frase": "cual es el costo actual de una tonelada de petroleo en el mercado global", "ruta": "BUSQUEDA_WEB"}
-{"frase": "que dijo el fundador de una empresa tech sobre la industria", "ruta": "BUSQUEDA_WEB"}
-{"frase": "a que hora se realizara el lanzamiento del proximo telefono movil", "ruta": "BUSQUEDA_WEB"}
 {"frase": "hola me alegra conocerte", "ruta": "CHAT_LIBRE"}
 {"frase": "tengo un chiste que te hace reir: por que la computadora fue al doctor", "ruta": "CHAT_LIBRE"}
 {"frase": "de donde eres", "ruta": "CHAT_LIBRE"}
@@ -616,36 +408,6 @@
 {"frase": "como se llamas", "ruta": "CHAT_LIBRE"}
 {"frase": "que te gusta hacer en el tiempo libre", "ruta": "CHAT_LIBRE"}
 {"frase": "por que te ries sin saber", "ruta": "CHAT_LIBRE"}
-{"frase": "que noticias hay hoy", "ruta": "BUSQUEDA_WEB"}
-{"frase": "hay noticias nuevas", "ruta": "BUSQUEDA_WEB"}
-{"frase": "que paso hoy", "ruta": "BUSQUEDA_WEB"}
-{"frase": "que esta pasando ahora", "ruta": "BUSQUEDA_WEB"}
-{"frase": "quien gano ayer", "ruta": "BUSQUEDA_WEB"}
-{"frase": "quien gano el partido", "ruta": "BUSQUEDA_WEB"}
-{"frase": "como esta el clima", "ruta": "BUSQUEDA_WEB"}
-{"frase": "va a llover hoy", "ruta": "BUSQUEDA_WEB"}
-{"frase": "que hora es", "ruta": "BUSQUEDA_WEB"}
-{"frase": "que dia es hoy", "ruta": "BUSQUEDA_WEB"}
-{"frase": "cuanto esta el dolar", "ruta": "BUSQUEDA_WEB"}
-{"frase": "subio el dolar", "ruta": "BUSQUEDA_WEB"}
-{"frase": "que paso con el terremoto", "ruta": "BUSQUEDA_WEB"}
-{"frase": "hubo terremoto hoy", "ruta": "BUSQUEDA_WEB"}
-{"frase": "que equipos jugaron ayer", "ruta": "BUSQUEDA_WEB"}
-{"frase": "que paso en las noticias", "ruta": "BUSQUEDA_WEB"}
-{"frase": "cuando es el partido", "ruta": "BUSQUEDA_WEB"}
-{"frase": "gano river o boca", "ruta": "BUSQUEDA_WEB"}
-{"frase": "quien gano las elecciones", "ruta": "BUSQUEDA_WEB"}
-{"frase": "que paso con el eclipse", "ruta": "BUSQUEDA_WEB"}
-{"frase": "hay algo nuevo en las noticias", "ruta": "BUSQUEDA_WEB"}
-{"frase": "cuanto cuesta el dolar hoy", "ruta": "BUSQUEDA_WEB"}
-{"frase": "que tiempo hace afuera", "ruta": "BUSQUEDA_WEB"}
-{"frase": "llovio en lima hoy", "ruta": "BUSQUEDA_WEB"}
-{"frase": "que noticias salieron hoy", "ruta": "BUSQUEDA_WEB"}
-{"frase": "hubo algun accidente hoy", "ruta": "BUSQUEDA_WEB"}
-{"frase": "que resultado dio el partido de ayer", "ruta": "BUSQUEDA_WEB"}
-{"frase": "cual es la noticia del dia", "ruta": "BUSQUEDA_WEB"}
-{"frase": "que paso con el vuelo cancelado", "ruta": "BUSQUEDA_WEB"}
-{"frase": "hay huelga hoy", "ruta": "BUSQUEDA_WEB"}
 {"frase": "como te llamas", "ruta": "CHAT_LIBRE"}
 {"frase": "cuantos años tienes", "ruta": "CHAT_LIBRE"}
 {"frase": "de que color eres", "ruta": "CHAT_LIBRE"}

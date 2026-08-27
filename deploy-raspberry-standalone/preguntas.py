@@ -154,7 +154,7 @@ def recuperar_contexto(query, n_results=2):
 
     # Solo Pregunta/Respuesta -- "Cara" es metadata de animación para Trivia
     # (Agent_Behavior.py), no un dato relevante para responder algo en Chat
-    # libre. Se sacó de acá porque ereberus-chat (fine-tuned SOLO con
+    # libre. Se sacó de acá porque lora-chat (fine-tuned SOLO con
     # contextos de 2 líneas, ver chat_training/) a veces la repetía tal cual
     # como si fuera parte de la respuesta -- no seguía un formato que nunca
     # vio en el entrenamiento.

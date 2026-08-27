@@ -37,7 +37,7 @@ _PAGINA = """<!doctype html>
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Ereberus — texto</title>
+<title>Lora — texto</title>
 <style>
   body { font-family: system-ui, sans-serif; text-align: center; margin-top: 3rem; padding: 0 1rem; }
   #estado { color: #666; min-height: 1.4em; }
@@ -48,7 +48,7 @@ _PAGINA = """<!doctype html>
 </style>
 </head>
 <body>
-  <h1>Habla con Ereberus</h1>
+  <h1>Habla con Lora</h1>
   <p id="estado">Escribí tu mensaje.</p>
   <p id="transcripcion"></p>
 
@@ -69,7 +69,7 @@ _PAGINA = """<!doctype html>
       body: JSON.stringify({ texto })
     });
     document.getElementById('transcripcion').textContent = '"' + texto + '"';
-    document.getElementById('estado').textContent = 'Mandado a Ereberus.';
+    document.getElementById('estado').textContent = 'Mandado a Lora.';
     campo.value = '';
     campo.focus();
   });

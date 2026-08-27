@@ -1,5 +1,5 @@
 """
-Voz de salida: Ereberus habla en voz alta cada respuesta con edge-tts (voz
+Voz de salida: Lora habla en voz alta cada respuesta con edge-tts (voz
 es-AR-ElenaNeural, de Microsoft Edge) — elegida a mano tras escuchar 46
 voces en español de edge-tts, más las de Piper/Kokoro/eSpeak NG antes.
 

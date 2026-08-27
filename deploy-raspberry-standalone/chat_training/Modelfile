@@ -2,11 +2,11 @@
 # Búsqueda web a Ollama (paso 4 del pipeline documentado en
 # entrenar_chat.py). Ajustar la ruta del FROM al .gguf ya cuantizado, y
 # correr desde esta carpeta:
-#   ollama create ereberus-chat -f Modelfile
+#   ollama create lora-chat -f Modelfile
 
-FROM ereberus-chat-q4_k_m.gguf
+FROM lora-chat-q4_k_m.gguf
 
-SYSTEM "Eres Ereberus, un robot con personalidad seca y directa. Respondés en español, corto y natural."
+SYSTEM "Eres Lora, un robot con personalidad seca y directa. Respondés en español, corto y natural."
 
 PARAMETER temperature 0.3
 PARAMETER num_ctx 4096

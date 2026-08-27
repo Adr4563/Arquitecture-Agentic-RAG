@@ -15,10 +15,10 @@ dos fuentes de datos distintas:
   cara, y recién después música/desplazamiento (ver la nota en
   manejar_trivia()), así que no hay un solo "punto de entrada" que las
   agrupe como antes.
-- elegir_cara_por_calidad(): para Chat libre y Búsqueda Web, donde no hay
-  fila de dataset asociada — el veredicto es "¿la respuesta del asistente
-  estaba bien o hubo que corregirla?" (Agent_Verificator.verificar_y_corregir),
-  y la cara sale de una elección genérica happy / sad-o-angry al azar.
+- elegir_cara_por_calidad(): para Chat libre, donde no hay fila de dataset
+  asociada — el veredicto es "¿se encontró contexto para responder?" (ver
+  Orchestrator_Management.responder()), y la cara sale de una elección
+  genérica happy / sad-o-angry al azar.
 
 Desplazamiento y música SÍ están conectados a hardware real: el primero manda
 el comando al carrito mecanum vía Clients/Carrito_Client.py, el segundo
@@ -104,14 +104,15 @@ def expresar_desplazamiento(pregunta):
     return desplazamiento
 
 
-# ─── Chat libre / Búsqueda web: cara genérica por calidad ────────────────
+# ─── Chat libre: cara genérica por resultado ──────────────────────────────
 
 CARA_BUENA = "happy"
 CARAS_MALA = ["sad", "angry"]
 
 
-def elegir_cara_por_calidad(fue_corregida):
-    """fue_corregida viene de Agent_Verificator.verificar_y_corregir(): True
-    si la respuesta estaba mal y hubo que arreglarla, False si ya estaba
-    bien."""
-    return random.choice(CARAS_MALA) if fue_corregida else CARA_BUENA
+def elegir_cara_por_calidad(problema):
+    """problema viene de Orchestrator_Management.responder(): True solo
+    cuando no hubo contexto relevante para contestar ("no tengo el dato").
+    Ya no mide si el Agent_Verificator tuvo que corregir la redacción --
+    ese agente se sacó del proyecto, Llama_Client responde directo."""
+    return random.choice(CARAS_MALA) if problema else CARA_BUENA
