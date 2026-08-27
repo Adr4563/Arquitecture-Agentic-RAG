@@ -138,6 +138,15 @@ def main():
         save_total_limit=2,
         report_to=[],
         warmup_steps=10,
+        # En la corrida v1 la epoca 3 quedo PEOR que la 2 (eval_loss 0.042 vs
+        # 0.0016) y el modelo que se exporto fue el de la 3, porque sin esto
+        # merge_and_unload() fusiona el estado final en memoria, no el mejor
+        # checkpoint. Con load_best_model_at_end el Trainer recarga el mejor
+        # antes de devolver el control, asi que lo que se fusiona y se
+        # convierte a GGUF es ese.
+        load_best_model_at_end=True,
+        metric_for_best_model="eval_loss",
+        greater_is_better=False,
     )
 
     trainer = Trainer(

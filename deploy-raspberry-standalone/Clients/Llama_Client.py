@@ -89,7 +89,13 @@ TRIVIA_MODEL = os.environ.get("TRIVIA_MODEL", "lora-trivia")
 # acierta 15/15 en ~0.14s por consulta y pesa 397MB, lo mismo que
 # CHAT_MODEL/TRIVIA_MODEL -- eso es lo que hizo viable un tercer modelo
 # residente en la Pi.
-SALIDA_TRIVIA_MODEL = os.environ.get("SALIDA_TRIVIA_MODEL", "lora-salida-trivia")
+# El sufijo -v2 es a proposito: el v1 (dataset de 542 ejemplos) quedaba en
+# 16/26 en probar_adversario.py y mandaba a SALIR a quien decia "no se" o
+# pedia una pista -- peor que las keywords que reemplazaba. El v2 (710
+# ejemplos, con las categorias rendirse/meta-trivia/respuesta-personal que
+# faltaban) da 25/26. Dejar los dos nombres en Ollama permite volver al v1
+# con un export si algo sale mal. Ver salida_trivia_training/RESULTADOS.md.
+SALIDA_TRIVIA_MODEL = os.environ.get("SALIDA_TRIVIA_MODEL", "lora-salida-trivia-v2")
 
 # El Modelfile de lora-salida-trivia ya trae este mismo SYSTEM horneado,
 # pero se manda igual explícito: así la llamada es idéntica a la que validó

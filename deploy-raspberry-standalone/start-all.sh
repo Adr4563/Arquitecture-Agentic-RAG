@@ -59,7 +59,7 @@ fi
 # Orchestrator_Management.py cae solo a las listas de palabras clave
 # (_SALIR_TRIVIA/_TEMA_PERSONAL) para decidir si el usuario se fue de la
 # trivia. Se pierde precisión, no funcionalidad -- ver _quiere_salir_trivia().
-SALIDA_MODELO="${SALIDA_TRIVIA_MODEL:-lora-salida-trivia}"
+SALIDA_MODELO="${SALIDA_TRIVIA_MODEL:-lora-salida-trivia-v2}"
 if ! grep -q "^${SALIDA_MODELO}" <<<"$MODELOS_INSTALADOS"; then
   echo "[i] Sin '$SALIDA_MODELO' — la salida de trivia se decide por palabras"
   echo "    clave (menos preciso). Para importarlo: salida_trivia_training/README.md"

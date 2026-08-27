@@ -82,11 +82,25 @@ ollama create lora-salida-trivia -f Modelfile
 
 ## 6. Probarlo
 
+**Las dos suites, no solo la primera.**
+
 ```bash
 python probar_salida.py
+python probar_adversario.py
 ```
 
-Corre 14 casos reales (respuestas cortas, opiniones largas legítimas de
+`probar_salida.py` cubre las mismas categorías con las que se generó el
+dataset, así que solo confirma lo que el modelo ya aprendió. La v1 de este
+modelo dio 15/15 ahí y aun así expulsaba de la trivia a cualquier chico que
+dijera "no sé" -- `probar_adversario.py` (26 casos, frases ausentes del
+dataset a propósito) es el que detecta eso. Ver `RESULTADOS.md` para los
+números de cada versión y el análisis de los fallos.
+
+Conviene además comparar contra el modelo base sin entrenar
+(`--modelo qwen2.5:0.5b`): si el fine-tune no le gana, el fine-tuning
+borró más razonamiento del que agregó.
+
+`probar_salida.py` corre 15 casos reales (respuestas cortas, opiniones largas legítimas de
 dilemas, frases explícitas de salir, temas personales, charla sin relación)
 contra el modelo recién importado y reporta cuántos acertó. Sirve también
 para comparar contra otro modelo sin reentrenar nada (`--modelo
@@ -116,5 +130,7 @@ tiene riesgo de romper nada si algo sale mal en el camino.
 | `dataset_salida.jsonl` | 542 ejemplos etiquetados RESPUESTA/SALIR, ya generado. |
 | `entrenar_salida.py` | El fine-tuning LoRA en sí (paso 2 de arriba). |
 | `Modelfile` | Para el `ollama create` del paso 5. |
-| `probar_salida.py` | 14 casos reales para validar el modelo entrenado (paso 6). |
+| `probar_salida.py` | 15 casos reales para validar el modelo entrenado (paso 6). Confirma, no descubre. |
+| `probar_adversario.py` | 26 casos adversarios en 7 grupos, con frases que NO están en el dataset. Es el que detecta los huecos. |
+| `RESULTADOS.md` | Resultados medidos de v1 y v2, comparativa contra `qwen2.5:0.5b`, latencias y qué se aprendió. |
 | `entrenamiento.log` | Log de la última corrida (si existe) -- útil para ver el progreso o retomar referencia si algo falló a mitad. |

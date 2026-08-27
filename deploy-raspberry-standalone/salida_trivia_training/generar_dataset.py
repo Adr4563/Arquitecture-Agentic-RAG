@@ -98,6 +98,109 @@ def generar_respuestas(preguntas):
     return ejemplos
 
 
+# ─── Clase RESPUESTA: los 3 huecos que tenía el dataset v1 ─────────────
+#
+# El dataset original solo tenía dos fuentes: respuestas literales sacadas
+# de preguntas.jsonl (RESPUESTA) y frases CHAT_LIBRE del router (SALIR). Con
+# eso, la regla más simple que explica los 542 ejemplos es "si no es
+# literalmente la respuesta -> SALIR", y eso fue exactamente lo que aprendió
+# el modelo: en 26 casos adversarios dio 16/26, con los 10 fallos todos en
+# la misma dirección (falsos SALIR). Peor todavía, 7 de esos 10 eran peores
+# que las listas de palabras clave que el modelo venía a reemplazar.
+#
+# Las tres categorías de acá abajo son esos huecos. Todas son RESPUESTA: el
+# usuario SIGUE en la trivia, aunque no esté diciendo la respuesta.
+#
+# Ojo al editar: las frases de acá son a propósito DISTINTAS de las que usa
+# probar_salida.py. Si se copian las de test al entrenamiento, el test deja
+# de medir generalización y vuelve a dar 100% sin significar nada.
+
+# 1. Rendirse. Decir "no sé" es participar, no irse -- y es la respuesta más
+# común de un chico en una trivia. Con el dataset v1 el modelo lo mandaba a
+# SALIR, o sea que lo expulsaba de la trivia justo por no saber.
+FRASES_RENDIRSE = [
+    "no lo sé", "no tengo idea", "no se me ocurre nada", "paso",
+    "me rindo", "no la sé", "esa no la sé", "ni la más mínima idea",
+    "no tengo ni la menor idea", "difícil, no me sale",
+    "no me la sé, lo siento", "uf, esa no", "creo que no la sé",
+    "no sabría decirte", "no estoy seguro de esa", "no caigo",
+]
+
+# 2. Meta-trivia: habla DE la trivia (pide pista, pide repetir, pregunta por
+# la mecánica, comenta la dificultad). Sigue enganchado con el juego.
+FRASES_META_TRIVIA = [
+    "¿me puedes dar una ayudita?", "dame una ayuda por favor",
+    "¿la puedes repetir?", "no escuché bien, ¿otra vez?",
+    "no entendí la pregunta", "¿puedes explicarla de nuevo?",
+    "¿cuántas van?", "¿esta es la última?", "¿me quedan muchas?",
+    "esta está complicada", "qué difícil esta", "esa estuvo sencilla",
+    "¿me la puedes decir más despacio?", "¿vale si respondo aproximado?",
+    "¿cuánto llevo bien hasta ahora?", "¿me das más tiempo para pensar?",
+]
+
+# 3. Respuesta envuelta en vocabulario personal. Acá el modelo v1 copiaba
+# literalmente la debilidad de _TEMA_PERSONAL: ve "mi mamá"/"mi profe" y
+# dispara SALIR, aunque la frase termine en la respuesta correcta.
+ENVOLTORIOS_RESPUESTA_PERSONAL = [
+    "mi mamá me enseñó que es {r}", "mi papá me dijo que era {r}",
+    "mi profe nos explicó que es {r}", "en el colegio me enseñaron que es {r}",
+    "mi hermano me contó que era {r}", "me acuerdo de esto de clase, es {r}",
+    "mi abuela me lo enseñó, es {r}", "lo vi con mi maestra, creo que {r}",
+    "estudié esto la semana pasada, es {r}", "mi amigo me dijo que {r}",
+]
+
+# 4. Opinión larga con anclaje personal, para las preguntas sin
+# respuesta_esperada (dilemas). Es el caso más difícil de los cuatro: habla
+# de la abuela Y responde el dilema al mismo tiempo.
+OPINIONES_LARGAS_PERSONALES = [
+    "yo giraría, en mi casa siempre me enseñaron que una persona vale más que un objeto",
+    "seguiría de largo, mi papá dice que uno no debe arriesgar a los que van adentro",
+    "elegiría la segunda, me acuerdo que en el colegio hablamos de algo parecido",
+    "creo que giraría, mi profe nos hizo pensar en esto una vez y me quedó eso",
+    "la primera me parece mejor, mi hermano opina lo mismo cuando lo charlamos",
+    "no sé bien, pero mi mamá diría que hay que proteger a las personas primero",
+]
+
+
+def generar_rendirse(preguntas):
+    """Cada frase contra 3 preguntas al azar: rendirse no depende de cuál
+    pregunta era."""
+    ejemplos = []
+    for f in FRASES_RENDIRSE:
+        for _ in range(3):
+            p = random.choice(preguntas)
+            ejemplos.append({"pregunta": p["pregunta"], "mensaje": f, "objetivo": "RESPUESTA"})
+    return ejemplos
+
+
+def generar_meta_trivia(preguntas):
+    ejemplos = []
+    for f in FRASES_META_TRIVIA:
+        for _ in range(3):
+            p = random.choice(preguntas)
+            ejemplos.append({"pregunta": p["pregunta"], "mensaje": f, "objetivo": "RESPUESTA"})
+    return ejemplos
+
+
+def generar_respuesta_personal(preguntas):
+    """La respuesta REAL de la pregunta, envuelta en lenguaje personal. Solo
+    para preguntas con respuesta_esperada, si no no hay {r} que envolver."""
+    ejemplos = []
+    con_resp = [p for p in preguntas if (p.get("respuesta_esperada") or "").strip()]
+    # 45 de las 222: suficiente para enseñar el patrón sin inundar el dataset
+    # con una sola forma de decir las cosas.
+    for p in random.sample(con_resp, min(45, len(con_resp))):
+        r = p["respuesta_esperada"].strip().lower()
+        mensaje = random.choice(ENVOLTORIOS_RESPUESTA_PERSONAL).format(r=r)
+        ejemplos.append({"pregunta": p["pregunta"], "mensaje": mensaje, "objetivo": "RESPUESTA"})
+
+    sin_resp = [p for p in preguntas if not (p.get("respuesta_esperada") or "").strip()]
+    for p in sin_resp:
+        mensaje = random.choice(OPINIONES_LARGAS_PERSONALES)
+        ejemplos.append({"pregunta": p["pregunta"], "mensaje": mensaje, "objetivo": "RESPUESTA"})
+    return ejemplos
+
+
 # ─── Clase SALIR ───────────────────────────────────────────────────────
 
 FRASES_SALIR_EXPLICITO = [
@@ -177,6 +280,9 @@ def main():
 
     ejemplos = []
     ejemplos += generar_respuestas(preguntas)
+    ejemplos += generar_rendirse(preguntas)
+    ejemplos += generar_meta_trivia(preguntas)
+    ejemplos += generar_respuesta_personal(preguntas)
     ejemplos += generar_salir_explicito(preguntas)
     ejemplos += generar_tema_personal(preguntas)
     ejemplos += generar_chat_libre_generico(preguntas, chat_libre)

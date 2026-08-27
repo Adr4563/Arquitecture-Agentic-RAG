@@ -1,9 +1,9 @@
 # Modelfile para importar el modelo fine-tuneado de detección de salida de
 # Trivia a Ollama (paso 4 del pipeline documentado en entrenar_salida.py).
 # Ajustar la ruta del FROM al .gguf ya cuantizado, y correr desde esta carpeta:
-#   ollama create lora-salida-trivia -f Modelfile
+#   ollama create lora-salida-trivia-v2 -f Modelfile
 
-FROM lora-salida-trivia-q4_k_m.gguf
+FROM lora-salida-trivia-v2-q4_k_m.gguf
 
 SYSTEM "Sos un clasificador. Te dan la pregunta de una trivia y el mensaje del usuario. Respondé EXACTAMENTE una palabra: RESPUESTA si el usuario intenta responder esa pregunta (aunque esté mal, o sea una opinión larga si la pregunta la pide), o SALIR si se puso a hablar de otra cosa (un tema personal, un problema, charla sin relación, o pide explícitamente parar/cambiar de tema)."
 
