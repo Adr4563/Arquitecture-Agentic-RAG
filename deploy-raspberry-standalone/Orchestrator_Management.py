@@ -43,7 +43,7 @@ from Clients import Voice_Output_Client as voz_output  # Lora habla en voz alta 
 from Clients.Llama_Client import (
     CHAT_MODEL, TRIVIA_MODEL, clasificar_salida_trivia, generar_respuesta,
 )
-from personalidad import construir_personalidad, obtener_system_prompt
+from personalidad import SYSTEM_PROMPT_CHAT_LIBRE, construir_personalidad, obtener_system_prompt
 from preguntas import pregunta_aleatoria as _pregunta_aleatoria
 from preguntas import pregunta_por_tema as _pregunta_por_tema
 from preguntas import preguntas_por_tema as _preguntas_por_tema
@@ -149,7 +149,10 @@ def responder(mensaje_usuario, persona_str, on_token=None):
     hay ninguna senal de calidad que justifique otra cosa. Si mas adelante
     hace falta distinguir, tiene que salir de algo real (un verificador, un
     score), no de la ausencia de contexto."""
-    mensajes = _mensajes_con_personalidad(persona_str, mensaje_usuario)
+    mensajes = [
+        {"role": "system", "content": SYSTEM_PROMPT_CHAT_LIBRE},
+        {"role": "user", "content": mensaje_usuario},
+    ]
     texto_final = generar_respuesta(mensajes, on_token=on_token).strip()
     return texto_final, False
 

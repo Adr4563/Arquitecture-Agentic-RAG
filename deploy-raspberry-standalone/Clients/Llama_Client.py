@@ -57,7 +57,7 @@ CHAT_SERVER_HOST = os.environ.get("CHAT_SERVER_HOST", "http://localhost:11434")
 # son los únicos dos modelos que Ollama mantiene cargados en RAM. Si hace
 # falta más calidad de prosa y el hardware lo permite, sobreescribir con
 # `export CHAT_MODEL=llama3.2:3b`.
-CHAT_MODEL = os.environ.get("CHAT_MODEL", "lora-chat")  # nombre del modelo en `ollama list` — genera las respuestas reales
+CHAT_MODEL = os.environ.get("CHAT_MODEL", "llama3.2:1b")  # nombre del modelo en `ollama list` — genera las respuestas reales
 # (no usar una variante -fp16: corre 100% en CPU sin VRAM y es extremadamente lenta;
 # los modelos cuantizados -q4_K_*/-q4s son los viables en CPU)
 
