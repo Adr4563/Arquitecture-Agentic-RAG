@@ -339,10 +339,21 @@ def _jugar_emociones(pregunta, persona_str, on_token=None):
     Devuelve el bool acerto/error, o None si no se pudo evaluar (cámara no
     disponible o sin cara detectada) -- en ese caso no cuenta para el
     marcador, se reacciona igual que reaccionar_libre() (sin veredicto)."""
-    opciones = [o.strip() for o in pregunta["cara"].split("/") if o.strip()]
-    if not opciones:
-        opciones = ["Feliz"]  # fallback: nunca debería pasar, pero sin esto no habría qué pedir
-    objetivo = random.choice(opciones)
+    # La emoción a imitar sale de respuesta_esperada: en estas preguntas esa
+    # columna NO es una respuesta de texto que se corrija con
+    # Agent_Corrector (el veredicto lo da la cámara), es el enunciado del
+    # juego -- qué cara tiene que poner Lora para que el usuario la imite.
+    #
+    # Antes salía de la columna 'cara' con random.choice sobre un split("/"),
+    # asumiendo valores tipo "Enojado/Feliz/Triste". Los datos reales nunca
+    # tuvieron ese formato: 'cara' trae un valor único, y es "Neutral" en 7
+    # de las 10 preguntas del juego -- o sea que Lora pedía "hazme una cara
+    # de neutral" casi siempre y el juego no tenía variedad ninguna.
+    objetivo = (pregunta.get("respuesta_esperada") or "").strip()
+    if not objetivo:
+        # Fallback al comportamiento viejo para filas sin la columna cargada.
+        opciones = [o.strip() for o in pregunta["cara"].split("/") if o.strip()]
+        objetivo = random.choice(opciones) if opciones else "Feliz"
     # El robot presenta la cara que hay que imitar ANTES de pedirla por voz --
     # referencia visual, no solo el nombre hablado. Se mantiene en pantalla
     # mientras el usuario posa (ver display.mostrar_cara() más abajo, recién
