@@ -69,15 +69,20 @@ def cara_para_emocion(nombre):
     return _CARA_A_DISPLAY.get((nombre or "").strip())
 
 
-def expresar_musica(pregunta):
+def expresar_musica(pregunta, esperar=False):
     """Si la pregunta trae algo en 'musical', reproduce ese archivo de
     musica/ de verdad (Musica_Client.py, recortado a 20s). Vacío/ausente ->
-    no hace nada, devuelve None."""
+    no hace nada, devuelve None.
+
+    `esperar=True` bloquea hasta que termina la canción, para las preguntas
+    de Reconocimiento Musical: ahí la música es el enunciado, no un adorno,
+    y el usuario no puede responder hasta haberla escuchado. Ver
+    _preguntar_siguiente() en Orchestrator_Management.py."""
     musica = (pregunta.get("musical") or "").strip()
     if not musica:
         return None
     print(f"    [música: {musica}]")
-    Musica_Client.reproducir(musica)
+    Musica_Client.reproducir(musica, esperar=esperar)
     return musica
 
 

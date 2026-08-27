@@ -577,7 +577,7 @@ PAUSA_CAMBIO_CARA = 4  # segundos en 'content' antes de pasar a la cara que sigu
 PAUSA_ANTES_ACCION_FISICA = 1
 
 
-def _reaccionar_veredicto(cara, pregunta):
+def _reaccionar_veredicto(cara, pregunta, musica_ya_sonada=False):
     """Cara + música + desplazamiento del veredicto, EN PARALELO entre sí --
     se disparan los tres seguidos, sin esperas entre uno y otro: música
     (Popen) y desplazamiento (escritura serial ~instantánea, o hilo aparte
@@ -596,7 +596,10 @@ def _reaccionar_veredicto(cara, pregunta):
     que terminar de decirse), y recién después cara/música/desplazamiento
     juntos. Ver _jugar_emociones(), el único caller con voz."""
     display.mostrar_cara(cara)
-    expresar_musica(pregunta)
+    # Si la canción ya sonó al lanzar la pregunta (Reconocimiento Musical,
+    # ver _preguntar_siguiente), no se repite acá.
+    if not musica_ya_sonada:
+        expresar_musica(pregunta)
     expresar_desplazamiento(pregunta)
     time.sleep(PAUSA_CAMBIO_CARA)
 
@@ -613,6 +616,23 @@ def _preguntar_siguiente(estado):
     display.mostrar_cara("speaking")  # se lanza una pregunta: la LCD "habla"
     print(f"Asistente [{actual['cara']}]: {actual['pregunta']}\n")
     voz_output.hablar(actual["pregunta"])  # bloquea hasta que termina de decirla
+
+    # Reconocimiento Musical: la canción ES el enunciado, no un adorno. Va
+    # DESPUÉS de decir la pregunta ("te voy a poner una canción, ¿sabes cuál
+    # es?") y ANTES de habilitar la respuesta, bloqueando -- si no, se le
+    # pediría al usuario que adivine encima de la música recién arrancada.
+    #
+    # Bug que esto arregla: expresar_musica() solo se llamaba desde las
+    # reacciones (_reaccionar_veredicto y la rama sin respuesta_esperada de
+    # manejar_trivia), o sea DESPUÉS de que el usuario contestaba. Como las
+    # 10 preguntas musicales del dataset tienen respuesta_esperada, la
+    # canción sonaba recién al dar el veredicto: se le pedía adivinar algo
+    # que todavía no había escuchado.
+    #
+    # Se recuerda en el estado para que la reacción de después no la repita
+    # (serían 20s de la misma canción dos veces en el mismo turno).
+    estado["musica_ya_sonada"] = bool(expresar_musica(actual, esperar=True))
+
     # La pregunta se imprime de una (no hay streaming que marque cuándo
     # "termina de hablar"), así que se le da un tiempo fijo en 'speaking'
     # -antes de pasar a la cara de reposo mientras espera que el usuario
@@ -720,7 +740,7 @@ def manejar_trivia(mensaje_usuario, estado, persona_str, on_token):
             # _reaccionar_veredicto()) pero sin reacción hablada -- no hay
             # voz que deba ir "primero" acá, a diferencia de
             # _jugar_emociones().
-            _reaccionar_veredicto(cara, pendiente)
+            _reaccionar_veredicto(cara, pendiente, estado.get("musica_ya_sonada", False))
             display.mostrar_cara("speaking")
         else:
             # Temas como Chistes o Reconocimiento Musical no tienen una
@@ -730,7 +750,8 @@ def manejar_trivia(mensaje_usuario, estado, persona_str, on_token):
             # Mismo criterio que la rama de arriba: sin agente de comentario.
             display.mostrar_cara("speaking")
             time.sleep(PAUSA_ANTES_ACCION_FISICA)
-            expresar_musica(pendiente)
+            if not estado.get("musica_ya_sonada", False):
+                expresar_musica(pendiente)
             expresar_desplazamiento(pendiente)
         print("\n")
 
@@ -888,7 +909,7 @@ def _main_loop():
     estado = {
         "pregunta_pendiente": None, "esperando_tema": False, "en_trivia": False,
         "cola_preguntas": [], "ya_usados": set(), "aciertos": 0, "total": 0,
-        "tema_actual": None, "nombre": nombre,
+        "tema_actual": None, "nombre": nombre, "musica_ya_sonada": False,
     }
 
     while True:
