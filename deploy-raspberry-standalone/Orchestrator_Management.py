@@ -44,7 +44,6 @@ from Clients.Llama_Client import (
     CHAT_MODEL, TRIVIA_MODEL, clasificar_salida_trivia, generar_respuesta,
 )
 from personalidad import construir_personalidad, obtener_system_prompt
-from preguntas import SIN_CONTEXTO, recuperar_contexto
 from preguntas import pregunta_aleatoria as _pregunta_aleatoria
 from preguntas import pregunta_por_tema as _pregunta_por_tema
 from preguntas import preguntas_por_tema as _preguntas_por_tema
@@ -61,17 +60,10 @@ if hasattr(sys.stdout, "reconfigure"):
 # Helpers compartidos
 # ══════════════════════════════════════════════════════════════════════
 
-RESPUESTA_SIN_CONTEXTO = "No tengo información sobre eso en mi base de datos."
-
-# Saludos/mensajes triviales: no ameritan gastar tiempo en la búsqueda BM25.
-SALUDOS_TRIVIALES = {
-    "hola", "buenas", "hey", "qué tal", "que tal", "hi", "hello",
-    "buenos días", "buenas tardes", "buenas noches", "gracias", "ok", "vale",
-}
-
-
-def _es_mensaje_trivial(mensaje):
-    return mensaje.strip().lower().strip("¡!¿?.,") in SALUDOS_TRIVIALES
+# RESPUESTA_SIN_CONTEXTO / SALUDOS_TRIVIALES / _es_mensaje_trivial se
+# eliminaron junto con el RAG de Chat libre (ver responder()): existian solo
+# para saltear la busqueda BM25 en saludos y para cortar cuando no habia
+# contexto. Sin RAG no hay busqueda que saltear ni corte que hacer.
 
 
 def _mensajes_con_personalidad(persona_str, contenido_usuario, modelo=CHAT_MODEL):
@@ -128,43 +120,36 @@ def generar_apertura(persona_str, on_token=None):
     return _quitar_pregunta_final(generar_respuesta(mensajes, on_token=on_token))
 
 
-def responder(mensaje_usuario, persona_str, n_results=2, on_token=None):
-    """Devuelve (texto_final, problema) -- problema=True solo cuando no hubo
-    contexto relevante ("no tengo el dato", ver SIN_CONTEXTO más abajo);
-    Agent_Behavior.elegir_cara_por_calidad() lo usa para elegir happy
-    (problema=False) vs sad/angry (problema=True).
+def responder(mensaje_usuario, persona_str, on_token=None):
+    """Chat libre: le pasa el mensaje del usuario a CHAT_MODEL con la
+    personalidad y devuelve (texto_final, problema).
 
-    Ya NO pasa por Agent_Verificator -- se sacó a pedido del usuario: en Chat
-    libre, Llama_Client responde directo, sin una segunda pasada de
-    revisión/corrección (ese agente quedó sin ningún llamador, se borró). De
-    paso esto habilita streaming real acá: antes estaba apagado a propósito
-    porque el verificador necesitaba el texto completo antes de que el
-    usuario lo viera; sin él, no hay motivo para no imprimir/hablar token a
-    token como ya hace el resto del proyecto."""
-    contexto = "" if _es_mensaje_trivial(mensaje_usuario) else recuperar_contexto(
-        mensaje_usuario, n_results=n_results
-    )
+    YA NO USA RAG. Antes buscaba contexto con BM25 sobre preguntas.jsonl y,
+    si no encontraba nada, cortaba con una frase fija sin llamar al modelo.
+    Se saco a pedido del usuario: el corpus eran las preguntas de la Trivia,
+    asi que el "chat libre" solo podia hablar de eso.
 
-    if contexto is SIN_CONTEXTO:
-        # Corte a nivel de código, no de prompt: un modelo chico no respeta de forma
-        # confiable la instrucción de "no uses tu conocimiento propio", así que ni se
-        # le manda la pregunta si no hay nada relevante en la base de datos.
-        if on_token:
-            on_token(RESPUESTA_SIN_CONTEXTO)
-        return RESPUESTA_SIN_CONTEXTO, True  # "no tengo el dato" no es un momento feliz
+    Ademas andaba mal. El umbral era `score > 0` (preguntas.py), o sea que
+    UNA palabra en comun bastaba para inyectar contexto, y palabras vacias
+    enganchaban cualquier cosa: a "que tiempo hace" le metia la pregunta
+    "con cuantos paises hace frontera" y el modelo contestaba "3" con total
+    seguridad. Peor que no saber: inventaba.
 
-    # Sin historial: cada turno es system (fijo, cacheado) + un único user con
-    # el contexto recuperado por BM25 + la pregunta, nada más.
-    #
-    # En un saludo no hay contexto que mandar. Mandar el bloque <rag> vacío hace
-    # que el modelo lo lea como "no hay datos" y conteste "no tengo el dato" a un
-    # simple "hola"; por eso ahí se manda el mensaje pelado.
-    if contexto:
-        user = f"CONTEXTO:\n<rag>\n{contexto}\n</rag>\n\nPregunta: {mensaje_usuario}"
-    else:
-        user = mensaje_usuario
+    Sin RAG, CHAT_MODEL (lora-chat) conversa con su personalidad. Medido en
+    la Pi: acierta preguntas factuales comunes (Graham Bell 1876, Paris) y
+    responde bien lo social. Dos limitaciones conocidas y no resueltas:
+    se equivoca en aritmetica (235x47 -> "5.109", es 11.045), y con temas
+    emocionales a veces se desentiende ("hoy me fue mal en el colegio" ->
+    "no puedo ayudar con eso"). Eso se arregla en el fine-tuning
+    (chat_training/), no acá.
 
-    mensajes = _mensajes_con_personalidad(persona_str, user)
+    `problema` queda siempre en False: era True solo en el caso SIN_CONTEXTO,
+    que ya no existe. Agent_Behavior.elegir_cara_por_calidad() lo sigue
+    recibiendo -- ahora Chat libre siempre muestra cara positiva, porque no
+    hay ninguna senal de calidad que justifique otra cosa. Si mas adelante
+    hace falta distinguir, tiene que salir de algo real (un verificador, un
+    score), no de la ausencia de contexto."""
+    mensajes = _mensajes_con_personalidad(persona_str, mensaje_usuario)
     texto_final = generar_respuesta(mensajes, on_token=on_token).strip()
     return texto_final, False
 
