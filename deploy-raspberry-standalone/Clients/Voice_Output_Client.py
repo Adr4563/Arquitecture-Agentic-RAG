@@ -1,16 +1,15 @@
 """
-Voz de salida: Lora dice en voz alta cada respuesta. Tres motores, elegidos
-con VOZ_MOTOR:
+Voz de salida: Lora dice en voz alta cada respuesta. DOS motores: uno local
+(el default) y uno en la nube como respaldo. Se eligen con VOZ_MOTOR:
 
-    export VOZ_MOTOR=edge     # (default) edge-tts, NECESITA INTERNET
-    export VOZ_MOTOR=espeak   # eSpeak NG, 100% local
-    export VOZ_MOTOR=piper    # Piper, 100% local, mejor calidad
+    export VOZ_MOTOR=piper   # (default) Piper, 100% local
+    export VOZ_MOTOR=edge    # edge-tts, NECESITA INTERNET
 
 Medido en la Raspberry Pi (aarch64), frase de 85 caracteres:
 
     | motor / voz                | sintesis | vs tiempo real | peso  |
     |----------------------------|----------|----------------|-------|
-    | espeak-ng                  |  0.05s   |  x128          |   --  |
+    | espeak-ng (descartado)     |  0.05s   |  x128          |   --  |
     | piper es_MX-claude-high    |  1.60s   |  x2.86         |  60MB |
     | piper es_ES-sharvard-medium|  1.42s   |  x2.72         |  73MB |
     | piper es_ES-davefx-medium  |  1.39s   |  x2.63         |  60MB |
@@ -24,6 +23,11 @@ reproduce en STREAMING (un chunk por oracion, ver hablar()): empieza a
 sonar mientras todavia sintetiza el resto. Medido en la Pi, frase de 3
 oraciones: primer audio a los 1.16s en vez de 2.58s, y 8.62s totales en vez
 de 10.06s.
+
+Se mantienen DOS motores a proposito, uno local y uno de respaldo en la
+nube -- espeak-ng quedo afuera: anda y es instantaneo, pero es sintesis por
+reglas (formantes), no una red neuronal, y suena claramente robotico al
+lado de Piper. Como Piper ya cubre el caso sin internet, no aportaba nada.
 
 Descartados: Kokoro corre a 0.31x tiempo real (12s por frase) pese a tener
 solo 82M parametros, y XTTS-v2 es varias veces mas grande -- ni se probo,
@@ -80,13 +84,6 @@ _MOTOR_RESPALDO = "edge"
 # ── edge-tts ──────────────────────────────────────────────────────────
 VOZ = os.environ.get("VOZ_EDGE", "es-AR-ElenaNeural")
 
-# ── eSpeak NG ─────────────────────────────────────────────────────────
-# es-la = espanol latinoamericano (mas cercano al de los chicos que lo usan
-# que es-es). 150 ppm: el default (175) suena atropellado para leer una
-# pregunta de trivia en voz alta.
-VOZ_ESPEAK = os.environ.get("VOZ_ESPEAK", "es-la")
-VELOCIDAD_ESPEAK = os.environ.get("VOZ_ESPEAK_VELOCIDAD", "150")
-
 # ── Piper ─────────────────────────────────────────────────────────────
 # Ruta al .onnx. Ver README para descargarlo:
 #   python -m piper.download_voices es_MX-ald-x_low
@@ -102,8 +99,7 @@ def cargar():
     Orchestrator_Management.py al arrancar, para que el costo no caiga en
     medio de la primera frase.
 
-    edge/espeak no tienen nada que cargar (servicio en la nube y binario del
-    sistema). Piper si: cargar el .onnx tarda ~5s en la Pi, y sin esto ese
+    edge-tts no tiene nada que cargar (es un servicio en la nube). Piper si: cargar el .onnx tarda ~5s en la Pi, y sin esto ese
     tiempo se lo comeria el primer turno."""
     global _voz_piper, MOTOR
     if MOTOR != "piper":
@@ -134,12 +130,6 @@ async def _sintetizar_edge(texto, ruta):
 def _generar(texto, ruta):
     """Deja en `ruta` el audio de `texto` segun el motor activo. Devuelve
     False si este motor no puede generar nada ahora."""
-    if MOTOR == "espeak":
-        subprocess.run(
-            ["espeak-ng", "-v", VOZ_ESPEAK, "-s", VELOCIDAD_ESPEAK, "-w", ruta, texto],
-            stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, check=True,
-        )
-        return True
     # piper no pasa por aca: usa streaming, sin archivo intermedio.
     asyncio.run(_sintetizar_edge(texto, ruta))
     return True
@@ -190,8 +180,8 @@ def hablar(texto):
             print(f"[voz] error al hablar con piper ({e})")
         return
 
-    # .wav para los motores locales, .mp3 para edge-tts (es lo que devuelve).
-    sufijo = ".wav" if MOTOR == "espeak" else ".mp3"
+    # Solo llega edge-tts aca, que devuelve mp3.
+    sufijo = ".mp3"
     with tempfile.NamedTemporaryFile(suffix=sufijo, delete=False) as tmp:
         ruta = tmp.name
     try:
@@ -202,8 +192,7 @@ def hablar(texto):
             stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL,
         )
     except FileNotFoundError as e:
-        # Falta mpv, o falta espeak-ng con VOZ_MOTOR=espeak.
-        print(f"[voz] falta un binario ({e}) -- no se puede hablar")
+        print(f"[voz] falta mpv ({e}) -- no se puede hablar")
     except Exception as e:
         pista = " -- ¿sin internet?" if MOTOR == "edge" else ""
         print(f"[voz] error al hablar con motor={MOTOR} ({e}){pista}")
