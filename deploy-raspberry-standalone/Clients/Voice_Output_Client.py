@@ -18,11 +18,11 @@ Medido en la Raspberry Pi (aarch64), frase de 85 caracteres:
     | Kokoro-82M v1.0            | 12.16s   |  x0.31   (!)   | 310MB |
     | Coqui XTTS-v2              |   --     |  no probado    | ~1.8GB|
 
-hablar() BLOQUEA, asi que la sintesis se le suma a cada turno. Con Piper se
-reproduce en STREAMING (un chunk por oracion, ver hablar()): empieza a
-sonar mientras todavia sintetiza el resto. Medido en la Pi, frase de 3
-oraciones: primer audio a los 1.16s en vez de 2.58s, y 8.62s totales en vez
-de 10.06s.
+hablar() BLOQUEA, asi que la sintesis se le suma a cada turno: ~1.4s de
+media sobre las preguntas reales del dataset (p90 2.4s).
+
+Se probo reproducir en streaming para adelantar el primer sonido y se
+revirtio por un chasquido al final de cada frase -- ver _hablar_piper().
 
 Se mantienen DOS motores a proposito, uno local y uno de respaldo en la
 nube -- espeak-ng quedo afuera: anda y es instantaneo, pero es sintesis por
@@ -61,6 +61,7 @@ import asyncio
 import os
 import subprocess
 import tempfile
+import wave
 
 # Piper (onnxruntime) agarra los 4 nucleos de la Pi por default. Medido: la
 # sintesis tarda lo mismo con 1, 2 o 4 hilos (1.92s / 1.92s / 1.96s), asi que
@@ -93,10 +94,6 @@ MODELO_PIPER = os.environ.get(
 )
 _voz_piper = None   # se carga una sola vez en cargar(), pesa ~5s
 
-# Milisegundos de silencio que se agregan al final de cada frase para que
-# mpv no corte el audio en seco (ver _hablar_piper_streaming). 150ms alcanza
-# para que no se oiga el chasquido y no se nota como pausa extra.
-SILENCIO_FINAL_MS = int(os.environ.get("VOZ_SILENCIO_FINAL_MS", "150"))
 
 
 def cargar():
@@ -140,41 +137,31 @@ def _generar(texto, ruta):
     return True
 
 
-def _hablar_piper_streaming(texto):
-    """Reproduce con Piper sin esperar a que termine la sintesis: se le pasa
-    a mpv cada chunk (una oracion) apenas sale, por stdin en PCM crudo.
+def _hablar_piper(texto):
+    """Sintetiza el texto entero a un .wav temporal y lo reproduce con mpv.
 
-    Sin esto habria que sintetizar el texto entero, escribirlo a un .wav y
-    recien ahi abrir mpv -- el usuario escucha el primer sonido mas del
-    doble de tarde. No cambia cuanto tarda la sintesis, cambia cuando
-    empieza a oirse."""
-    reproductor = None
-    tasa = canales = None
-    for chunk in _voz_piper.synthesize(texto):
-        if reproductor is None:
-            tasa, canales = chunk.sample_rate, chunk.sample_channels
-            reproductor = subprocess.Popen(
-                ["mpv", "--no-video", "--really-quiet",
-                 "--demuxer=rawaudio",
-                 f"--demuxer-rawaudio-rate={tasa}",
-                 f"--demuxer-rawaudio-channels={canales}",
-                 "--demuxer-rawaudio-format=s16le", "-"],
-                stdin=subprocess.PIPE,
-                stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL,
-            )
-        reproductor.stdin.write(chunk.audio_int16_bytes)
-
-    if reproductor is None:
-        return
-
-    # Cola de silencio antes de cerrar. Sin esto se oye un chasquido al final
-    # de cada frase: el stream crudo termina de golpe y mpv cierra el
-    # dispositivo de audio en pleno sonido. Con el silencio de por medio, el
-    # cierre cae en una zona muda y no se escucha. No lo necesitaba la
-    # version vieja (escribia un .wav completo y mpv sabia donde terminaba).
-    reproductor.stdin.write(b"\x00" * (2 * canales * tasa * SILENCIO_FINAL_MS // 1000))
-    reproductor.stdin.close()
-    reproductor.wait()   # bloquea hasta que termina de sonar
+    Se probo antes con streaming (un chunk por oracion mandado a mpv por
+    stdin en PCM crudo) y se revirtio: hacia un chasquido audible al final
+    de cada frase -- mpv cerraba el dispositivo de audio al terminar el
+    stream, y ni 150ms de silencio de cola lo tapaban. La ganancia no lo
+    justificaba: el 80% de las preguntas del dataset son de UNA oracion, y
+    ahi el streaming ahorraba 0.05s (con 2+ oraciones ahorraba ~0.5s, pero
+    es el 20%). Con archivo mpv conoce la duracion de antemano y cierra
+    limpio."""
+    with tempfile.NamedTemporaryFile(suffix=".wav", delete=False) as tmp:
+        ruta = tmp.name
+    try:
+        with wave.open(ruta, "wb") as w:
+            _voz_piper.synthesize_wav(texto, w)
+        subprocess.run(
+            ["mpv", "--no-video", "--really-quiet", ruta],
+            stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL,
+        )
+    finally:
+        try:
+            os.unlink(ruta)
+        except OSError:
+            pass
 
 
 def hablar(texto):
@@ -189,7 +176,7 @@ def hablar(texto):
             print("[voz] piper no esta cargado (ver cargar()), no se habla")
             return
         try:
-            _hablar_piper_streaming(texto)
+            _hablar_piper(texto)
         except FileNotFoundError as e:
             print(f"[voz] falta un binario ({e}) -- no se puede hablar")
         except Exception as e:
