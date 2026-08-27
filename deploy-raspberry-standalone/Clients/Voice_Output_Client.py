@@ -93,6 +93,11 @@ MODELO_PIPER = os.environ.get(
 )
 _voz_piper = None   # se carga una sola vez en cargar(), pesa ~5s
 
+# Milisegundos de silencio que se agregan al final de cada frase para que
+# mpv no corte el audio en seco (ver _hablar_piper_streaming). 150ms alcanza
+# para que no se oiga el chasquido y no se nota como pausa extra.
+SILENCIO_FINAL_MS = int(os.environ.get("VOZ_SILENCIO_FINAL_MS", "150"))
+
 
 def cargar():
     """Precarga lo que el motor activo necesite. La llama
@@ -144,21 +149,32 @@ def _hablar_piper_streaming(texto):
     doble de tarde. No cambia cuanto tarda la sintesis, cambia cuando
     empieza a oirse."""
     reproductor = None
+    tasa = canales = None
     for chunk in _voz_piper.synthesize(texto):
         if reproductor is None:
+            tasa, canales = chunk.sample_rate, chunk.sample_channels
             reproductor = subprocess.Popen(
                 ["mpv", "--no-video", "--really-quiet",
                  "--demuxer=rawaudio",
-                 f"--demuxer-rawaudio-rate={chunk.sample_rate}",
-                 f"--demuxer-rawaudio-channels={chunk.sample_channels}",
+                 f"--demuxer-rawaudio-rate={tasa}",
+                 f"--demuxer-rawaudio-channels={canales}",
                  "--demuxer-rawaudio-format=s16le", "-"],
                 stdin=subprocess.PIPE,
                 stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL,
             )
         reproductor.stdin.write(chunk.audio_int16_bytes)
-    if reproductor is not None:
-        reproductor.stdin.close()
-        reproductor.wait()   # bloquea hasta que termina de sonar
+
+    if reproductor is None:
+        return
+
+    # Cola de silencio antes de cerrar. Sin esto se oye un chasquido al final
+    # de cada frase: el stream crudo termina de golpe y mpv cierra el
+    # dispositivo de audio en pleno sonido. Con el silencio de por medio, el
+    # cierre cae en una zona muda y no se escucha. No lo necesitaba la
+    # version vieja (escribia un .wav completo y mpv sabia donde terminaba).
+    reproductor.stdin.write(b"\x00" * (2 * canales * tasa * SILENCIO_FINAL_MS // 1000))
+    reproductor.stdin.close()
+    reproductor.wait()   # bloquea hasta que termina de sonar
 
 
 def hablar(texto):
