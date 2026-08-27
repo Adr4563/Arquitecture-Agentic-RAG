@@ -105,7 +105,11 @@ def preguntar(host, modelo, pregunta, mensaje):
 
 def main():
     ap = argparse.ArgumentParser()
-    ap.add_argument("--modelo", default="lora-salida-trivia")
+    # Mismo default que Clients/Llama_Client.SALIDA_TRIVIA_MODEL: si se
+    # desalinean, estos scripts miden un modelo distinto del que corre el
+    # robot. Para comparar contra el v1 o el base: --modelo lora-salida-trivia
+    # / --modelo qwen2.5:0.5b
+    ap.add_argument("--modelo", default="lora-salida-trivia-v2")
     ap.add_argument("--host", default="http://localhost:11434")
     args = ap.parse_args()
 
