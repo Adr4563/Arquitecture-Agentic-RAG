@@ -43,6 +43,7 @@ from Clients import Voice_Output_Client as voz_output  # Lora habla en voz alta 
 from Clients.Llama_Client import (
     CHAT_MODEL, TRIVIA_MODEL, clasificar_salida_trivia, generar_respuesta,
 )
+import registro_chat  # registro_chat.py: guarda los turnos de Chat libre para el pipeline de mejora
 from personalidad import SYSTEM_PROMPT_CHAT_LIBRE, construir_personalidad, obtener_system_prompt
 from preguntas import pregunta_aleatoria as _pregunta_aleatoria
 from preguntas import pregunta_por_tema as _pregunta_por_tema
@@ -154,6 +155,10 @@ def responder(mensaje_usuario, persona_str, on_token=None):
         {"role": "user", "content": mensaje_usuario},
     ]
     texto_final = generar_respuesta(mensajes, on_token=on_token).strip()
+    # Se registra DESPUES de tener la respuesta completa, no token a token:
+    # lo que se revisa en curar.py es el turno entero. Ver
+    # chat_libre_training/README.md.
+    registro_chat.registrar(mensaje_usuario, texto_final, CHAT_MODEL)
     return texto_final, False
 
 

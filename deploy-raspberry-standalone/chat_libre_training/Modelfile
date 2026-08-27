@@ -1,0 +1,17 @@
+# Modelfile para importar una version de lora-chat-libre a Ollama.
+# Ajustar el FROM al .gguf cuantizado de la version que se quiera importar:
+#   ollama create lora-chat-libre-v1 -f Modelfile
+
+FROM lora-chat-libre-v1-q4_k_m.gguf
+
+# El MISMO system prompt con el que se entreno (entrenar_chat_libre.py) y
+# con el que sirve el robot (personalidad.SYSTEM_PROMPT_CHAT_LIBRE). Si los
+# tres se desalinean, el modelo queda fuera de distribucion -- que es
+# exactamente lo que le paso a lora-chat cuando se le saco el RAG.
+SYSTEM "Hablas español natural, como una persona real. Responde en máximo 25 palabras, una idea puntual, sin relleno ni repetir la pregunta. Nunca digas que eres una IA o un asistente."
+
+# temperature 0.3: algo de variedad para que no conteste siempre igual, pero
+# lejos del 0.8 por default, que en un 0.5B dispara las invenciones.
+PARAMETER temperature 0.3
+PARAMETER num_ctx 2048
+PARAMETER num_predict 60

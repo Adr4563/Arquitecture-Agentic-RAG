@@ -15,3 +15,8 @@ carrito-mecanum-esp32/credentials.h
 deploy-raspberry-standalone/.current_face
 *.log
 ~$*
+
+# Pipeline de Chat libre: conversaciones reales y artefactos regenerables
+deploy-raspberry-standalone/chat_libre_training/conversaciones.jsonl
+deploy-raspberry-standalone/chat_libre_training/dataset_chat_libre.jsonl
+deploy-raspberry-standalone/chat_libre_training/versiones.json
