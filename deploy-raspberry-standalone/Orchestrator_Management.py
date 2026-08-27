@@ -40,7 +40,9 @@ from Agents.Agent_Corrector import evaluar_respuesta
 from Agents.Agent_Router import enrutar  # router sin LLM (TF-IDF + regresión logística)
 from Clients import Camara_Client
 from Clients import Voice_Output_Client as voz_output  # Lora habla en voz alta (edge-tts + mpv)
-from Clients.Llama_Client import CHAT_MODEL, TRIVIA_MODEL, generar_respuesta
+from Clients.Llama_Client import (
+    CHAT_MODEL, TRIVIA_MODEL, clasificar_salida_trivia, generar_respuesta,
+)
 from personalidad import construir_personalidad, obtener_system_prompt
 from preguntas import SIN_CONTEXTO, recuperar_contexto
 from preguntas import pregunta_aleatoria as _pregunta_aleatoria
@@ -477,19 +479,25 @@ _SALIR_TRIVIA = [
 
 # Disparadores de que el usuario se puso a hablar de algo personal/una
 # experiencia propia (problemas familiares, de estudio, etc.) en vez de
-# responder la pregunta -- igual que _SALIR_TRIVIA, sin LLM, por costo: la
-# Pi ya corre 2 modelos (CHAT_MODEL/TRIVIA_MODEL) y no tiene margen para uno
-# más solo para esto.
+# responder la pregunta.
 #
-# Se probó un enfoque con LLM primero (qwen2.5:0.5b, mismo modelo que tenía
-# VERIFICADOR_MODEL antes de sacarlo del proyecto, con few-shot): falló, se
-# equivocó en 4 de 5 casos de prueba -- 0.5B es demasiado chico para este
-# juicio semántico abierto (a diferencia del router, que es una
-# clasificación acotada de pocas etiquetas). El modelo grande
-# (llama3.2:3b-q4s) sí acertó 5/5, pero reintroduce el mismo problema de
-# recursos que llevó a sacarlo de CHAT_MODEL -- descartado por eso, no por
-# precisión. Con keywords el trade-off es el mismo que _SALIR_TRIVIA:
-# cubre las variantes más comunes, no cualquier forma de decirlo.
+# Esta lista y _SALIR_TRIVIA YA NO son el mecanismo principal: hoy decide
+# lora-salida-trivia (ver _quiere_salir_trivia() acá abajo y
+# salida_trivia_training/). Quedan como fallback para los dos casos en que
+# no se puede consultar al modelo -- sin pregunta pendiente que darle, o
+# modelo/Ollama no disponibles.
+#
+# Por qué durante un tiempo esto fue solo keywords: se probó primero
+# qwen2.5:0.5b sin reentrenar (few-shot) y falló, se equivocó en 4 de 5
+# casos de prueba -- 0.5B es demasiado chico para este juicio semántico
+# abierto (a diferencia del router, que es una clasificación acotada de
+# pocas etiquetas). El modelo grande (llama3.2:3b-q4s) sí acertó 5/5, pero
+# reintroduce el problema de recursos que llevó a sacarlo de CHAT_MODEL.
+# Lo que destrabó el problema fue fine-tunear el chico para esta única
+# decisión: lora-salida-trivia acierta 15/15 en ~0.14s por consulta y pesa
+# 397MB, igual que CHAT_MODEL/TRIVIA_MODEL. Como fallback las keywords
+# siguen teniendo la limitación de siempre: cubren las variantes más
+# comunes, no cualquier forma de decirlo.
 _TEMA_PERSONAL = [
     "me paso", "me pasó", "el otro dia", "el otro día",
     "cuando era", "recuerdo cuando", "me acuerdo cuando",
@@ -504,13 +512,27 @@ _TEMA_PERSONAL = [
 ]
 
 
-def _quiere_salir_trivia(mensaje_usuario):
+def _quiere_salir_trivia(mensaje_usuario, pregunta_pendiente=None):
     """True si el usuario quiere dejar la trivia a mitad de una pregunta o
-    elección de tema -- match directo contra _SALIR_TRIVIA (frases
-    explícitas de salir/pausar/cambiar de tema) o _TEMA_PERSONAL (se puso a
-    hablar de algo suyo sin relación). Las dos listas son gratis/
-    instantáneas, sin LLM -- ver la nota en _TEMA_PERSONAL sobre por qué no
-    hay una versión con modelo acá."""
+    elección de tema.
+
+    Lo decide lora-salida-trivia (clasificar_salida_trivia()), que ve la
+    pregunta pendiente y el mensaje juntos: eso le permite distinguir cosas
+    que ninguna lista de palabras cubre -- una opinión larga a un dilema es
+    una RESPUESTA legítima, mientras que contar un problema propio con las
+    mismas palabras es SALIR.
+
+    Cae a las listas de palabras clave (_SALIR_TRIVIA/_TEMA_PERSONAL) en
+    dos casos. Uno: no hay pregunta pendiente porque el usuario está
+    eligiendo tema, no respondiendo -- el modelo se entrenó sobre pares
+    pregunta+mensaje y sin pregunta no está en su dominio. Dos:
+    clasificar_salida_trivia() devolvió None (Ollama caído, modelo sin
+    importar). Así ningún problema de infraestructura corta el turno ni deja
+    al usuario trabado en la trivia."""
+    if pregunta_pendiente:
+        veredicto = clasificar_salida_trivia(pregunta_pendiente, mensaje_usuario)
+        if veredicto is not None:
+            return veredicto
     texto = mensaje_usuario.strip().lower()
     return any(frase in texto for frase in _SALIR_TRIVIA) or any(frase in texto for frase in _TEMA_PERSONAL)
 
@@ -877,7 +899,12 @@ def _main_loop():
             continue
 
         if estado["en_trivia"]:
-            if _quiere_salir_trivia(entrada):
+            # La pregunta pendiente es el contexto que necesita el modelo
+            # para juzgar si `entrada` la está respondiendo. Puede no haber
+            # (el usuario está eligiendo tema): ahí _quiere_salir_trivia()
+            # se arregla con las keywords.
+            _pendiente = estado["pregunta_pendiente"]
+            if _quiere_salir_trivia(entrada, _pendiente["pregunta"] if _pendiente else None):
                 estado["en_trivia"] = False
                 display.mostrar_cara("content")
                 print("Asistente: Listo, dejamos la trivia pausada — la "

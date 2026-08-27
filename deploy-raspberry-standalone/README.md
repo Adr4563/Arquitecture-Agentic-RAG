@@ -11,10 +11,22 @@ Probado pensando en una **Raspberry Pi 4 (8GB RAM, 128GB de almacenamiento)**.
 ## ⚠️ Rendimiento esperado
 
 Una Pi 4 no tiene GPU para inferencia — todo corre en CPU (ARM Cortex-A72).
-`CHAT_MODEL` (`qwen2.5:0.5b` por default) es el ÚNICO modelo que Ollama
-mantiene cargado en RAM: genera todas las respuestas (chat libre, búsqueda
-web, reacciones de trivia, corrector, verificador). El router YA NO usa
-Ollama para nada — ver "Router sin LLM" más abajo.
+Ollama mantiene cargados **3 modelos**, todos fine-tunes LoRA de
+`qwen2.5:0.5b` (397 MB cada uno) y todos importados a mano con
+`ollama create`, no bajados con `ollama pull`:
+
+| Variable | Default | Rol | Entrenamiento |
+|---|---|---|---|
+| `CHAT_MODEL` | `lora-chat` | Genera las respuestas que ve el usuario (chat libre, búsqueda web) | `chat_training/` |
+| `TRIVIA_MODEL` | `lora-trivia` | Reacciones de trivia | `trivia_training/` |
+| `SALIDA_TRIVIA_MODEL` | `lora-salida-trivia` | Decide si el usuario se fue de la trivia (RESPUESTA vs SALIR) | `salida_trivia_training/` |
+
+Los tres pesan lo mismo porque salen del mismo modelo base. El tercero es
+opcional: si no está importado, la salida de trivia se decide con listas de
+palabras clave (menos preciso, pero no rompe nada) — ver
+`_quiere_salir_trivia()` en `Orchestrator_Management.py`.
+
+El router YA NO usa Ollama para nada — ver "Router sin LLM" más abajo.
 
 Se eligió `qwen2.5:0.5b` sobre `llama3.2:3b` (el default anterior) tras
 benchmarquear 7 modelos livianos (Meta/Facebook y HuggingFace, ver
@@ -164,7 +176,9 @@ chmod +x start-all.sh   # solo la primera vez
 ./start-all.sh
 ```
 
-El script verifica que Ollama y los 2 modelos estén listos y corre
+El script verifica que Ollama esté arriba y que `CHAT_MODEL`/`TRIVIA_MODEL`
+estén importados (si falta alguno, aborta); avisa sin abortar si falta
+`SALIDA_TRIVIA_MODEL`, que tiene fallback. Después corre
 `Orchestrator_Management.py` en primer plano, que es donde interactúas por
 teclado — `preguntas.py` se carga en memoria al arrancar
 `Orchestrator_Management.py` mismo, y `voz_server.py` levanta automáticamente
@@ -178,8 +192,10 @@ corre en la misma máquina.
 
 `CHAT_MODEL` se puede sobreescribir por variable de entorno sin tocar código.
 Si el hardware tiene margen y se prefiere una prosa más elaborada que la de
-`qwen2.5:0.5b`, `llama3.2:3b` (el default de este proyecto hasta el
-benchmark de más arriba) sigue siendo una opción válida — ya viene probado:
+`lora-chat` (fine-tune de `qwen2.5:0.5b`), `llama3.2:3b` (el default de este
+proyecto hasta el benchmark de más arriba) sigue siendo una opción válida —
+ya viene probado. Ojo que pierde la personalidad horneada del fine-tune, así
+que `personalidad.py` vuelve a mandar el system prompt completo:
 
 ```bash
 ollama pull llama3.2:3b   # si no está descargado todavía

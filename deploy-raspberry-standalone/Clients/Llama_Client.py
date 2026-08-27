@@ -1,6 +1,8 @@
 """
-Cliente HTTP hacia Ollama (generar_respuesta() -- la única llamada a un LLM
-que le queda a este archivo).
+Cliente HTTP hacia Ollama: generar_respuesta() (las respuestas que ve el
+usuario) y clasificar_salida_trivia() (una decisión binaria interna, ver
+más abajo) -- las dos únicas llamadas a un LLM que le quedan a este
+archivo.
 
 El router YA NO llama a Ollama: enrutar() se mudó a Agents/Agent_Router.py,
 un clasificador clásico (TF-IDF + regresión logística, sin LLM) -- ver ese
@@ -11,9 +13,11 @@ Management.py y los Agents importan generar_respuesta() de acá,
 recuperar_contexto()/pregunta_aleatoria()/etc. de preguntas.py, y enrutar()
 de Agent_Router.
 
-Dos modelos posibles, uno por rol (ver TRIVIA_MODEL más abajo) -- cuál se
-usa en cada llamada lo decide el caller pasando `modelo=` a
-generar_respuesta(); si no se pasa nada, usa CHAT_MODEL.
+Tres modelos, uno por rol (ver TRIVIA_MODEL y SALIDA_TRIVIA_MODEL más
+abajo). Para generar_respuesta(), cuál se usa lo decide el caller pasando
+`modelo=`; si no se pasa nada, usa CHAT_MODEL. clasificar_salida_trivia()
+usa siempre SALIDA_TRIVIA_MODEL, no es configurable por llamada: es un
+modelo entrenado para esa única tarea y no sirve para otra cosa.
 """
 
 import json
@@ -69,6 +73,80 @@ CHAT_MODEL = os.environ.get("CHAT_MODEL", "lora-chat")  # nombre del modelo en `
 # vs 3/8 en "repite la instrucción en vez de reaccionar", ver README
 # "Personalidad horneada en el modelo").
 TRIVIA_MODEL = os.environ.get("TRIVIA_MODEL", "lora-trivia")
+
+# Tercer modelo, para una sola decisión binaria de Trivia: dado el turno
+# pendiente, ¿el usuario está intentando responder la pregunta (RESPUESTA) o
+# se fue a hablar de otra cosa (SALIR)? Ver salida_trivia_training/ para el
+# pipeline de entrenamiento completo.
+#
+# Antes esto se resolvía solo con listas de palabras clave
+# (_SALIR_TRIVIA/_TEMA_PERSONAL en Orchestrator_Management.py, que siguen
+# ahí como fallback). Por qué se pudo cambiar recién ahora: qwen2.5:0.5b sin
+# reentrenar, con few-shot, falló 4 de 5 casos -- 0.5B es demasiado chico
+# para este juicio semántico abierto. llama3.2:3b-q4s acertó 5/5 pero
+# reintroduce el problema de RAM/latencia que llevó a sacarlo de CHAT_MODEL.
+# El fine-tune LoRA del chico para esta única tarea (lora-salida-trivia)
+# acierta 15/15 en ~0.14s por consulta y pesa 397MB, lo mismo que
+# CHAT_MODEL/TRIVIA_MODEL -- eso es lo que hizo viable un tercer modelo
+# residente en la Pi.
+SALIDA_TRIVIA_MODEL = os.environ.get("SALIDA_TRIVIA_MODEL", "lora-salida-trivia")
+
+# El Modelfile de lora-salida-trivia ya trae este mismo SYSTEM horneado,
+# pero se manda igual explícito: así la llamada es idéntica a la que validó
+# el modelo (salida_trivia_training/probar_salida.py, 15/15) y no depende de
+# que quien lo importe a Ollama haya usado ese Modelfile.
+_SALIDA_TRIVIA_SYSTEM = (
+    "Sos un clasificador. Te dan la pregunta de una trivia y el mensaje del "
+    "usuario. Respondé EXACTAMENTE una palabra: RESPUESTA si el usuario "
+    "intenta responder esa pregunta (aunque esté mal, o sea una opinión "
+    "larga si la pregunta la pide), o SALIR si se puso a hablar de otra "
+    "cosa (un tema personal, un problema, charla sin relación, o pide "
+    "explícitamente parar/cambiar de tema)."
+)
+
+
+def clasificar_salida_trivia(pregunta, mensaje_usuario):
+    """True si el usuario se está yendo de la trivia, False si está
+    intentando responder la pregunta, None si no se pudo decidir (Ollama
+    caído, modelo sin importar, respuesta inesperada).
+
+    El None es importante: el caller (_quiere_salir_trivia() en
+    Orchestrator_Management.py) cae a las listas de palabras clave cuando
+    pasa eso, así un problema de infraestructura nunca corta el turno del
+    usuario ni lo deja trabado en la trivia.
+
+    Sin streaming y con max_tokens=5 porque la salida es una sola palabra:
+    no hay nada que mostrar en vivo. temperature=0 porque es una
+    clasificación, no generación."""
+    mensajes = [
+        {"role": "system", "content": _SALIDA_TRIVIA_SYSTEM},
+        {"role": "user",
+         "content": f"Pregunta: {pregunta}\nUsuario: {mensaje_usuario}\n¿RESPUESTA o SALIR?"},
+    ]
+    try:
+        resp = requests.post(
+            f"{CHAT_SERVER_HOST}/v1/chat/completions",
+            json={
+                "model": SALIDA_TRIVIA_MODEL,
+                "messages": mensajes,
+                "temperature": 0,
+                "max_tokens": 5,
+                "stream": False,
+            },
+            timeout=30,
+        )
+        resp.raise_for_status()
+        resp.encoding = "utf-8"  # mismo motivo que en generar_respuesta()
+        veredicto = resp.json()["choices"][0]["message"]["content"].strip().upper()
+    except (requests.RequestException, ValueError, KeyError, IndexError):
+        return None
+    # startswith y no ==: con max_tokens=5 el modelo puede colar un punto o
+    # un salto de línea detrás de la palabra.
+    if veredicto.startswith("SALIR"):
+        return True
+    if veredicto.startswith("RESPUESTA"):
+        return False
+    return None
 
 
 def generar_respuesta(mensajes, temperature=0.3, max_tokens=50, on_token=None, modelo=None):

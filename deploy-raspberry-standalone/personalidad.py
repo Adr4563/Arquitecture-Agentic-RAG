@@ -76,7 +76,12 @@ def obtener_system_prompt(persona_str, modelo=None):
     El caller decide qué hacer con un system prompt vacío (ver
     Orchestrator_Management._mensajes_con_personalidad)."""
     if modelo is None:
-        modelo = os.environ.get("CHAT_MODEL", "qwen2.5:0.5b")
+        # Mismo default que Clients/Llama_Client.CHAT_MODEL (duplicado a
+        # propósito: este módulo no importa el cliente para no arrastrarle
+        # `requests`). Si cambia allá, cambiarlo acá -- si los dos se
+        # desalinean, este devolvería el prompt completo para un modelo que
+        # ya lo trae horneado, duplicando la personalidad.
+        modelo = os.environ.get("CHAT_MODEL", "lora-chat")
     if modelo in _MODELOS_CON_PERSONALIDAD_HORNEADA:
         return ""
     global _system_prompt_cache
