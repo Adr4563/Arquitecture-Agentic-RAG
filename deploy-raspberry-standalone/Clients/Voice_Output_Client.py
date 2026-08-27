@@ -64,7 +64,18 @@ import tempfile
 # Tiene que ir ANTES de importar piper/onnxruntime, que leen esto al cargar.
 os.environ.setdefault("OMP_NUM_THREADS", "1")
 
-MOTOR = os.environ.get("VOZ_MOTOR", "edge").strip().lower()
+# Default: piper (local). Se eligio sobre edge-tts porque no depende de
+# internet -- si la Pi se queda sin WiFi, con edge Lora se queda muda. Es
+# ademas mas rapido de punta a punta (8.70s vs 11.54s en la misma frase).
+#
+# Si piper no puede cargar (modelo sin descargar, paquete sin instalar),
+# cargar() degrada solo a _MOTOR_RESPALDO en vez de dejar al robot mudo.
+MOTOR = os.environ.get("VOZ_MOTOR", "piper").strip().lower()
+
+# A donde caer si el motor pedido no esta disponible. edge-tts es la mejor
+# red: no necesita nada instalado en la Pi. Si tampoco hay internet, hablar()
+# loguea y el chat sigue por texto.
+_MOTOR_RESPALDO = "edge"
 
 # ── edge-tts ──────────────────────────────────────────────────────────
 VOZ = os.environ.get("VOZ_EDGE", "es-AR-ElenaNeural")
@@ -94,7 +105,7 @@ def cargar():
     edge/espeak no tienen nada que cargar (servicio en la nube y binario del
     sistema). Piper si: cargar el .onnx tarda ~5s en la Pi, y sin esto ese
     tiempo se lo comeria el primer turno."""
-    global _voz_piper
+    global _voz_piper, MOTOR
     if MOTOR != "piper":
         return
     try:
@@ -102,7 +113,16 @@ def cargar():
         _voz_piper = PiperVoice.load(MODELO_PIPER)
         print(f"[voz] piper listo ({os.path.basename(MODELO_PIPER)})")
     except Exception as e:
-        print(f"[voz] no se pudo cargar piper ({e}) -- se sigue sin voz")
+        # Puede fallar por dos motivos: falta el paquete (pip install
+        # piper-tts) o falta el .onnx (ver README, ollama-style:
+        # python -m piper.download_voices es_MX-claude-high). En los dos
+        # casos preferimos hablar peor a no hablar, asi que se degrada al
+        # motor de respaldo en vez de dejar mudo al robot.
+        MOTOR = _MOTOR_RESPALDO
+        print(f"[voz] no se pudo cargar piper ({e})")
+        print(f"[voz] se usa {MOTOR} como respaldo -- "
+              f"para voz local: python3 -m piper.download_voices "
+              f"{os.path.basename(MODELO_PIPER).replace('.onnx', '')}")
 
 
 async def _sintetizar_edge(texto, ruta):
