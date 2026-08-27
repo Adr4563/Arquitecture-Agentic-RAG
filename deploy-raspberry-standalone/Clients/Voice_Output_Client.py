@@ -19,7 +19,11 @@ Medido en la Raspberry Pi (aarch64), frase de 85 caracteres:
     | Kokoro-82M v1.0            | 12.16s   |  x0.31   (!)   | 310MB |
     | Coqui XTTS-v2              |   --     |  no probado    | ~1.8GB|
 
-hablar() BLOQUEA, asi que la sintesis se le suma a cada turno.
+hablar() BLOQUEA, asi que la sintesis se le suma a cada turno. Con Piper se
+reproduce en STREAMING (un chunk por oracion, ver hablar()): empieza a
+sonar mientras todavia sintetiza el resto. Medido en la Pi, frase de 3
+oraciones: primer audio a los 1.16s en vez de 2.58s, y 8.62s totales en vez
+de 10.06s.
 
 Descartados: Kokoro corre a 0.31x tiempo real (12s por frase) pese a tener
 solo 82M parametros, y XTTS-v2 es varias veces mas grande -- ni se probo,
@@ -53,6 +57,12 @@ import asyncio
 import os
 import subprocess
 import tempfile
+
+# Piper (onnxruntime) agarra los 4 nucleos de la Pi por default. Medido: la
+# sintesis tarda lo mismo con 1, 2 o 4 hilos (1.92s / 1.92s / 1.96s), asi que
+# limitarlo a 1 es gratis en velocidad y deja 3 nucleos libres para Ollama.
+# Tiene que ir ANTES de importar piper/onnxruntime, que leen esto al cargar.
+os.environ.setdefault("OMP_NUM_THREADS", "1")
 
 MOTOR = os.environ.get("VOZ_MOTOR", "edge").strip().lower()
 
@@ -110,16 +120,35 @@ def _generar(texto, ruta):
             stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, check=True,
         )
         return True
-    if MOTOR == "piper":
-        if _voz_piper is None:
-            print("[voz] piper no esta cargado (ver cargar()), no se habla")
-            return False
-        import wave
-        with wave.open(ruta, "wb") as w:
-            _voz_piper.synthesize_wav(texto, w)
-        return True
+    # piper no pasa por aca: usa streaming, sin archivo intermedio.
     asyncio.run(_sintetizar_edge(texto, ruta))
     return True
+
+
+def _hablar_piper_streaming(texto):
+    """Reproduce con Piper sin esperar a que termine la sintesis: se le pasa
+    a mpv cada chunk (una oracion) apenas sale, por stdin en PCM crudo.
+
+    Sin esto habria que sintetizar el texto entero, escribirlo a un .wav y
+    recien ahi abrir mpv -- el usuario escucha el primer sonido mas del
+    doble de tarde. No cambia cuanto tarda la sintesis, cambia cuando
+    empieza a oirse."""
+    reproductor = None
+    for chunk in _voz_piper.synthesize(texto):
+        if reproductor is None:
+            reproductor = subprocess.Popen(
+                ["mpv", "--no-video", "--really-quiet",
+                 "--demuxer=rawaudio",
+                 f"--demuxer-rawaudio-rate={chunk.sample_rate}",
+                 f"--demuxer-rawaudio-channels={chunk.sample_channels}",
+                 "--demuxer-rawaudio-format=s16le", "-"],
+                stdin=subprocess.PIPE,
+                stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL,
+            )
+        reproductor.stdin.write(chunk.audio_int16_bytes)
+    if reproductor is not None:
+        reproductor.stdin.close()
+        reproductor.wait()   # bloquea hasta que termina de sonar
 
 
 def hablar(texto):
@@ -129,8 +158,20 @@ def hablar(texto):
     if not texto or not texto.strip():
         return
 
+    if MOTOR == "piper":
+        if _voz_piper is None:
+            print("[voz] piper no esta cargado (ver cargar()), no se habla")
+            return
+        try:
+            _hablar_piper_streaming(texto)
+        except FileNotFoundError as e:
+            print(f"[voz] falta un binario ({e}) -- no se puede hablar")
+        except Exception as e:
+            print(f"[voz] error al hablar con piper ({e})")
+        return
+
     # .wav para los motores locales, .mp3 para edge-tts (es lo que devuelve).
-    sufijo = ".wav" if MOTOR in ("espeak", "piper") else ".mp3"
+    sufijo = ".wav" if MOTOR == "espeak" else ".mp3"
     with tempfile.NamedTemporaryFile(suffix=sufijo, delete=False) as tmp:
         ruta = tmp.name
     try:
