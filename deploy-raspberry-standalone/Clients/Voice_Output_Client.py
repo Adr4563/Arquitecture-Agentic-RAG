@@ -8,16 +8,32 @@ con VOZ_MOTOR:
 
 Medido en la Raspberry Pi (aarch64), frase de 85 caracteres:
 
-    | motor            | sintesis | audio | vs tiempo real |
-    |------------------|----------|-------|----------------|
-    | espeak-ng        |  0.05s   | 6.1s  |  x128          |
-    | piper es_MX x_low|  1.5s    | 5.5s  |  x3.5          |
-    | piper es_AR high |  9.1s    | 4.1s  |  x0.44  (!)    |
+    | motor / voz                | sintesis | vs tiempo real | peso  |
+    |----------------------------|----------|----------------|-------|
+    | espeak-ng                  |  0.05s   |  x128          |   --  |
+    | piper es_MX-claude-high    |  1.60s   |  x2.86         |  60MB |
+    | piper es_ES-sharvard-medium|  1.42s   |  x2.72         |  73MB |
+    | piper es_ES-davefx-medium  |  1.39s   |  x2.63         |  60MB |
+    | piper es_MX-ald-x_low      |  1.35s   |  x3.52         |  20MB |
+    | piper es_AR-daniela-high   |  7.34s   |  x0.45   (!)   | 109MB |
+    | Kokoro-82M v1.0            | 12.16s   |  x0.31   (!)   | 310MB |
+    | Coqui XTTS-v2              |   --     |  no probado    | ~1.8GB|
 
-hablar() BLOQUEA, asi que ese tiempo se le suma a cada turno. Por eso la
-voz "high" de Piper esta descartada: 9 segundos de silencio por frase hacen
-al robot inusable, aunque suene mejor. x_low es el punto medio razonable si
-espeak-ng suena demasiado robotico.
+hablar() BLOQUEA, asi que la sintesis se le suma a cada turno.
+
+Descartados: Kokoro corre a 0.31x tiempo real (12s por frase) pese a tener
+solo 82M parametros, y XTTS-v2 es varias veces mas grande -- ni se probo,
+arrastra torch/transformers/librosa y un modelo de ~1.8GB. es_AR-daniela-high
+tambien queda afuera: 7.3s por frase.
+
+Ojo con el nombre de las voces Piper: el tier ("high"/"medium"/"x_low") NO
+predice la velocidad. es_MX-claude-high es "high" y corre a x2.86 con 60MB;
+es_AR-daniela-high es el mismo tier, pesa 109MB y va a x0.45. Lo que manda
+es el tamano del .onnx.
+
+Default de Piper: es_MX-claude-high -- el mejor tier de calidad entre los
+usables, a 0.2s de los "medium", y con acento latinoamericano (los es_ES
+son de Espana).
 
 edge-tts (es-AR-ElenaNeural, de Microsoft) sigue siendo el default: se
 eligio a mano tras escuchar 46 voces en espanol. Su problema es que NO es
@@ -55,7 +71,7 @@ VELOCIDAD_ESPEAK = os.environ.get("VOZ_ESPEAK_VELOCIDAD", "150")
 #   python -m piper.download_voices es_MX-ald-x_low
 MODELO_PIPER = os.environ.get(
     "VOZ_PIPER_MODELO",
-    os.path.expanduser("~/piper-voces/es_MX-ald-x_low.onnx"),
+    os.path.expanduser("~/piper-voces/es_MX-claude-high.onnx"),
 )
 _voz_piper = None   # se carga una sola vez en cargar(), pesa ~5s
 
