@@ -2,8 +2,8 @@
 Voz de salida: Lora dice en voz alta cada respuesta. DOS motores: uno local
 (el default) y uno en la nube como respaldo. Se eligen con VOZ_MOTOR:
 
-    export VOZ_MOTOR=piper   # (default) Piper, 100% local
-    export VOZ_MOTOR=edge    # edge-tts, NECESITA INTERNET
+    export VOZ_MOTOR=edge    # (default) edge-tts, NECESITA INTERNET
+    export VOZ_MOTOR=piper   # Piper, 100% local
 
 Medido en la Raspberry Pi (aarch64), frase de 85 caracteres:
 
@@ -69,17 +69,24 @@ import wave
 # Tiene que ir ANTES de importar piper/onnxruntime, que leen esto al cargar.
 os.environ.setdefault("OMP_NUM_THREADS", "1")
 
-# Default: piper (local). Se eligio sobre edge-tts porque no depende de
-# internet -- si la Pi se queda sin WiFi, con edge Lora se queda muda. Es
-# ademas mas rapido de punta a punta (8.70s vs 11.54s en la misma frase).
+# Default: edge-tts (nube), a pedido del usuario.
 #
-# Si piper no puede cargar (modelo sin descargar, paquete sin instalar),
-# cargar() degrada solo a _MOTOR_RESPALDO en vez de dejar al robot mudo.
-MOTOR = os.environ.get("VOZ_MOTOR", "piper").strip().lower()
+# El intercambio, medido en la Pi con la misma frase: edge tarda 11.54s de
+# punta a punta contra 8.70s de piper, y NECESITA INTERNET -- si la Pi se
+# queda sin WiFi, Lora se queda muda. A cambio no depende de que el .onnx
+# este descargado en la maquina.
+#
+# Para volver a la voz local, que sigue instalada y probada:
+#     export VOZ_MOTOR=piper
+MOTOR = os.environ.get("VOZ_MOTOR", "edge").strip().lower()
 
-# A donde caer si el motor pedido no esta disponible. edge-tts es la mejor
-# red: no necesita nada instalado en la Pi. Si tampoco hay internet, hablar()
-# loguea y el chat sigue por texto.
+# A donde caer si el motor pedido no esta disponible. Solo aplica a piper:
+# cargar() lo usa cuando no puede cargar el .onnx (modelo sin descargar,
+# paquete sin instalar) y prefiere hablar peor a no hablar.
+#
+# Con MOTOR=edge NO hay red de seguridad: si se cae internet, hablar()
+# loguea y el turno sigue en texto. Es el costo de tener el default en la
+# nube.
 _MOTOR_RESPALDO = "edge"
 
 # ── edge-tts ──────────────────────────────────────────────────────────
