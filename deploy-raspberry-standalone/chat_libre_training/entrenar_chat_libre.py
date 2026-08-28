@@ -35,7 +35,7 @@ from transformers import (
     Trainer, TrainingArguments,
 )
 
-BASE_MODEL = "Qwen/Qwen2.5-0.5B-Instruct"
+BASE_MODEL = "Qwen/Qwen2.5-1.5B-Instruct"
 HERE = os.path.dirname(os.path.abspath(__file__))
 DATASET_PATH = os.path.join(HERE, "dataset_chat_libre.jsonl")
 VERSIONES_PATH = os.path.join(HERE, "versiones.json")
