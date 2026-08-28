@@ -64,34 +64,16 @@ def construir_personalidad():
 _system_prompt_cache = None  # se arma una sola vez y se reutiliza en cada turno
 
 
-# System prompt de Chat libre. A proposito NO lleva personalidad ni ninguna
-# de las reglas de Trivia -- a pedido del usuario:
+# SYSTEM_PROMPT_CHAT_LIBRE se elimino: Chat libre ya no manda ningun system
+# prompt (ver Orchestrator_Management.responder()). El comportamiento tiene
+# que salir del fine-tuning (chat_libre_training/), no de una instruccion
+# repetida en cada turno.
 #
-# - Sin personalidad: el bloque "Eres un chatbot con personalidad {persona}"
-#   se saco entero. Con el, llama3.2:1b arrancaba a inventar en vez de
-#   conversar ("hoy me fue mal en el colegio" -> "Hoy te faltaron 30 minutos
-#   en clase de matematicas").
-#
-# - Sin la regla del CONTEXTO: era residuo del RAG, que Chat libre ya no usa
-#   (ver Orchestrator_Management.responder()). Le hablaba al modelo de un
-#   bloque que nunca mas se le manda.
-#
-# - Sin "no hagas preguntas propias": esa regla existe para que en Trivia el
-#   modelo no cierre preguntando -- si lo hace, el usuario contesta ESA
-#   pregunta y el orquestador la corrige contra la pregunta pendiente del
-#   dataset, que era otra, y el marcador se desincroniza. En Chat libre no
-#   hay pregunta pendiente, y repreguntar es justamente lo que sostiene la
-#   conversacion.
-#
-# Se conserva el limite de palabras: el robot habla en voz alta y bloquea
-# hasta terminar, asi que una respuesta larga es silencio para el usuario.
-# Sin ningun prompt, las respuestas se iban a 20s y se cortaban a la mitad
-# contra el tope de max_tokens.
-SYSTEM_PROMPT_CHAT_LIBRE = (
-    "Hablas español natural, como una persona real. Responde en máximo 25 "
-    "palabras, una idea puntual, sin relleno ni repetir la pregunta. Nunca "
-    "digas que eres una IA o un asistente."
-)
+# Ojo: sacarlo del codigo NO alcanza. El Modelfile con el que se importa el
+# modelo a Ollama puede traer su propio SYSTEM horneado, y Ollama lo aplica
+# aunque el cliente no mande nada. Medido: con y sin el system explicito las
+# respuestas eran identicas, porque el Modelfile lo tenia. Hay que sacarlo de
+# los dos lados.
 
 
 def obtener_system_prompt(persona_str, modelo=None):

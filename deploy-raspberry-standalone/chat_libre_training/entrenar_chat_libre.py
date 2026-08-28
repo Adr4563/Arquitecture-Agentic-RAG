@@ -35,7 +35,12 @@ from transformers import (
     Trainer, TrainingArguments,
 )
 
-BASE_MODEL = "Qwen/Qwen2.5-1.5B-Instruct"
+# Configurable por env var para poder comparar tamanos sin editar el
+# archivo. Medido en la Pi con la misma semilla de 105 ejemplos:
+#   0.5B -> 397MB, ~2s por respuesta
+#   1.5B -> 940MB, ~4s por respuesta
+# Los dos son mas rapidos y chicos que llama3.2:1b (1.3GB, ~11s).
+BASE_MODEL = os.environ.get("CHAT_LIBRE_BASE", "Qwen/Qwen2.5-1.5B-Instruct")
 HERE = os.path.dirname(os.path.abspath(__file__))
 DATASET_PATH = os.path.join(HERE, "dataset_chat_libre.jsonl")
 VERSIONES_PATH = os.path.join(HERE, "versiones.json")
@@ -88,9 +93,13 @@ def cargar_dataset(tokenizer):
     print("Cargados " + str(len(ejemplos)) + " ejemplos curados")
 
     def _tok(ej):
+        # Sin system prompt: tiene que coincidir EXACTAMENTE con lo que
+        # manda el robot en runtime (Orchestrator_Management.responder()).
+        # Entrenar con system y servir sin el deja al modelo fuera de
+        # distribucion -- es lo que rompio a lora-chat (0/12) cuando se le
+        # saco el RAG con el que se habia entrenado.
         prompt = tokenizer.apply_chat_template(
-            [{"role": "system", "content": SYSTEM_PROMPT},
-             {"role": "user", "content": ej["instruccion"]}],
+            [{"role": "user", "content": ej["instruccion"]}],
             tokenize=False, add_generation_prompt=True,
         )
         pid = tokenizer(prompt, add_special_tokens=False)["input_ids"]

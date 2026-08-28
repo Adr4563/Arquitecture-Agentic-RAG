@@ -57,7 +57,20 @@ CHAT_SERVER_HOST = os.environ.get("CHAT_SERVER_HOST", "http://localhost:11434")
 # son los únicos dos modelos que Ollama mantiene cargados en RAM. Si hace
 # falta más calidad de prosa y el hardware lo permite, sobreescribir con
 # `export CHAT_MODEL=llama3.2:3b`.
-CHAT_MODEL = os.environ.get("CHAT_MODEL", "llama3.2:1b")  # nombre del modelo en `ollama list` — genera las respuestas reales
+# lora-chat-libre-v4: fine-tune propio de qwen2.5:0.5b (ver
+# chat_libre_training/). Se elige por LATENCIA: 400ms hasta la primera
+# palabra y 1.4s en total, contra 3748ms/7.0s del de 1.5B y ~2000ms/19s de
+# llama3.2:1b, todo medido en la Pi.
+#
+# El costo es calidad: es el mas flojo de los tres. Todavia responde
+# "!Que bueno!" a "mi amigo se rio de mi". Eso NO se arregla con mas
+# parametros -- se probo con 0.5B, 1.5B y 1.2B y los tres fallan --, se
+# arregla con ejemplos: chat_libre_training/curar.py.
+#
+# Para volver a uno mas lento pero mejor:
+#     export CHAT_MODEL=lora-chat-libre-v2   # 1.5B
+#     export CHAT_MODEL=llama3.2:1b          # el de antes
+CHAT_MODEL = os.environ.get("CHAT_MODEL", "lora-chat-libre-v4")  # nombre del modelo en `ollama list` — genera las respuestas reales
 # (no usar una variante -fp16: corre 100% en CPU sin VRAM y es extremadamente lenta;
 # los modelos cuantizados -q4_K_*/-q4s son los viables en CPU)
 

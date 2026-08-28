@@ -63,6 +63,12 @@ CASOS = [
     ("que hora es en este momento",              ["NO_INVENTA"]),
     ("va a llover esta tarde",                   ["NO_INVENTA"]),
     ("cuanto es 918 por 447",                    ["NO_INVENTA"]),
+    # Identidad: el chequeo NO_ASISTENTE ya existia, pero ningun caso
+    # preguntaba por ella -- v1 fallaba 3 de 6 y la suite daba 11/12 igual.
+    ("que eres tu",                              []),
+    ("eres inteligencia artificial",             []),
+    ("eres real",                                []),
+    ("sos un programa",                          []),
     ("hola que tal",                             []),
     ("chau nos vemos",                           []),
     ("no entiendo nada",                         []),
