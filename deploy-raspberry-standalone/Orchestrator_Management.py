@@ -372,9 +372,13 @@ def _jugar_emociones(pregunta, persona_str, on_token=None):
     detectada, confianza = Camara_Client.detectar_emocion()
 
     if detectada is None:
-        # A pedido del usuario: sin agente de comentario (ver la nota en
-        # manejar_trivia()). No hay veredicto acá, así que no hay una cara de
-        # veredicto que mostrar (queda 'speaking').
+        # Este juego (a diferencia de manejar_trivia(), que sí volvió a usar
+        # comentar_resultado()/reaccionar_libre() desde 2026-08-30) sigue
+        # sin agente de comentario a propósito: el veredicto sale de la
+        # cámara, no de texto, así que no hay nada que "explicarle" al LLM
+        # más allá de la palabra fija de abajo. No hay veredicto acá (sin
+        # cara detectada), así que no hay una cara de veredicto que mostrar
+        # (queda 'speaking').
         display.mostrar_cara("speaking")
         time.sleep(PAUSA_ANTES_ACCION_FISICA)
         expresar_musica(pregunta)
@@ -383,11 +387,13 @@ def _jugar_emociones(pregunta, persona_str, on_token=None):
 
     acerto = detectada == objetivo
     print(f"    [cámara] pedido={objetivo} detectado={detectada} (confianza {confianza:.0%}) -> {'OK' if acerto else 'MAL'}")
-    # Veredicto hablado -- sin agente de comentario (LLM, sigue sin usarse):
-    # solo la palabra fija según acerto/error. A diferencia del resto de
-    # Trivia (que se queda callada, solo cara/música/desplazamiento), acá
-    # hace falta: el usuario está posando frente a la cámara, no mirando la
-    # pantalla, así que no ve la cara de veredicto sin este aviso por voz.
+    # Veredicto hablado -- sin agente de comentario (LLM) a propósito, ver
+    # la nota más arriba: solo la palabra fija según acerto/error, no un
+    # comentario generado como en el resto de Trivia (manejar_trivia(), que
+    # sí usa comentar_resultado()/reaccionar_libre() desde 2026-08-30). Acá
+    # la voz hace falta igual, con o sin LLM: el usuario está posando frente
+    # a la cámara, no mirando la pantalla, así que no ve la cara de
+    # veredicto sin este aviso por voz.
     #
     # Orden a propósito: la VOZ va primero y bloquea (tiene que terminar de
     # decirse) -- recién después se disparan cara/música/desplazamiento
@@ -585,12 +591,14 @@ def enrutar_mensaje(mensaje_usuario):
 
 PREGUNTAS_POR_TANDA = 5
 PAUSA_CAMBIO_CARA = 4  # segundos en 'content' antes de pasar a la cara que sigue (habla o reacción)
-# Reacción a una respuesta, sin agente de comentario (a pedido del usuario --
-# comentar_resultado()/comentar_resultado_emocion()/reaccionar_libre() siguen
-# definidas pero manejar_trivia()/_jugar_emociones() ya no las llaman): la
-# cara se mueve al veredicto, se espera esta pausa, y recién ahí se disparan
-# música/desplazamiento (en paralelo entre sí, hilo/Popen, no bloquean) --
-# ver manejar_trivia()/_jugar_emociones().
+# Reacción a una respuesta: manejar_trivia() vuelve a usar comentar_resultado()/
+# reaccionar_libre() (LLM, desde 2026-08-30) ANTES de esta pausa -- la voz
+# bloquea hasta terminar de decirse, y recién ahí se mueve la cara al
+# veredicto, se espera esta pausa, y se disparan música/desplazamiento (en
+# paralelo entre sí, hilo/Popen, no bloquean). _jugar_emociones() sigue sin
+# LLM a propósito (comentar_resultado_emocion() sigue sin uso, ver la nota
+# ahí) -- el veredicto ahí sale de la cámara, con palabra fija en vez de
+# comentario generado.
 PAUSA_ANTES_ACCION_FISICA = 1
 
 # Cuánto esperar, como máximo, a que un teléfono se conecte y active la voz
@@ -776,7 +784,7 @@ def manejar_trivia(mensaje_usuario, estado, persona_str, on_token):
         # control hasta que se acaban. Lo que llega a esta rama es siempre
         # una respuesta de texto a corregir.
         estado["pregunta_pendiente"] = None
-        print("Asistente: ", end="", flush=True)
+        display.mostrar_cara("speaking")  # generando el comentario (LLM) -- ver la nota de orden más abajo
         if pendiente["respuesta_esperada"]:
             estado["total"] += 1
             acerto = evaluar_respuesta(pendiente["respuesta_esperada"], mensaje_usuario)
@@ -785,26 +793,34 @@ def manejar_trivia(mensaje_usuario, estado, persona_str, on_token):
             # de ESTA pregunta (cara_respuesta_buena/mala del dataset, sin
             # LLM). Fallback genérico solo por si esa columna viniera vacía.
             cara = elegir_cara_pregunta(pendiente, acerto) or ("happy" if acerto else "sad")
-            # A pedido del usuario: sin el agente de comentario
-            # (comentar_resultado(), LLM) -- se sigue mostrando el veredicto
-            # (cara/música/desplazamiento, en paralelo entre sí, ver
-            # _reaccionar_veredicto()) pero sin reacción hablada -- no hay
-            # voz que deba ir "primero" acá, a diferencia de
-            # _jugar_emociones().
+            # A pedido del usuario (2026-08-30): reaccion hablada de vuelta,
+            # con comentar_resultado() (LLM, TRIVIA_MODEL) -- orden: voz
+            # PRIMERO (bloquea, tiene que terminar de decirse), y recién
+            # después cara/música/desplazamiento juntos (_reaccionar_veredicto()),
+            # mismo criterio que _jugar_emociones() (el otro único caller con
+            # voz antes del veredicto visual).
+            comentario = comentar_resultado(
+                pendiente["pregunta"], pendiente["respuesta_esperada"], mensaje_usuario,
+                acerto, persona_str,
+            )
+            print(f"Asistente: {comentario}\n")
+            voz_output.hablar(comentario)
             _reaccionar_veredicto(cara, pendiente, estado.get("musica_ya_sonada", False))
             display.mostrar_cara("speaking")
         else:
             # Temas como Chistes o Reconocimiento Musical no tienen una
-            # respuesta correcta que corregir: no hay veredicto, así que no
-            # se elige cara (queda la genérica de "hablando") — pero igual se
-            # revisa música/desplazamiento, que no dependen de acierto/error.
-            # Mismo criterio que la rama de arriba: sin agente de comentario.
-            display.mostrar_cara("speaking")
+            # respuesta correcta que corregir: no hay veredicto ni cara
+            # específica (queda la genérica de "hablando") -- pero sí
+            # reacción hablada con reaccionar_libre() (LLM), mismo criterio
+            # de orden que la rama de arriba: voz primero, después
+            # música/desplazamiento (que no dependen de acierto/error).
+            comentario = reaccionar_libre(pendiente["pregunta"], mensaje_usuario, persona_str)
+            print(f"Asistente: {comentario}\n")
+            voz_output.hablar(comentario)
             time.sleep(PAUSA_ANTES_ACCION_FISICA)
             if not estado.get("musica_ya_sonada", False):
                 expresar_musica(pendiente)
             expresar_desplazamiento(pendiente)
-        print("\n")
 
         # Sigue encadenando la tanda; recién cuando se acaba se vuelve a
         # preguntar qué hacer (el Router igual reclasifica el próximo mensaje,

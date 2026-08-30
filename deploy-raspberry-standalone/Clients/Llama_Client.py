@@ -77,8 +77,8 @@ CHAT_MODEL = os.environ.get("CHAT_MODEL", "lora-chat-libre-v4")  # nombre del mo
 # los modelos cuantizados -q4_K_*/-q4s son los viables en CPU)
 
 # Modelo separado SOLO para las reacciones de Trivia (comentar_resultado()/
-# reaccionar_libre() en Orchestrator_Management.py -- hoy definidas pero sin
-# uso, ver la nota "Trivia sin agente de comentario") -- a pedido del
+# reaccionar_libre() en Orchestrator_Management.py, reactivadas 2026-08-30
+# tras un período sin usarse -- ver manejar_trivia()) -- a pedido del
 # usuario, distinto del que atiende Chat libre (CHAT_MODEL, sin tocar).
 # Por default lora-trivia (ver trivia_training/): fine-tuning LoRA
 # entrenado SOLO con los 121 ejemplos de trivia (a diferencia de
