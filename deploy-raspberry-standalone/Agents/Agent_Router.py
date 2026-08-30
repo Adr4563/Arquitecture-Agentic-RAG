@@ -27,6 +27,8 @@ import os
 
 import joblib
 
+import perf_monitor
+
 HERE = os.path.dirname(os.path.abspath(__file__))
 _MODELO_PATH = os.path.join(HERE, "router_modelo.joblib")
 
@@ -37,6 +39,7 @@ _clasificador = _modelo["clasificador"]
 RUTAS_VALIDAS = {"TRIVIA", "CHAT_LIBRE"}
 
 
+@perf_monitor.medir("agent_router")
 def enrutar(mensaje_usuario):
     """Clasifica mensaje_usuario en una de RUTAS_VALIDAS. Misma firma que el
     enrutar() anterior de Llama_Client, así que Orchestrator_Management.py no

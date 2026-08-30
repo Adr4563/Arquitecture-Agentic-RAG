@@ -27,6 +27,8 @@ import difflib
 import re
 import unicodedata
 
+import perf_monitor
+
 _ARTICULOS = {"el", "la", "los", "las", "un", "una", "unos", "unas", "de", "del", "al"}
 _UMBRAL_SOLAPAMIENTO = 0.6  # fracción de palabras clave de la respuesta esperada que alcanza con mencionar
 _UMBRAL_FUZZY = 0.8  # similitud mínima (difflib) para tolerar typos
@@ -53,6 +55,7 @@ def _extraer_numeros(s):
     return [float(n.replace(",", ".")) for n in re.findall(r"-?\d+(?:[.,]\d+)?", s)]
 
 
+@perf_monitor.medir("agent_corrector")
 def evaluar_respuesta(esperada, respuesta_usuario):
     """Compara la respuesta del usuario con la esperada. Devuelve True/False.
 

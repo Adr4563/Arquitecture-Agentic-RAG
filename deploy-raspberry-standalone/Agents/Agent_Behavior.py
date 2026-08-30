@@ -32,6 +32,7 @@ Si una columna viene vacía, no se hace nada con esa parte — ni log, ni acció
 import random
 import threading
 
+import perf_monitor
 from Clients import Carrito_Client, Musica_Client
 
 # El dataset usa nombres en español (columna 'cara' original); display.py
@@ -69,6 +70,7 @@ def cara_para_emocion(nombre):
     return _CARA_A_DISPLAY.get((nombre or "").strip())
 
 
+@perf_monitor.medir("musica")
 def expresar_musica(pregunta, esperar=False):
     """Si la pregunta trae algo en 'musical', reproduce ese archivo de
     musica/ de verdad (Musica_Client.py, recortado a 20s). Vacío/ausente ->
@@ -86,6 +88,7 @@ def expresar_musica(pregunta, esperar=False):
     return musica
 
 
+@perf_monitor.medir("desplazamiento")
 def expresar_desplazamiento(pregunta):
     """Si la pregunta trae algo en 'desplazamiento', se lo manda de verdad al
     carrito mecanum (Carrito_Client.py) — 'Girar 360°' usa mover_360()

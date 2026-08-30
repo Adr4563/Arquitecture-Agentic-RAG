@@ -13,6 +13,7 @@ chroma_data/
 .claude/settings.local.json
 carrito-mecanum-esp32/credentials.h
 deploy-raspberry-standalone/.current_face
+deploy-raspberry-standalone/logs/
 *.log
 ~$*
 

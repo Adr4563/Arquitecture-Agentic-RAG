@@ -41,6 +41,8 @@ import subprocess
 import sys
 import time
 
+import perf_monitor
+
 HERE = os.path.dirname(os.path.abspath(__file__))
 FACES_DIR = os.path.join(HERE, "faces")
 VIEWER = os.path.join(HERE, "face_viewer.py")
@@ -183,6 +185,7 @@ def _detener_tk():
 
 # ─── Interfaz pública (no cambia según el backend) ───────────────────────
 
+@perf_monitor.medir("display")
 def mostrar_cara(nombre):
     """Muestra faces/<nombre> en loop, en la ventana/pantalla ya abierta
     (o recién abierta si es la primera vez).

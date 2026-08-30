@@ -25,6 +25,8 @@ import os
 
 import requests
 
+import perf_monitor
+
 # ─── Ollama ──────────────────────────────────────────────────
 # Por default apunta a localhost (todo corre en esta misma Raspberry Pi). Si
 # alguna vez hiciera falta correr Ollama en otra máquina, se puede
@@ -124,6 +126,7 @@ _SALIDA_TRIVIA_SYSTEM = (
 )
 
 
+@perf_monitor.medir("llama_salida_trivia")
 def clasificar_salida_trivia(pregunta, mensaje_usuario):
     """True si el usuario se está yendo de la trivia, False si está
     intentando responder la pregunta, None si no se pudo decidir (Ollama
@@ -181,35 +184,42 @@ def generar_respuesta(mensajes, temperature=0.3, max_tokens=50, on_token=None, m
 
     `modelo`: qué modelo de Ollama usar para ESTA llamada puntual -- si no se
     pasa, CHAT_MODEL (el default general). Los callers de Trivia pasan
-    TRIVIA_MODEL explícito (ver Orchestrator_Management.py)."""
-    resp = requests.post(
-        f"{CHAT_SERVER_HOST}/v1/chat/completions",
-        json={
-            "model": modelo or CHAT_MODEL,
-            "messages": mensajes,
-            "temperature": temperature,
-            "max_tokens": max_tokens,
-            "stream": True,
-        },
-        timeout=120,
-        stream=True,
-    )
-    resp.raise_for_status()
-    # Ollama manda 'Content-Type: text/event-stream' sin charset. Ante un text/*
-    # sin charset, requests asume ISO-8859-1 (regla legacy de HTTP) y con
-    # decode_unicode=True decodifica los bytes UTF-8 como latin-1: "triángulo"
-    # llega como "triÃ¡ngulo". El cuerpo es UTF-8, así que hay que decirlo.
-    resp.encoding = "utf-8"
-    texto = []
-    for linea in resp.iter_lines(decode_unicode=True):
-        if not linea or not linea.startswith("data: "):
-            continue
-        payload = linea[len("data: "):]
-        if payload == "[DONE]":
-            break
-        delta = json.loads(payload)["choices"][0]["delta"].get("content", "")
-        if delta:
-            texto.append(delta)
-            if on_token:
-                on_token(delta)
-    return "".join(texto)
+    TRIVIA_MODEL explícito (ver Orchestrator_Management.py).
+
+    El tiempo se mide por modelo, no en un solo "llama_generar" genérico
+    (ver perf_monitor.medir_bloque()): CHAT_MODEL/TRIVIA_MODEL pesan y
+    tardan distinto, mezclarlos en un promedio único escondería cuál de los
+    dos es el que realmente pesa en una sesión."""
+    modelo_usado = modelo or CHAT_MODEL
+    with perf_monitor.medir_bloque(f"llama_generar:{modelo_usado}"):
+        resp = requests.post(
+            f"{CHAT_SERVER_HOST}/v1/chat/completions",
+            json={
+                "model": modelo_usado,
+                "messages": mensajes,
+                "temperature": temperature,
+                "max_tokens": max_tokens,
+                "stream": True,
+            },
+            timeout=120,
+            stream=True,
+        )
+        resp.raise_for_status()
+        # Ollama manda 'Content-Type: text/event-stream' sin charset. Ante un text/*
+        # sin charset, requests asume ISO-8859-1 (regla legacy de HTTP) y con
+        # decode_unicode=True decodifica los bytes UTF-8 como latin-1: "triángulo"
+        # llega como "triÃ¡ngulo". El cuerpo es UTF-8, así que hay que decirlo.
+        resp.encoding = "utf-8"
+        texto = []
+        for linea in resp.iter_lines(decode_unicode=True):
+            if not linea or not linea.startswith("data: "):
+                continue
+            payload = linea[len("data: "):]
+            if payload == "[DONE]":
+                break
+            delta = json.loads(payload)["choices"][0]["delta"].get("content", "")
+            if delta:
+                texto.append(delta)
+                if on_token:
+                    on_token(delta)
+        return "".join(texto)

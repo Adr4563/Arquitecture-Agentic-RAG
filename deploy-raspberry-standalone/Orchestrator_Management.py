@@ -31,6 +31,7 @@ import threading
 import time
 
 import display  # display.py: carita en la LCD conectada a esta Raspberry Pi
+import perf_monitor  # perf_monitor.py: @medir por componente + muestreo de CPU/memoria (ver perf_report.py)
 import voz_server  # voz_server.py: página de voz+texto, corre en un hilo aparte
 from Agents.Agent_Behavior import (
     cara_para_emocion, elegir_cara_por_calidad, elegir_cara_pregunta, expresar_desplazamiento,
@@ -850,6 +851,7 @@ def main():
     # algún día se vuelve a un motor local.
     voz_output.cargar()
 
+    perf_monitor.iniciar_muestreo_recursos()  # CPU/memoria del proceso cada pocos segundos, ver perf_report.py
     _precargar_modelos()  # Ollama carga los 3 modelos en background mientras suena el saludo
 
     # Hilo que lee la terminal línea a línea y lo mete en _entrada_queue —

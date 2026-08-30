@@ -1,9 +1,15 @@
 """
-Voz de salida: Lora dice en voz alta cada respuesta. DOS motores: uno local
-(el default) y uno en la nube como respaldo. Se eligen con VOZ_MOTOR:
+Voz de salida: Lora dice en voz alta cada respuesta. TRES motores. Se
+eligen con VOZ_MOTOR:
 
-    export VOZ_MOTOR=edge    # (default) edge-tts, NECESITA INTERNET
-    export VOZ_MOTOR=piper   # Piper, 100% local
+    export VOZ_MOTOR=edge      # (default) edge-tts, NECESITA INTERNET
+    export VOZ_MOTOR=piper     # Piper, 100% local, corre en la Pi
+    export VOZ_MOTOR=telefono  # la habla el navegador del teléfono (Web
+                                # Speech API), no gasta CPU/parlante de la
+                                # Pi -- ver voz_server.py. Necesita que
+                                # alguien tenga la página abierta con la
+                                # voz activada; si no hay nadie conectado o
+                                # no contesta a tiempo, cae a edge-tts.
 
 Medido en la Raspberry Pi (aarch64), frase de 85 caracteres:
 
@@ -63,6 +69,8 @@ import subprocess
 import tempfile
 import wave
 
+import perf_monitor
+
 # Piper (onnxruntime) agarra los 4 nucleos de la Pi por default. Medido: la
 # sintesis tarda lo mismo con 1, 2 o 4 hilos (1.92s / 1.92s / 1.96s), asi que
 # limitarlo a 1 es gratis en velocidad y deja 3 nucleos libres para Ollama.
@@ -109,8 +117,15 @@ def cargar():
     medio de la primera frase.
 
     edge-tts no tiene nada que cargar (es un servicio en la nube). Piper si: cargar el .onnx tarda ~5s en la Pi, y sin esto ese
-    tiempo se lo comeria el primer turno."""
+    tiempo se lo comeria el primer turno. telefono tampoco precarga nada
+    aca: el servidor (voz_server.py) ya lo levanta Orchestrator_Management
+    por su cuenta, y la voz la activa la persona tocando el boton en la
+    pagina, no este proceso."""
     global _voz_piper, MOTOR
+    if MOTOR == "telefono":
+        print("[voz] motor=telefono -- abrí la página de voz_server.py y "
+              "tocá 'Activar voz de Lora' en el teléfono")
+        return
     if MOTOR != "piper":
         return
     try:
@@ -171,26 +186,10 @@ def _hablar_piper(texto):
             pass
 
 
-def hablar(texto):
-    """Sintetiza y reproduce `texto` en voz alta, bloqueando hasta que
-    termina. No hace nada si texto viene vacio. Ante cualquier fallo del
-    motor loguea y sigue: el chat nunca se cae por un problema de audio."""
-    if not texto or not texto.strip():
-        return
-
-    if MOTOR == "piper":
-        if _voz_piper is None:
-            print("[voz] piper no esta cargado (ver cargar()), no se habla")
-            return
-        try:
-            _hablar_piper(texto)
-        except FileNotFoundError as e:
-            print(f"[voz] falta un binario ({e}) -- no se puede hablar")
-        except Exception as e:
-            print(f"[voz] error al hablar con piper ({e})")
-        return
-
-    # Solo llega edge-tts aca, que devuelve mp3.
+def _hablar_edge(texto):
+    """La parte de hablar() que usa edge-tts. Separada en su propia funcion
+    para poder llamarla dos veces: como motor principal (MOTOR=edge) y
+    como respaldo de telefono/piper cuando esos fallan."""
     sufijo = ".mp3"
     with tempfile.NamedTemporaryFile(suffix=sufijo, delete=False) as tmp:
         ruta = tmp.name
@@ -205,7 +204,7 @@ def hablar(texto):
         print(f"[voz] falta mpv ({e}) -- no se puede hablar")
     except Exception as e:
         pista = " -- ¿sin internet?" if MOTOR == "edge" else ""
-        print(f"[voz] error al hablar con motor={MOTOR} ({e}){pista}")
+        print(f"[voz] error al hablar con motor=edge ({e}){pista}")
     finally:
         # El archivo temporal se crea con delete=False (hace falta: mpv lo
         # abre por ruta, en otro proceso), asi que hay que borrarlo a mano o
@@ -214,3 +213,44 @@ def hablar(texto):
             os.unlink(ruta)
         except OSError:
             pass
+
+
+def hablar(texto):
+    """Sintetiza y reproduce `texto` en voz alta, bloqueando hasta que
+    termina. No hace nada si texto viene vacio. Ante cualquier fallo del
+    motor loguea y sigue: el chat nunca se cae por un problema de audio.
+
+    Se mide por motor (voz:edge / voz:piper / voz:telefono), no en un
+    "voz" genérico -- son costos bien distintos (edge-tts hace red, piper
+    es CPU local, telefono no gasta nada de esta Pi), ver la tabla de
+    latencias arriba en este archivo."""
+    if not texto or not texto.strip():
+        return
+
+    with perf_monitor.medir_bloque(f"voz:{MOTOR}"):
+        if MOTOR == "telefono":
+            import voz_server
+            if voz_server.hablar_telefono(texto):
+                return
+            # Nadie con la pagina abierta y la voz activada, o no aviso a
+            # tiempo (ver voz_server.hablar_telefono) -- se degrada a edge en
+            # vez de dejar mudo al robot, mismo criterio que piper.
+            print("[voz] ningun telefono conectado/activo, se usa "
+                  f"{_MOTOR_RESPALDO} como respaldo")
+            _hablar_edge(texto)
+            return
+
+        if MOTOR == "piper":
+            if _voz_piper is None:
+                print("[voz] piper no esta cargado (ver cargar()), no se habla")
+                return
+            try:
+                _hablar_piper(texto)
+            except FileNotFoundError as e:
+                print(f"[voz] falta un binario ({e}) -- no se puede hablar")
+            except Exception as e:
+                print(f"[voz] error al hablar con piper ({e})")
+            return
+
+        # Solo llega edge-tts aca.
+        _hablar_edge(texto)

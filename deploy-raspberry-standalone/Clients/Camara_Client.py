@@ -17,10 +17,13 @@ corte el turno de trivia.
 import os
 import sys
 
+import perf_monitor
+
 HERE = os.path.dirname(os.path.abspath(__file__))
 AI_CAMERA_DIR = os.path.join(HERE, "..", "..", "ai-camera")
 
 
+@perf_monitor.medir("camara")
 def detectar_emocion():
     """Captura un frame con la cámara y devuelve (emocion, confianza) --
     emocion ya traducida a Feliz/Triste/Enojado/Neutral (las mismas 4 que
