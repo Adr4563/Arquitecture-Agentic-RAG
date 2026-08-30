@@ -279,11 +279,23 @@ def comentar_resultado(pregunta, esperada, respuesta_usuario, acerto, persona_st
     (lora-personalidad por default, ver Clients/Llama_Client.py).
 
     El veredicto (acerto) ya viene resuelto por evaluar_respuesta() — acá NO
-    se le pide al modelo que vuelva a resolver la pregunta, solo que
-    reaccione. Sin ser explícito con esto, un modelo chico tiende a
-    "re-resolver" el ejercicio por su cuenta en vez de limitarse a comentar
-    el resultado, y a veces lo hace mal (ej. lee "1 por 8" como "1/8" y
-    contesta con eso en vez de confirmar el acierto).
+    se le pide al modelo que vuelva a resolver la pregunta ni que compare
+    nada, solo que reaccione. Se probó (2026-08-30) sacarle el veredicto
+    y pedirle que compare `esperada` contra `respuesta_usuario` por su
+    cuenta, y salió mal: lora-trivia se entrenó ÚNICAMENTE con ejemplos
+    donde el veredicto ya venía dado (ver dataset_trivia.jsonl, formato
+    "...y ACERTÓ/SE EQUIVOCÓ..."), nunca aprendió a comparar dos textos --
+    probado en vivo contra Ollama, contestó "Sí, la respuesta correcta es
+    París" a un estudiante que había respondido "Madrid". Por eso se
+    volvió a este diseño: comparar es trabajo de Agent_Corrector
+    (evaluar_respuesta(), sin LLM, ya resuelto antes de llegar acá), el LLM
+    solo comenta el resultado ya decidido.
+
+    `pregunta=None`: para preguntas de Reconocimiento musical (y cualquier
+    otra sin texto útil fuera de contexto, ver el chequeo de `musical` en
+    manejar_trivia()) no se manda -- el texto de esas preguntas ("Escuché
+    esto, ¿qué canción es?") no aporta nada sin el audio real, y confundía
+    más que ayudaba.
 
     max_tokens=20 (no el default de 50) y "máximo 5 palabras" en vez de
     "frase corta" (más concreto, un modelo chico sigue mejor un número que
@@ -301,9 +313,9 @@ def comentar_resultado(pregunta, esperada, respuesta_usuario, acerto, persona_st
             f"El estudiante respondió '{respuesta_usuario}' y SE EQUIVOCÓ. Dile en "
             f"máximo 5 palabras que no es correcto y que la respuesta correcta era {esperada}."
         )
+    encabezado = f"Pregunta que se hizo: {pregunta}\n\n" if pregunta else ""
     mensajes = _mensajes_con_personalidad(persona_str, (
-        f"Pregunta que se hizo: {pregunta}\n\n"
-        f"{instruccion} No vuelvas a resolver la pregunta ni expliques el cálculo: "
+        f"{encabezado}{instruccion} No vuelvas a resolver la pregunta ni expliques el cálculo: "
         "el veredicto ya está decidido, tu única tarea es reaccionar a él. "
         "No hagas otra pregunta."
     ), modelo=TRIVIA_MODEL)
@@ -799,8 +811,12 @@ def manejar_trivia(mensaje_usuario, estado, persona_str, on_token):
             # después cara/música/desplazamiento juntos (_reaccionar_veredicto()),
             # mismo criterio que _jugar_emociones() (el otro único caller con
             # voz antes del veredicto visual).
+            # Sin pregunta para temas con música (Reconocimiento musical):
+            # el texto de esa pregunta ("Escuché esto, ¿qué canción es?") no
+            # aporta nada sin el audio real -- confunde más que ayuda.
+            pregunta_para_comentario = None if pendiente.get("musical") else pendiente["pregunta"]
             comentario = comentar_resultado(
-                pendiente["pregunta"], pendiente["respuesta_esperada"], mensaje_usuario,
+                pregunta_para_comentario, pendiente["respuesta_esperada"], mensaje_usuario,
                 acerto, persona_str,
             )
             print(f"Asistente: {comentario}\n")
