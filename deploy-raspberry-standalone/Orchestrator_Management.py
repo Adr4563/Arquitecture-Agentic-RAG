@@ -808,9 +808,13 @@ def manejar_trivia(mensaje_usuario, estado, persona_str, on_token):
             _reaccionar_veredicto(cara, pendiente, estado.get("musica_ya_sonada", False))
             display.mostrar_cara("speaking")
         else:
-            # Temas como Chistes o Reconocimiento Musical no tienen una
-            # respuesta correcta que corregir: no hay veredicto ni cara
-            # específica (queda la genérica de "hablando") -- pero sí
+            # Solo 11 preguntas del dataset caen acá (verificado 2026-08-30):
+            # "Dilema del coche autónomo" (Niveles 1 y 2, 10 preguntas de
+            # opinión, sin respuesta correcta) + 1 de "Socialización/
+            # presentación". Reconocimiento musical NO es de este grupo --
+            # tiene respuesta_esperada (el nombre de la canción) y ya cae en
+            # la rama de arriba (comentar_resultado()). Acá no hay veredicto
+            # ni cara específica (queda la genérica de "hablando") -- pero sí
             # reacción hablada con reaccionar_libre() (LLM), mismo criterio
             # de orden que la rama de arriba: voz primero, después
             # música/desplazamiento (que no dependen de acierto/error).
