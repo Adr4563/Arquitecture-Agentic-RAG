@@ -122,9 +122,16 @@ def generar_apertura(persona_str, on_token=None):
     return _quitar_pregunta_final(generar_respuesta(mensajes, on_token=on_token))
 
 
-def responder(mensaje_usuario, persona_str, on_token=None):
+def responder(mensaje_usuario, persona_str):
     """Chat libre: le pasa el mensaje del usuario a CHAT_MODEL con la
     personalidad y devuelve (texto_final, problema).
+
+    Ya no acepta on_token: el streaming a consola (imprimir token a token)
+    se sacó a pedido del usuario -- ya no se mira la consola de la Pi, se
+    interactúa por la página de voz_server.py (el teléfono), y streaming o
+    no da el mismo tiempo total (ver la nota en Llama_Client.generar_respuesta()),
+    así que no había ninguna razón para mantenerlo. voz_output.hablar()
+    necesitaba el texto completo de todos modos.
 
     YA NO USA RAG. Antes buscaba contexto con BM25 sobre preguntas.jsonl y,
     si no encontraba nada, cortaba con una frase fija sin llamar al modelo.
@@ -158,7 +165,7 @@ def responder(mensaje_usuario, persona_str, on_token=None):
     # se vio en la v1 ("eres inteligencia artificial" -> "Si, soy
     # inteligencia artificial", teniendo la regla que lo prohibia).
     mensajes = [{"role": "user", "content": mensaje_usuario}]
-    texto_final = generar_respuesta(mensajes, on_token=on_token).strip()
+    texto_final = generar_respuesta(mensajes).strip()
     # Se registra DESPUES de tener la respuesta completa, no token a token:
     # lo que se revisa en curar.py es el turno entero. Ver
     # chat_libre_training/README.md.
@@ -796,11 +803,10 @@ def _reanudar_trivia(estado):
     display.mostrar_cara("content")
 
 
-def manejar_chat_libre(mensaje_usuario, persona_str, on_token):
-    display.mostrar_cara("speaking")  # generando la respuesta, con streaming (ver nota en responder())
-    print("Asistente: ", end="", flush=True)
-    texto_final, problema = responder(mensaje_usuario, persona_str, on_token=on_token)
-    print("\n")
+def manejar_chat_libre(mensaje_usuario, persona_str):
+    display.mostrar_cara("speaking")  # generando la respuesta -- ya no se imprime token a token, ver responder()
+    texto_final, problema = responder(mensaje_usuario, persona_str)
+    print(f"Asistente: {texto_final}\n")
     voz_output.hablar(texto_final)
     # happy salvo que no hubiera contexto para responder ("no tengo el
     # dato") -- ya no hay agente verificador que corrija la respuesta, así
@@ -953,7 +959,7 @@ def _main_loop():
             else:
                 manejar_trivia(entrada, estado, persona_str, imprimir)
         else:
-            manejar_chat_libre(entrada, persona_str, imprimir)
+            manejar_chat_libre(entrada, persona_str)
 
     # Despedida real -- con voz y cara, como cualquier otro mensaje del
     # robot (antes era un print() plano, sin hablar ni cambiar de cara, la
