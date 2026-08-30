@@ -229,6 +229,32 @@ la entrada, esto necesita internet (servicio en la nube de Microsoft, gratis
 y sin API key). Si la Pi se queda sin WiFi, se loguea el error y el chat
 sigue funcionando solo con texto.
 
+### Que hable el teléfono en vez de la Pi
+
+```bash
+export VOZ_MOTOR=telefono
+./start-all.sh
+```
+
+Con esta variable, cuando Lora contesta la Pi no sintetiza nada: le manda el
+texto a la misma página de arriba (`http://<ip-de-la-pi>:8081/`), y el
+teléfono lo dice con la síntesis de voz nativa del navegador (Web Speech
+API) — usa el procesador y el parlante del teléfono, no los de la Pi. Hay
+que abrir la página y tocar **"🔊 Activar voz de Lora"** una vez (los
+navegadores móviles exigen un toque del usuario antes de dejar sonar
+síntesis de voz por primera vez); de ahí en más queda escuchando sola.
+
+Si nadie tiene la página abierta con la voz activada, o el teléfono no
+avisa que terminó de hablar en 20s (pestaña cerrada, se durmió la
+pantalla), se degrada a `edge-tts` automáticamente — mismo criterio que ya
+usa Piper cuando falta el `.onnx`.
+
+No se evaluó correr el modelo de síntesis (Piper) directamente en hardware
+embebido tipo ESP32-S3: el `.onnx` (20-100MB) no entra en su RAM (512KB
+SRAM + unos MB de PSRAM), muy por debajo de lo que necesita una red VITS —
+por eso la síntesis siempre corre en la Pi o en el teléfono, nunca en el
+ESP32 del carrito.
+
 ## Carrito mecanum (movimiento)
 
 `Clients/Carrito_Client.py` habla con el ESP32 del carrito (ver
@@ -295,7 +321,7 @@ deploy-raspberry-standalone/
 | `preguntas.py` | Búsqueda BM25 sobre `preguntas.jsonl` en memoria — sin HTTP, sin servidor aparte. |
 | `personalidad.py` | Arma el system prompt con la personalidad del robot — vacío si `CHAT_MODEL=lora-personalidad` (ver "Personalidad horneada en el modelo" arriba). |
 | `display.py`, `face_viewer.py`, `faces/` | Carita en pantalla (LCD/HDMI en la Pi, o Tkinter en PC). |
-| `voz_server.py` | Página web de texto (ver arriba) — entrada por voz todavía deshabilitada. |
+| `voz_server.py` | Página web de texto + voz de salida al teléfono (ver arriba) — entrada por voz todavía deshabilitada. |
 | `Agents/Agent_Router.py` | Sin LLM: clasifica cada turno en TRIVIA/CHAT_LIBRE (TF-IDF + regresión logística sobre `router_modelo.joblib`, ver "Router sin LLM" arriba). |
 | `Agents/Agent_Corrector.py` | Sin LLM: veredicto CORRECTO/INCORRECTO de una respuesta de Trivia (número exacto o normalización+substring+fuzzy contra `respuesta_esperada`, ver "Corrector de Trivia sin LLM" arriba). |
 | `Agents/Agent_Behavior.py` | Sin LLM: elige la cara de acierto/error de cada pregunta de Trivia (de las columnas del dataset) y dispara música/desplazamiento; también la cara genérica de Chat libre. Fusión de lo que antes eran `reactor.py` + `cara_agente.py`. |
