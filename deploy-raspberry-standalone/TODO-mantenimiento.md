@@ -29,37 +29,47 @@ de scikit-learn actualmente instalada. Es determinístico a partir de
 pero se dejó pendiente en vez de aplicarlo directo por tratarse del modelo
 que corre en producción en el robot.
 
-## `OLLAMA_KEEP_ALIVE`: se probó bajarlo a 2 min, se revirtió al default (5 min)
+## `OLLAMA_KEEP_ALIVE`: probado en 2 min (revertido), ahora en `-1` (para siempre)
 
-Con 3 modelos separados por rol (`CHAT_MODEL`=lora-chat,
-`TRIVIA_MODEL`=lora-trivia, `VERIFICADOR_MODEL`=qwen2.5:0.5b), Ollama
-puede mantener los 3 cargados en RAM a la vez (~1.6GB juntos) con su
-`keep_alive` default de 5 minutos. Se probó bajarlo a 2 minutos a nivel de
-servicio systemd (no hay forma de pasar `keep_alive` por request en el
-endpoint `/v1/chat/completions` que usa `Clients/Llama_Client.py`, es
-compatible OpenAI, no la API nativa de Ollama) con un drop-in en
-`/etc/systemd/system/ollama.service.d/override.conf`.
+Con `CHAT_MODEL`=lora-chat-libre-v4 y `TRIVIA_MODEL`=lora-trivia
+precargados al arrancar (`_precargar_modelos()`) + `SALIDA_TRIVIA_MODEL`
+que se carga solo, bajo demanda, la primera vez que hace falta, Ollama
+puede mantener los 3 cargados en RAM a la vez (~1.5GB juntos). No hay forma
+de pasar `keep_alive` por request en el endpoint `/v1/chat/completions` que
+usa `Clients/Llama_Client.py` (es compatible OpenAI, no la API nativa de
+Ollama) -- solo se puede fijar a nivel de servicio systemd, con un drop-in
+en `/etc/systemd/system/ollama.service.d/override.conf`.
 
-Validado en vivo: SÍ funcionaba (el modelo se descargaba a los ~2 min), pero
-el turno siguiente a una pausa >2 min tardaba ~28s en vez de los ~10-12s
-normales (recarga desde disco antes de generar la reacción) -- notorio en
-uso real. Como esta Pi no tiene problema de RAM hoy (5.9GB libres de sobra
-incluso con los 3 modelos cargados), no valía la pena pagar esa latencia
-por liberar memoria que no hacía falta liberar -- **se revirtió** al
-default de Ollama (sin override, sin `OLLAMA_KEEP_ALIVE` seteada).
+**2026-08-26 — se probó bajarlo a 2 min, se revirtió al default (5 min):**
+sí funcionaba (el modelo se descargaba a los ~2 min), pero el turno
+siguiente a una pausa >2 min tardaba ~28s en vez de los ~10-12s normales
+(recarga desde disco antes de generar la reacción) -- notorio en uso real.
+Como la Pi no tenía problema de RAM, no valía la pena esa latencia por
+liberar memoria que no hacía falta liberar -- se revirtió al default de
+Ollama (sin override).
 
-Si en algún momento SÍ hace falta (memoria más ajustada, u otro proceso
-pesado corriendo a la vez), el override queda documentado acá para
-reaplicarlo:
+**2026-08-30 — cambiado a `-1` (nunca se descargan):** con el default de 5
+min, `perf_report.py` mostró picos de ~20-30s en `llama_generar:*` a mitad
+de sesión (media 7-8s) -- el modelo se había descargado por inactividad
+(ej. una tanda larga de Trivia sin pasar por Chat libre, o viceversa) y el
+siguiente turno de ESE modo pagó la recarga desde disco. Mismo diagnóstico
+que el de 2026-08-26, pero en la dirección contraria: acá no hace falta
+liberar memoria (la Pi sigue con >5GB libres con los 2-3 modelos cargados a
+la vez), así que no tiene sentido pagar esa latencia nunca. Aplicado:
 
 ```
 sudo mkdir -p /etc/systemd/system/ollama.service.d
 sudo tee /etc/systemd/system/ollama.service.d/override.conf <<'EOF'
 [Service]
-Environment="OLLAMA_KEEP_ALIVE=2m"
+Environment="OLLAMA_KEEP_ALIVE=-1"
 EOF
 sudo systemctl daemon-reload && sudo systemctl restart ollama
 ```
+
+Verificado con `ollama ps`: los 2 modelos precargados quedan con
+`UNTIL: Forever`. Si en algún momento la RAM se pone justa (más modelos, u
+otro proceso pesado corriendo a la vez), volver a un valor finito (`2m`,
+`5m`, etc.) revierte esto.
 
 Ojo: esto es configuración de sistema, no de código -- **no se sube a git
 ni se replica sola** si se reinstala esta Pi desde cero.
