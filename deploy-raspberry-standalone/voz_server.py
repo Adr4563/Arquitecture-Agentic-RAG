@@ -1,12 +1,13 @@
 """
 Servidor de entrada/salida web: una página con un input de texto (+ botón
-Enviar) que manda el texto a la MISMA cola que lee chat.py para la entrada
-de la terminal — tipear en la terminal o tipear en esta página son 2
-caminos al mismo lugar. Además, la página puede HABLAR: si Lora contesta
-mientras hay un teléfono con la página abierta (VOZ_MOTOR=telefono, ver
-Clients/Voice_Output_Client.py), esta misma página recibe el texto por SSE
-y lo dice con la síntesis de voz nativa del navegador (Web Speech API) --
-usa el procesador y el parlante del teléfono, no los de la Pi.
+Enviar, + botón de micrófono) que manda el texto a la MISMA cola que lee
+chat.py para la entrada de la terminal — tipear en la terminal, tipear en
+esta página, o hablarle al botón de micrófono son 3 caminos al mismo lugar.
+Además, la página puede HABLAR: si Lora contesta mientras hay un teléfono
+con la página abierta (VOZ_MOTOR=telefono, ver Clients/Voice_Output_Client.py),
+esta misma página recibe el texto por SSE y lo dice con la síntesis de voz
+nativa del navegador (Web Speech API) -- usa el procesador y el parlante
+del teléfono, no los de la Pi.
 
 Corre DENTRO del proceso de chat.py, en un hilo de fondo (Flask con
 threaded=True) — no es un servicio aparte que haya que levantar con
@@ -14,16 +15,25 @@ start-all.sh, arranca solo al correr chat.py. Puerto reusado: 8081 (el
 mismo que usaba el viejo embed_server.py, que ya no existe en este
 despliegue — ver preguntas.py).
 
-⚠️ TODAVÍA NO HAY ENTRADA POR VOZ (a propósito, por ahora): se había armado
-y probado /voz con faster-whisper (transcripción 100% local, sin nube —
-funcionaba bien llamado desde el hilo principal), pero WhisperModel(...) se
-cuelga silenciosamente al construirse desde un hilo NO principal — que es
-justo el caso acá, porque chat.main() ya corre en su propio hilo de fondo.
-No tiró excepción, ni con salida sin buffer: se quedó esperando para
-siempre. Hay que resolver eso (¿cargar el modelo en el hilo principal antes
-de lanzar el resto?) antes de reactivar la transcripción — mientras tanto,
-la entrada de esta página es solo texto. La SALIDA de voz (esta sección) es
-un mecanismo distinto: no transcribe nada, solo hace hablar al navegador.
+ENTRADA POR VOZ (2026-08-30, a pedido del usuario): se había armado y
+probado antes /voz con faster-whisper (transcripción 100% local, sin nube
+— funcionaba bien llamado desde el hilo principal), pero WhisperModel(...)
+se colgaba silenciosamente al construirse desde un hilo NO principal — que
+era justo el caso acá, porque chat.main() ya corre en su propio hilo de
+fondo. Se descartó ese camino en vez de arreglarlo: en lugar de pelear ese
+bug de threading y sumar un cuarto modelo pesado compitiendo por los 4
+núcleos de la Pi (que ya comparten CHAT_MODEL/TRIVIA_MODEL/
+SALIDA_TRIVIA_MODEL), la transcripción se hace en el propio navegador con
+`SpeechRecognition` (Web Speech API, botón "🎤 Hablar" en la página) --
+mismo mecanismo que la síntesis de salida, pero al revés, y sin agregar
+nada de carga a la Pi. El costo: manda tu audio a un servicio en la nube
+(Google en Chrome/Android) para reconocerlo -- mismo trade-off ya aceptado
+para VOZ_MOTOR=edge, pero acá solo afecta lo que decís vos, no lo que
+contesta Lora. Solo Chrome/Android la soporta bien; Safari/iOS nunca
+implementó SpeechRecognition, en ningún navegador ahí. También exige
+"contexto seguro" (HTTPS o localhost) -- en una IP de LAN por HTTP plano
+hay que agregar la URL a chrome://flags/#unsafely-treat-insecure-origin-as-secure
+en el teléfono, ver README.
 
 Por qué SSE (Server-Sent Events) y no WebSockets: la página ya usa
 `fetch()` normal para /texto, y Flask sirve SSE con un generator + Response
@@ -90,16 +100,18 @@ _PAGINA = """<!doctype html>
     <button type="submit">Enviar</button>
   </form>
 
+  <p style="margin-top: 1rem;">
+    <button id="btn-mic" type="button">🎤 Hablar</button>
+  </p>
+
   <p style="margin-top: 2rem;">
     <button id="btn-voz" type="button">🔊 Activar voz de Lora</button>
   </p>
   <p id="estado-voz" style="color: #666;"></p>
 
 <script>
-  document.getElementById('form-texto').addEventListener('submit', async (e) => {
-    e.preventDefault();
-    const campo = document.getElementById('texto');
-    const texto = campo.value.trim();
+  async function enviarTexto(texto) {
+    texto = texto.trim();
     if (!texto) return;
     document.getElementById('estado').textContent = 'Enviando...';
     await fetch('/texto', {
@@ -108,9 +120,74 @@ _PAGINA = """<!doctype html>
     });
     document.getElementById('transcripcion').textContent = '"' + texto + '"';
     document.getElementById('estado').textContent = 'Mandado a Lora.';
+  }
+
+  document.getElementById('form-texto').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const campo = document.getElementById('texto');
+    await enviarTexto(campo.value);
     campo.value = '';
     campo.focus();
   });
+
+  // ── Entrada por voz (audio → texto), Web Speech API ──────────────────
+  // A pedido del usuario (2026-08-30): escribir a mano cansa, mejor hablar.
+  // Se probó antes con faster-whisper corriendo EN LA PI (transcripción
+  // 100% local) y se descartó por un bug de threading sin resolver (ver la
+  // nota histórica más arriba) -- esta versión transcribe en el propio
+  // navegador del teléfono con SpeechRecognition, sin tocar la Pi para
+  // nada. El costo: manda el audio a un servicio en la nube (Google en
+  // Chrome/Android) para reconocerlo -- mismo trade-off que ya se aceptó
+  // para VOZ_MOTOR=edge, pero acá solo para lo que decís vos, no lo que
+  // contesta Lora.
+  //
+  // Solo Chrome/Android la soporta bien (webkitSpeechRecognition) -- Safari/
+  // iOS nunca la implementó, en ningún navegador ahí (todos usan el motor
+  // de Safari por dentro). Si no está disponible, el botón se deshabilita
+  // en vez de fallar silencioso al tocarlo.
+  //
+  // OJO despliegue: SpeechRecognition exige "contexto seguro" (HTTPS o
+  // localhost) -- en una IP de LAN por HTTP plano como esta, Chrome bloquea
+  // el micrófono. Hay que agregar esta URL a
+  // chrome://flags/#unsafely-treat-insecure-origin-as-secure en el
+  // teléfono (ver README) para que funcione.
+  const ReconocedorVoz = window.SpeechRecognition || window.webkitSpeechRecognition;
+  const btnMic = document.getElementById('btn-mic');
+
+  if (!ReconocedorVoz) {
+    btnMic.disabled = true;
+    btnMic.textContent = '🎤 No disponible en este navegador';
+  } else {
+    const reconocedor = new ReconocedorVoz();
+    reconocedor.lang = 'es-AR';       // mismo idioma que la voz de salida (ver elegirVoz() más abajo)
+    reconocedor.continuous = false;   // una sola frase por toque, no queda escuchando de fondo
+    reconocedor.interimResults = false;
+
+    let escuchando = false;
+
+    reconocedor.onresult = (e) => {
+      const texto = e.results[0][0].transcript;
+      enviarTexto(texto);
+    };
+    reconocedor.onerror = (e) => {
+      document.getElementById('estado').textContent =
+        e.error === 'not-allowed'
+          ? 'Sin permiso de micrófono (ver chrome://flags en el teléfono).'
+          : 'No se pudo escuchar (' + e.error + ').';
+    };
+    reconocedor.onend = () => {
+      escuchando = false;
+      btnMic.textContent = '🎤 Hablar';
+    };
+
+    btnMic.addEventListener('click', () => {
+      if (escuchando) return;  // evita doble-toque mientras ya está escuchando
+      escuchando = true;
+      btnMic.textContent = '🎙️ Escuchando...';
+      document.getElementById('estado').textContent = 'Hablá ahora...';
+      reconocedor.start();
+    });
+  }
 
   // ── Salida de voz (VOZ_MOTOR=telefono en Voice_Output_Client.py) ──────
   // iOS/Android exigen un gesto del usuario (tocar un botón) antes de
