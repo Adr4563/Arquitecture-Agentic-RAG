@@ -2,14 +2,16 @@
 Voz de salida: Lora dice en voz alta cada respuesta. TRES motores. Se
 eligen con VOZ_MOTOR:
 
-    export VOZ_MOTOR=edge      # (default) edge-tts, NECESITA INTERNET
+    export VOZ_MOTOR=telefono  # (default) la habla el navegador del teléfono
+                                # (Web Speech API) -- local a ESE
+                                # dispositivo, sin nube y sin gastar
+                                # CPU/parlante de la Pi. Ver voz_server.py.
+                                # Necesita que alguien tenga la página
+                                # abierta con la voz activada; si no hay
+                                # nadie conectado o no contesta a tiempo,
+                                # cae a edge-tts (ver _MOTOR_RESPALDO).
     export VOZ_MOTOR=piper     # Piper, 100% local, corre en la Pi
-    export VOZ_MOTOR=telefono  # la habla el navegador del teléfono (Web
-                                # Speech API), no gasta CPU/parlante de la
-                                # Pi -- ver voz_server.py. Necesita que
-                                # alguien tenga la página abierta con la
-                                # voz activada; si no hay nadie conectado o
-                                # no contesta a tiempo, cae a edge-tts.
+    export VOZ_MOTOR=edge      # edge-tts, NECESITA INTERNET
 
 Medido en la Raspberry Pi (aarch64), frase de 85 caracteres:
 
@@ -77,16 +79,20 @@ import perf_monitor
 # Tiene que ir ANTES de importar piper/onnxruntime, que leen esto al cargar.
 os.environ.setdefault("OMP_NUM_THREADS", "1")
 
-# Default: edge-tts (nube), a pedido del usuario.
+# Default: telefono, a pedido del usuario (2026-08-30) -- ni nube (edge)
+# ni la CPU de la Pi (piper): la síntesis la hace el navegador del celular
+# (Web Speech API), local a ESE dispositivo, sin red de por medio y sin
+# competir por CPU con Ollama en la Pi. El único costo es que hace falta
+# tener la página abierta (ver voz_server.py) con la voz activada -- si
+# nadie está conectado o no avisa a tiempo, hablar_telefono() devuelve
+# False y se degrada solo a _MOTOR_RESPALDO (edge) para no dejar mudo al
+# robot, ver hablar() más abajo.
 #
-# El intercambio, medido en la Pi con la misma frase: edge tarda 11.54s de
-# punta a punta contra 8.70s de piper, y NECESITA INTERNET -- si la Pi se
-# queda sin WiFi, Lora se queda muda. A cambio no depende de que el .onnx
-# este descargado en la maquina.
-#
-# Para volver a la voz local, que sigue instalada y probada:
-#     export VOZ_MOTOR=piper
-MOTOR = os.environ.get("VOZ_MOTOR", "edge").strip().lower()
+# Antes el default era edge-tts (nube): 11.54s de punta a punta contra
+# 8.70s de piper (100% local en la Pi, sin depender del teléfono), medido
+# en la Pi con la misma frase. Para volver a cualquiera de los dos:
+#     export VOZ_MOTOR=edge    # o VOZ_MOTOR=piper
+MOTOR = os.environ.get("VOZ_MOTOR", "telefono").strip().lower()
 
 # A donde caer si el motor pedido no esta disponible. Solo aplica a piper:
 # cargar() lo usa cuando no puede cargar el .onnx (modelo sin descargar,
