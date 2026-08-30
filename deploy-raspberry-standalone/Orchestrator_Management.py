@@ -43,7 +43,7 @@ from Agents.Agent_Router import enrutar  # router sin LLM (TF-IDF + regresión l
 from Clients import Camara_Client
 from Clients import Voice_Output_Client as voz_output  # Lora habla en voz alta (edge-tts + mpv)
 from Clients.Llama_Client import (
-    CHAT_MODEL, TRIVIA_MODEL, clasificar_salida_trivia, generar_respuesta,
+    CHAT_MODEL, SALIDA_TRIVIA_MODEL, TRIVIA_MODEL, clasificar_salida_trivia, generar_respuesta,
 )
 import registro_chat  # registro_chat.py: guarda los turnos de Chat libre para el pipeline de mejora
 from personalidad import construir_personalidad, obtener_system_prompt
@@ -859,14 +859,34 @@ def _precargar_uno(modelo):
         print(f"[warmup] no se pudo precargar {modelo}: {e}")
 
 
+def _precargar_salida_trivia():
+    """Como _precargar_uno(), pero para SALIDA_TRIVIA_MODEL -- ese modelo no
+    se usa con generar_respuesta() sino con clasificar_salida_trivia()
+    (system prompt propio, ver Llama_Client.py), así que se precalienta con
+    una llamada dummy a esa misma función en vez de reusar _precargar_uno.
+
+    Antes este modelo NO se precargaba (solo CHAT_MODEL/TRIVIA_MODEL, ver
+    _precargar_modelos()) pese a que el comentario de más abajo en
+    main() ya decía "Ollama carga los 3 modelos" -- bug real encontrado
+    2026-08-30 con perf_report.py: el primer _quiere_salir_trivia() de
+    cada sesión (primera vez que el usuario responde algo raro a mitad de
+    una trivia) pagaba la carga completa desde disco (~15-18s) a mitad de
+    conversación, en vez de durante el warmup como los otros dos."""
+    try:
+        clasificar_salida_trivia("pregunta de prueba", "respuesta de prueba")
+    except Exception as e:
+        print(f"[warmup] no se pudo precargar {SALIDA_TRIVIA_MODEL}: {e}")
+
+
 def _precargar_modelos():
-    """Dispara un mensaje mínimo a CHAT_MODEL y TRIVIA_MODEL para que Ollama
-    los cargue en RAM ANTES de que llegue el primer mensaje real del
-    usuario. Sin esto, la primera respuesta de la sesión paga la carga
-    completa desde disco (~15s medidos en esta Pi, contra ~1s ya en
-    caliente -- misma causa que el benchmark de OLLAMA_KEEP_ALIVE en
-    TODO-mantenimiento.md, pero acá aplica siempre, no solo tras 5 min
-    inactivo).
+    """Dispara un mensaje mínimo a CHAT_MODEL, TRIVIA_MODEL y
+    SALIDA_TRIVIA_MODEL para que Ollama los cargue en RAM ANTES de que
+    llegue el primer mensaje real del usuario. Sin esto, la primera
+    respuesta de la sesión (o, para SALIDA_TRIVIA_MODEL, el primer intento
+    de salir de una trivia) paga la carga completa desde disco (~15-18s
+    medidos en esta Pi, contra ~1-5s ya en caliente -- misma causa que el
+    benchmark de OLLAMA_KEEP_ALIVE en TODO-mantenimiento.md, pero acá
+    aplica siempre, no solo tras inactividad).
 
     Un hilo por modelo, en paralelo: ya no hay motivo para encadenarlos
     (VERIFICADOR_MODEL se sacó del todo -- Chat libre ahora es una sola
@@ -881,6 +901,7 @@ def _precargar_modelos():
     warmup, no rompe nada."""
     threading.Thread(target=_precargar_uno, args=(CHAT_MODEL,), daemon=True).start()
     threading.Thread(target=_precargar_uno, args=(TRIVIA_MODEL,), daemon=True).start()
+    threading.Thread(target=_precargar_salida_trivia, daemon=True).start()
 
 
 def main():
