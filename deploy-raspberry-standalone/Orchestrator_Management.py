@@ -307,41 +307,7 @@ def comentar_resultado(pregunta, esperada, respuesta_usuario, acerto, persona_st
         "el veredicto ya está decidido, tu única tarea es reaccionar a él. "
         "No hagas otra pregunta."
     ), modelo=TRIVIA_MODEL)
-    comentario = generar_respuesta(mensajes, on_token=on_token, modelo=TRIVIA_MODEL, max_tokens=20).strip()
-    return _asegurar_veredicto(comentario, esperada, acerto)
-
-
-def _asegurar_veredicto(comentario, esperada, acerto):
-    """Red de seguridad sobre la salida de comentar_resultado(): el
-    veredicto (acerto) ya lo decidió Agent_Corrector con certeza -- lo que
-    diga el LLM NUNCA debería poder contradecirlo ni dejarlo ambiguo, pase
-    lo que pase con el prompt.
-
-    Caso real que motivó esto (2026-08-30, probado en vivo): el usuario
-    contestó algo ambiguo/en broma a una pregunta de Reconocimiento musical
-    ("no tengo idea, tal vez despacito") y lora-trivia (0.5B, 121 ejemplos
-    de entrenamiento) ignoró la instrucción de solo reaccionar al veredicto
-    ya resuelto -- contestó "no tengo una idea de qué canción es", como si
-    fuera EL MODELO el que no supiera la respuesta, en vez de avisar el
-    error y decir cuál era. Sin este chequeo, el usuario se queda sin saber
-    si acertó o no.
-
-    Heurística barata (sin otro LLM de por medio, para no sumar otra
-    llamada): si se equivocó, el comentario tiene que mencionar `esperada`
-    -- si no la menciona, se reemplaza por una frase fija que sí la dice.
-    Si acertó, el comentario no puede traer una negación que contradiga el
-    acierto ya confirmado -- si la trae, se reemplaza por un "¡Correcto!"
-    fijo. En el caso normal (el LLM cumplió la instrucción) esto no toca
-    nada, pasa el comentario tal cual con su personalidad."""
-    normalizado = comentario.lower()
-    if not acerto:
-        if esperada.lower() not in normalizado:
-            return f"No era. La respuesta correcta era {esperada}."
-    else:
-        negaciones = ("no es", "no era", "incorrect", " mal ", "equivoc")
-        if any(n in normalizado for n in negaciones):
-            return "¡Correcto!"
-    return comentario
+    return generar_respuesta(mensajes, on_token=on_token, modelo=TRIVIA_MODEL, max_tokens=20).strip()
 
 
 def comentar_resultado_emocion(objetivo, detectada, acerto, persona_str, on_token=None):
