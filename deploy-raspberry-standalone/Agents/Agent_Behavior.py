@@ -15,10 +15,15 @@ dos fuentes de datos distintas:
   cara, y recién después música/desplazamiento (ver la nota en
   manejar_trivia()), así que no hay un solo "punto de entrada" que las
   agrupe como antes.
-- elegir_cara_por_calidad(): para Chat libre, donde no hay fila de dataset
-  asociada — el veredicto es "¿se encontró contexto para responder?" (ver
-  Orchestrator_Management.responder()), y la cara sale de una elección
-  genérica happy / sad-o-angry al azar.
+Chat libre no usa este archivo -- se queda en "speaking" durante toda la
+respuesta (ver manejar_chat_libre() en Orchestrator_Management.py), a
+pedido del usuario (2026-08-30). Antes tenía elegir_cara_por_calidad(),
+que elegía happy / sad-o-angry al azar según un `problema` que venía de
+Orchestrator_Management.responder() -- pero ese `problema` quedó
+hardcodeado en False desde que se sacó el RAG de Chat libre, así que la
+mitad "mala" de esa elección era código muerto: nunca se ejecutaba. Se
+sacó del todo en vez de dejarlo relanzando la misma cara fija que ya
+mostraba.
 
 Desplazamiento y música SÍ están conectados a hardware real: el primero manda
 el comando al carrito mecanum vía Clients/Carrito_Client.py, el segundo
@@ -29,7 +34,6 @@ gracioso — log, no excepción — y el resto del turno de trivia sigue normal.
 Si una columna viene vacía, no se hace nada con esa parte — ni log, ni acción.
 """
 
-import random
 import threading
 
 import perf_monitor
@@ -110,17 +114,3 @@ def expresar_desplazamiento(pregunta):
     else:
         Carrito_Client.mover(desplazamiento)  # un solo write serial, ya casi instantáneo
     return desplazamiento
-
-
-# ─── Chat libre: cara genérica por resultado ──────────────────────────────
-
-CARA_BUENA = "happy"
-CARAS_MALA = ["sad", "angry"]
-
-
-def elegir_cara_por_calidad(problema):
-    """problema viene de Orchestrator_Management.responder(): True solo
-    cuando no hubo contexto relevante para contestar ("no tengo el dato").
-    Ya no mide si el Agent_Verificator tuvo que corregir la redacción --
-    ese agente se sacó del proyecto, Llama_Client responde directo."""
-    return random.choice(CARAS_MALA) if problema else CARA_BUENA

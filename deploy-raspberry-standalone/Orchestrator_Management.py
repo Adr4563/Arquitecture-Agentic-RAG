@@ -35,7 +35,7 @@ import display  # display.py: carita en la LCD conectada a esta Raspberry Pi
 import perf_monitor  # perf_monitor.py: @medir por componente + muestreo de CPU/memoria (ver perf_report.py)
 import voz_server  # voz_server.py: página de voz+texto, corre en un hilo aparte
 from Agents.Agent_Behavior import (
-    cara_para_emocion, elegir_cara_por_calidad, elegir_cara_pregunta, expresar_desplazamiento,
+    cara_para_emocion, elegir_cara_pregunta, expresar_desplazamiento,
     expresar_musica,
 )
 from Agents.Agent_Corrector import evaluar_respuesta
@@ -125,7 +125,7 @@ def generar_apertura(persona_str, on_token=None):
 
 def responder(mensaje_usuario, persona_str):
     """Chat libre: le pasa el mensaje del usuario a CHAT_MODEL con la
-    personalidad y devuelve (texto_final, problema).
+    personalidad y devuelve texto_final.
 
     Ya no acepta on_token: el streaming a consola (imprimir token a token)
     se sacó a pedido del usuario -- ya no se mira la consola de la Pi, se
@@ -153,12 +153,13 @@ def responder(mensaje_usuario, persona_str):
     "no puedo ayudar con eso"). Eso se arregla en el fine-tuning
     (chat_training/), no acá.
 
-    `problema` queda siempre en False: era True solo en el caso SIN_CONTEXTO,
-    que ya no existe. Agent_Behavior.elegir_cara_por_calidad() lo sigue
-    recibiendo -- ahora Chat libre siempre muestra cara positiva, porque no
-    hay ninguna senal de calidad que justifique otra cosa. Si mas adelante
-    hace falta distinguir, tiene que salir de algo real (un verificador, un
-    score), no de la ausencia de contexto."""
+    Ya no devuelve `problema`: era True solo en el caso SIN_CONTEXTO, que ya
+    no existe, y Agent_Behavior.elegir_cara_por_calidad() (la única que lo
+    consumía, para variar la cara al final del turno) se sacó del todo a
+    pedido del usuario (2026-08-30) -- Chat libre se queda en "speaking"
+    durante toda la respuesta, sin cambiar de cara al terminar. Si más
+    adelante hace falta esa señal de nuevo, tiene que salir de algo real
+    (un verificador, un score), no de la ausencia de contexto."""
     # Sin system prompt, a pedido del usuario: se manda SOLO el mensaje.
     # El comportamiento (frases cortas, no decir que es una IA) tiene que
     # venir del fine-tuning, no de una instruccion en cada turno -- una regla
@@ -171,7 +172,7 @@ def responder(mensaje_usuario, persona_str):
     # lo que se revisa en curar.py es el turno entero. Ver
     # chat_libre_training/README.md.
     registro_chat.registrar(mensaje_usuario, texto_final, CHAT_MODEL)
-    return texto_final, False
+    return texto_final
 
 
 # ══════════════════════════════════════════════════════════════════════
@@ -840,14 +841,16 @@ def _reanudar_trivia(estado):
 
 def manejar_chat_libre(mensaje_usuario, persona_str):
     display.mostrar_cara("speaking")  # generando la respuesta -- ya no se imprime token a token, ver responder()
-    texto_final, problema = responder(mensaje_usuario, persona_str)
+    texto_final = responder(mensaje_usuario, persona_str)
     print(f"Asistente: {texto_final}\n")
     voz_output.hablar(texto_final)
-    # happy salvo que no hubiera contexto para responder ("no tengo el
-    # dato") -- ya no hay agente verificador que corrija la respuesta, así
-    # que esto no mide calidad de redacción, solo si de verdad se encontró
-    # algo que contestar.
-    display.mostrar_cara(elegir_cara_por_calidad(problema))
+    # Se queda en "speaking" durante toda la respuesta, sin cambiar de cara
+    # al final -- a pedido del usuario (2026-08-30). Antes elegía happy/
+    # sad-o-angry con Agent_Behavior.elegir_cara_por_calidad(), pero esa
+    # elección dependía de una señal (`problema`) que quedó hardcodeada en
+    # False desde que se sacó el RAG de Chat libre, así que en la práctica
+    # siempre terminaba en "happy" -- se sacó del todo en vez de mantener
+    # una elección que nunca elegía nada distinto.
     time.sleep(PAUSA_CAMBIO_CARA)
     display.mostrar_cara("content")  # cara de reposo hasta el próximo turno
 
