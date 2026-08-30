@@ -24,6 +24,7 @@ Escribe 'salir' para terminar.
 """
 
 import difflib
+import os
 import queue
 import random
 import sys
@@ -591,6 +592,40 @@ PAUSA_CAMBIO_CARA = 4  # segundos en 'content' antes de pasar a la cara que sigu
 # ver manejar_trivia()/_jugar_emociones().
 PAUSA_ANTES_ACCION_FISICA = 1
 
+# Cuánto esperar, como máximo, a que un teléfono se conecte y active la voz
+# antes de la primera frase de la sesión (el saludo) -- ver
+# _esperar_telefono_si_corresponde() más abajo.
+ESPERAR_TELEFONO_SEG = int(os.environ.get("ESPERAR_TELEFONO_SEG", "60"))
+
+
+def _esperar_telefono_si_corresponde(timeout=ESPERAR_TELEFONO_SEG):
+    """Si VOZ_MOTOR=telefono, espera hasta `timeout` segundos a que
+    voz_server.hay_cliente_conectado() sea True antes de dejar que el
+    caller siga (y hable).
+
+    Por qué hace falta: sin esto, el saludo de _main_loop() sale ~4s
+    después de arrancar el proceso (ver PAUSA_CAMBIO_CARA ahí) -- nadie
+    llega a abrir la página y tocar 'Activar voz' tan rápido, así que la
+    primera frase de CADA sesión caía siempre al respaldo (edge-tts, nube),
+    exactamente lo que VOZ_MOTOR=telefono busca evitar. El resto de la
+    sesión no tiene este problema: para cuando el usuario ya escribió su
+    nombre, tuvo de sobra para conectarse.
+
+    Si nadie se conecta en `timeout` segundos, sigue igual que antes (la
+    frase cae al respaldo) -- esto no cambia ese comportamiento, solo le da
+    una chance real de no necesitarlo."""
+    if voz_output.MOTOR != "telefono":
+        return
+    print(f"[voz] esperando hasta {timeout}s a que se conecte un teléfono con la voz activada...")
+    esperado = 0
+    while esperado < timeout and not voz_server.hay_cliente_conectado():
+        time.sleep(1)
+        esperado += 1
+    if voz_server.hay_cliente_conectado():
+        print(f"[voz] teléfono conectado a los {esperado}s, listo para saludar")
+    else:
+        print(f"[voz] nadie se conectó en {timeout}s -- el saludo cae al respaldo (edge-tts)")
+
 
 def _reaccionar_veredicto(cara, pregunta, musica_ya_sonada=False):
     """Cara + música + desplazamiento del veredicto, EN PARALELO entre sí --
@@ -883,6 +918,7 @@ def main():
 
 
 def _main_loop():
+    _esperar_telefono_si_corresponde()  # ver la nota ahí -- evita que el saludo caiga siempre a edge-tts
     display.mostrar_cara("content")  # arranca en reposo...
     time.sleep(PAUSA_CAMBIO_CARA)
     display.mostrar_cara("speaking")  # ...y recién ahora la IA "habla" (saluda, por defecto)

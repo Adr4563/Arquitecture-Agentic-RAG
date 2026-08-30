@@ -55,6 +55,16 @@ _clientes_voz_lock = threading.Lock()
 _listo_evento = threading.Event()
 
 
+def hay_cliente_conectado():
+    """True si al menos un teléfono tiene la página abierta con la voz
+    activada (conectado a /eventos). La usa Orchestrator_Management.py para
+    esperar antes de la primera frase de la sesión (el saludo) en vez de
+    perderla siempre al respaldo de edge-tts -- ver la nota en
+    _esperar_telefono_si_corresponde()."""
+    with _clientes_voz_lock:
+        return bool(_clientes_voz)
+
+
 _PAGINA = """<!doctype html>
 <html lang="es">
 <head>
