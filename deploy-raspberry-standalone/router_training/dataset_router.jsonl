@@ -756,3 +756,18 @@
 {"frase": "cuantas patas tiene un gato", "ruta": "CHAT_LIBRE"}
 {"frase": "que idioma se habla en brasil", "ruta": "CHAT_LIBRE"}
 {"frase": "cual es el animal mas grande del mundo", "ruta": "CHAT_LIBRE"}
+{"frase": "puedes traer informacion de peru", "ruta": "BUSQUEDA_WEB"}
+{"frase": "puedes traer informacion de los dinosaurios", "ruta": "BUSQUEDA_WEB"}
+{"frase": "traeme informacion de la luna", "ruta": "BUSQUEDA_WEB"}
+{"frase": "traeme informacion sobre los tiburones", "ruta": "BUSQUEDA_WEB"}
+{"frase": "me traes informacion de egipto", "ruta": "BUSQUEDA_WEB"}
+{"frase": "puedes buscar informacion de las ballenas", "ruta": "BUSQUEDA_WEB"}
+{"frase": "que sabes de la torre eiffel", "ruta": "BUSQUEDA_WEB"}
+{"frase": "que sabes sobre los volcanes", "ruta": "BUSQUEDA_WEB"}
+{"frase": "hablame de los mayas", "ruta": "BUSQUEDA_WEB"}
+{"frase": "contame de la selva amazonica", "ruta": "BUSQUEDA_WEB"}
+{"frase": "podes traer informacion de japon", "ruta": "BUSQUEDA_WEB"}
+{"frase": "buscame informacion de marte", "ruta": "BUSQUEDA_WEB"}
+{"frase": "me consigues informacion del everest", "ruta": "BUSQUEDA_WEB"}
+{"frase": "puedes buscar informacion sobre los planetas", "ruta": "BUSQUEDA_WEB"}
+{"frase": "quiero informacion sobre las pinturas rupestres", "ruta": "BUSQUEDA_WEB"}

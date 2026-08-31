@@ -95,6 +95,16 @@ _PREFIJOS = [
     "decime", "dime", "contame", "cuentame", "sabes", "sabés",
     "me podes decir", "me podés decir", "podes decirme", "podés decirme",
     "quiero saber", "necesito saber",
+    # Pedidos indirectos: "puedes traer informacion de X" dejaba el
+    # envoltorio entero como termino de busqueda.
+    "puedes traer informacion de", "podes traer informacion de",
+    "podés traer información de", "puedes traer informacion",
+    "traeme informacion de", "traeme informacion", "traeme datos de",
+    "me traes informacion de", "me consigues informacion de",
+    "puedes buscar informacion de", "puedes buscar informacion sobre",
+    "podes buscar informacion de", "buscame informacion de",
+    "que sabes de", "que sabes sobre", "qué sabés de", "qué sabés sobre",
+    "contame de", "hablame de", "háblame de",
 ]
 
 
