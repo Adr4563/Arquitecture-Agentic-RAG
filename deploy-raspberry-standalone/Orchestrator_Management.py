@@ -734,11 +734,26 @@ def _cerrar_tanda(estado):
     """Mensaje de cierre cuando se acaba la tanda sola (cola_preguntas vacía,
     no por una salida a mitad de pregunta): ya no hay nada que retomar, así
     que el próximo mensaje vuelve a pasar por el Router como cualquier turno
-    normal."""
+    normal.
+
+    "buscamos algo en la web" se sacó (2026-08-31): texto viejo de una
+    función que ya no existe (Chat libre no tiene búsqueda ni RAG, ver
+    responder()) -- quedó de una versión anterior sin que nadie lo tocara.
+
+    El resumen de aciertos (estado["aciertos"]/estado["total"]) es
+    ACUMULADO de toda la sesión, no solo de esta tanda -- mismo dato y
+    mismo criterio que la despedida final (_main_loop(), "Terminamos.
+    Acertaste X de Y."), a pedido del usuario (2026-08-31): antes solo se
+    escuchaba al cerrar TODA la sesión, ahora también en cada cierre de
+    tanda. Se omite si total es 0 (tandas de preguntas sin respuesta
+    verificable, ej. Dilema del coche autónomo, donde no hay nada que
+    contar todavía)."""
     estado["en_trivia"] = False
     display.mostrar_cara("speaking")
-    cierre = ("Esas eran las 5. ¿Seguimos con más trivia, "
-              "buscamos algo en la web, o prefieres charlar?")
+    cierre = "Esas eran las 5."
+    if estado["total"]:
+        cierre += f" Vas {estado['aciertos']} de {estado['total']}."
+    cierre += " ¿Seguimos con más trivia o prefieres charlar?"
     print(f"Asistente: {cierre}\n")
     voz_output.hablar(cierre)
     time.sleep(PAUSA_CAMBIO_CARA)
