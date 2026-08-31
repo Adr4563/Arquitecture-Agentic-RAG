@@ -547,6 +547,15 @@ _TEMA_PERSONAL = [
 ]
 
 
+# Por debajo de esta cantidad de palabras, un mensaje sin ninguna keyword de
+# salida se trata como respuesta directa sin consultar al LLM -- ver la nota
+# de rendimiento en _quiere_salir_trivia(). La mayoría de las respuestas
+# reales de Trivia son cortas (un número, un nombre, "no se"), así que este
+# umbral cubre el caso común sin perder el juicio fino del LLM en mensajes
+# largos (donde SÍ vale la pena, es donde más se equivocan las keywords).
+_PALABRAS_RESPUESTA_CORTA = 4
+
+
 def _quiere_salir_trivia(mensaje_usuario, pregunta_pendiente=None):
     """True si el usuario quiere dejar la trivia a mitad de una pregunta o
     elección de tema.
@@ -557,19 +566,36 @@ def _quiere_salir_trivia(mensaje_usuario, pregunta_pendiente=None):
     una RESPUESTA legítima, mientras que contar un problema propio con las
     mismas palabras es SALIR.
 
+    Optimización (2026-08-30): si el mensaje es corto (<=
+    _PALABRAS_RESPUESTA_CORTA palabras) y no matchea ninguna keyword de las
+    listas de abajo, es casi seguro una respuesta directa -- no vale la pena
+    pagar otra llamada a Ollama (con su propio costo de contención medido
+    con perf_report.py: Trivia hacía 2 llamadas por turno contra 1 de Chat
+    libre) para confirmar algo tan obvio. El LLM se reserva para los casos
+    donde de verdad hace falta el juicio fino: mensajes largos, o que sí
+    matchean alguna keyword pero podrían ser ambiguos (ver el docstring
+    original de esta función, arriba, sobre por qué las keywords solas no
+    alcanzaban). Costo: en el caso raro de un mensaje CORTO que sea salida
+    real sin ninguna keyword conocida, esto puede perderlo -- antes el LLM
+    lo hubiera podido cachar, ahora no se lo consulta. Trade-off aceptado a
+    pedido del usuario, a cambio de la mitad de las llamadas a Ollama en la
+    mayoría de los turnos.
+
     Cae a las listas de palabras clave (_SALIR_TRIVIA/_TEMA_PERSONAL) en
-    dos casos. Uno: no hay pregunta pendiente porque el usuario está
-    eligiendo tema, no respondiendo -- el modelo se entrenó sobre pares
-    pregunta+mensaje y sin pregunta no está en su dominio. Dos:
-    clasificar_salida_trivia() devolvió None (Ollama caído, modelo sin
-    importar). Así ningún problema de infraestructura corta el turno ni deja
-    al usuario trabado en la trivia."""
-    if pregunta_pendiente:
+    tres casos ahora: sin pregunta pendiente (eligiendo tema, fuera del
+    dominio del modelo), clasificar_salida_trivia() devolvió None (Ollama
+    caído/modelo sin importar), o el mensaje es corto y sin keywords (arriba).
+    Así ningún problema de infraestructura corta el turno ni deja al usuario
+    trabado en la trivia."""
+    texto = mensaje_usuario.strip().lower()
+    tiene_keyword = any(frase in texto for frase in _SALIR_TRIVIA) or any(frase in texto for frase in _TEMA_PERSONAL)
+
+    es_corto_y_sin_keyword = len(texto.split()) <= _PALABRAS_RESPUESTA_CORTA and not tiene_keyword
+    if pregunta_pendiente and not es_corto_y_sin_keyword:
         veredicto = clasificar_salida_trivia(pregunta_pendiente, mensaje_usuario)
         if veredicto is not None:
             return veredicto
-    texto = mensaje_usuario.strip().lower()
-    return any(frase in texto for frase in _SALIR_TRIVIA) or any(frase in texto for frase in _TEMA_PERSONAL)
+    return tiene_keyword
 
 
 # Cola compartida: tanto el hilo que lee la terminal (_hilo_stdin) como
