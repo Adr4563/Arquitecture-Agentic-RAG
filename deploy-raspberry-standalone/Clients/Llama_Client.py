@@ -76,17 +76,22 @@ CHAT_MODEL = os.environ.get("CHAT_MODEL", "lora-chat-libre-v4")  # nombre del mo
 # (no usar una variante -fp16: corre 100% en CPU sin VRAM y es extremadamente lenta;
 # los modelos cuantizados -q4_K_*/-q4s son los viables en CPU)
 
-# Modelo separado SOLO para las reacciones de Trivia (comentar_resultado()/
-# reaccionar_libre() en Orchestrator_Management.py, reactivadas 2026-08-30
-# tras un período sin usarse -- ver manejar_trivia()) -- a pedido del
-# usuario, distinto del que atiende Chat libre (CHAT_MODEL, sin tocar).
-# Por default lora-trivia (ver trivia_training/): fine-tuning LoRA
-# entrenado SOLO con los 121 ejemplos de trivia (a diferencia de
-# lora-personalidad, que entrena sobre las 4 categorías mezcladas) --
-# más especializado en este rol puntual. Antecesor (lora-personalidad)
-# ya había resultado más confiable que qwen2.5:0.5b + prompt completo (0/8
-# vs 3/8 en "repite la instrucción en vez de reaccionar", ver README
-# "Personalidad horneada en el modelo").
+# Modelo separado para comentar_resultado_emocion() (Juego de
+# emociones/imitación, Orchestrator_Management.py) -- a pedido del usuario,
+# distinto del que atiende Chat libre (CHAT_MODEL, sin tocar). Por default
+# lora-trivia (ver trivia_training/): fine-tuning LoRA entrenado SOLO con
+# los 121 ejemplos de trivia (a diferencia de lora-personalidad, que
+# entrena sobre las 4 categorías mezcladas) -- más especializado en este rol
+# puntual. Antecesor (lora-personalidad) ya había resultado más confiable
+# que qwen2.5:0.5b + prompt completo (0/8 vs 3/8 en "repite la instrucción
+# en vez de reaccionar", ver README "Personalidad horneada en el modelo").
+#
+# Ya NO se usa para las reacciones de Trivia propiamente dichas
+# (comentar_resultado()/antes también reaccionar_libre(), ahora eliminada):
+# desde 2026-08-31 son frases fijas, sin LLM -- ver la nota en
+# comentar_resultado() y TODO-mantenimiento.md. comentar_resultado_emocion()
+# en sí tampoco tiene caller activo hoy (ver la nota ahí), así que este
+# modelo solo se sigue precargando por las dudas.
 TRIVIA_MODEL = os.environ.get("TRIVIA_MODEL", "lora-trivia")
 
 # Tercer modelo, para una sola decisión binaria de Trivia: dado el turno

@@ -3,6 +3,35 @@
 Pendientes detectados en una revisión (2026-08-26) que no se resolvieron
 solos por ser cambios de comportamiento, no de documentación:
 
+## Comentario de Trivia: se sacó el LLM, ahora son frases fijas (2026-08-31)
+
+A pedido del usuario, decisión final tras toda la investigación de
+velocidad de abajo (num_ctx, gobernador de CPU, ~14 LLMs candidatos,
+reorden de prompt): **`comentar_resultado()` dejó de usar un LLM**. La
+reacción a una respuesta de Trivia (acertó / se equivocó) es siempre la
+misma idea, así que en vez de generarla con `lora-trivia` (varios segundos
+por reacción en el mejor de los casos, ver abajo), ahora es
+`random.choice()` sobre `RESPUESTAS_TRIVIA_ACIERTO`/`RESPUESTAS_TRIVIA_ERROR`
+(mismo patrón que `SALUDOS_APERTURA`/`DESPEDIDAS`) -- 0ms, sin Ollama de por
+medio. `reaccionar_libre()` (las ~11 preguntas sin respuesta verificable:
+Dilema del coche autónomo + Socialización) se eliminó directamente: a
+pedido del usuario, esas preguntas ya no llevan ningún comentario hablado,
+se pasa derecho a música/desplazamiento.
+
+`TRIVIA_MODEL`/`lora-trivia` sigue existiendo (lo sigue usando
+`comentar_resultado_emocion()`, aunque esa función ya estaba sin caller
+activo de antes -- ver la nota ahí) y se sigue precargando al arrancar, por
+las dudas. Si en algún momento se confirma que nada lo necesita, se puede
+sacar el precargado y ahorrar ese tiempo/RAM de arranque también.
+
+Todo lo de abajo (`num_ctx`, gobernador de CPU, búsqueda de LLM
+alternativo, intento de reorden de prompt) queda como historial de lo que
+se probó ANTES de llegar a esta decisión -- ya no aplica a
+`comentar_resultado()` en el día a día, pero `lora-trivia` sigue siendo el
+modelo real detrás de `comentar_resultado_emocion()`, así que las notas
+sobre el modelo en sí (Modelfile, num_ctx) siguen vigentes por si ese juego
+se reactiva.
+
 ## `num_ctx` de `lora-trivia` bajado de 4096 a 512 (2026-08-31)
 
 Búsqueda de un LLM más rápido para reemplazar a `lora-trivia` (~14

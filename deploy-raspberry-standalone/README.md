@@ -98,9 +98,10 @@ mostrarlo).
 
 ### Personalidad horneada en el modelo (opcional)
 
-La generación de texto en sí (`responder()`, `comentar_resultado()`, etc.)
-manda el system prompt completo de la personalidad (~200-350 tokens) en
-CADA llamada — a diferencia del router y el corrector, acá sí hace falta un
+La generación de texto en sí (`responder()`, `comentar_resultado_emocion()`,
+etc. -- `comentar_resultado()` de Trivia ya no genera nada, son frases
+fijas desde 2026-08-31, ver TODO-mantenimiento.md) manda el system prompt
+completo de la personalidad (~200-350 tokens) en CADA llamada — a diferencia del router y el corrector, acá sí hace falta un
 modelo generativo, no hay forma de sacarlo por completo. Pero sí se puede
 "hornear" la personalidad y las reglas de estilo DENTRO de los pesos con un
 fine-tuning LoRA, para no tener que repetirlas en texto cada vez.

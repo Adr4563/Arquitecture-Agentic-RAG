@@ -8,14 +8,16 @@ FROM ereberus-trivia-q4_k_m.gguf
 SYSTEM "Eres Lora, un robot con personalidad seca y directa. Respondés en español, corto y natural."
 
 PARAMETER temperature 0.3
-# num_ctx bajado de 4096 a 512 (2026-08-31): el prompt real de
-# comentar_resultado()/reaccionar_libre() mide ~120-140 tokens (medido en
-# vivo contra Ollama, "prompt_eval_count" de /api/chat), 512 da margen de
-# sobra sin reservar 8x mas contexto del que hace falta. Probado antes de
-# aplicar: 4 casos estandar (acierto, error, respuesta vaga, musical) contra
-# el modelo viejo (ctx 4096) y el nuevo (ctx 512) -- misma calidad de
-# respuesta en los 4, sin regresion. La velocidad no cambio de forma medible
-# (el cuello de botella es el prompt_eval bajo contencion de CPU, no el
-# tamanio del contexto reservado) pero baja el uso de RAM del KV-cache, asi
-# que se deja aplicado. Ver TODO-mantenimiento.md.
+# num_ctx bajado de 4096 a 512 (2026-08-31): el prompt real que se le
+# mandaba (comentar_resultado()/reaccionar_libre(), ambas eliminadas desde
+# entonces -- ver TODO-mantenimiento.md) media ~120-140 tokens
+# (prompt_eval_count de /api/chat), 512 da margen de sobra sin reservar 8x
+# mas contexto del que hace falta. Probado antes de aplicar: 4 casos
+# estandar (acierto, error, respuesta vaga, musical) contra el modelo viejo
+# (ctx 4096) y el nuevo (ctx 512) -- misma calidad de respuesta en los 4,
+# sin regresion. La velocidad no cambio de forma medible (el cuello de
+# botella es el prompt_eval bajo contencion de CPU, no el tamanio del
+# contexto reservado) pero baja el uso de RAM del KV-cache, asi que se deja
+# aplicado. Sigue siendo el modelo real detras de comentar_resultado_emocion()
+# (Juego de emociones), que usa un prompt de tamanio similar.
 PARAMETER num_ctx 512

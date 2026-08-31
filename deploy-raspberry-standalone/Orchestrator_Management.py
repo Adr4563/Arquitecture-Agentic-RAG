@@ -75,9 +75,11 @@ def _mensajes_con_personalidad(persona_str, contenido_usuario, modelo=CHAT_MODEL
     lora-personalidad, que ya trae la personalidad horneada, ver
     personalidad.py) + el mensaje del usuario.
 
-    `modelo` default a CHAT_MODEL (Chat libre); comentar_resultado()
-    y reaccionar_libre() (Trivia) pasan TRIVIA_MODEL explícito -- son modelos
-    distintos a propósito, ver Clients/Llama_Client.py."""
+    `modelo` default a CHAT_MODEL (Chat libre); comentar_resultado_emocion()
+    (Juego de emociones) pasa TRIVIA_MODEL explícito -- son modelos
+    distintos a propósito, ver Clients/Llama_Client.py. comentar_resultado()
+    (Trivia con respuesta verificable) ya no pasa por acá desde 2026-08-31,
+    ver la nota ahí."""
     system_prompt = obtener_system_prompt(persona_str, modelo=modelo)
     mensajes = []
     if system_prompt:
@@ -245,8 +247,8 @@ TEMAS_CATALOGO = [
 
 # Los dos únicos temas del catálogo con veredicto real vía cámara en vez de
 # texto (ver _jugar_emociones() más abajo) -- ninguna pregunta de estos temas
-# trae respuesta_esperada, así que sin este caso especial caerían en
-# reaccionar_libre() (conversación sin verificar nada).
+# trae respuesta_esperada, así que sin este caso especial caerían en la rama
+# sin veredicto de manejar_trivia() (sin reacción hablada, ver ahí).
 TEMAS_JUEGO_EMOCIONES = {
     "Juego de emociones - Nivel 1",
     "Juego de imitación - Nivel 1",
@@ -272,54 +274,39 @@ def obtener_preguntas_por_tema(tema, ya_usados, cantidad=5):
     return _preguntas_por_tema(tema, ya_usados, cantidad)
 
 
-def comentar_resultado(pregunta, esperada, respuesta_usuario, acerto, persona_str, on_token=None):
-    """Reacción hablada del robot tras corregir, con su personalidad.
+# Reacciones fijas para comentar_resultado() -- mismo patrón que
+# SALUDOS_APERTURA/DESPEDIDAS (random.choice(), sin LLM).
+#
+# Hasta 2026-08-31 esto lo generaba un LLM (TRIVIA_MODEL/lora-trivia) para
+# que "reaccionara con personalidad" -- se sacó por completo: aun con todo
+# lo optimizable ya optimizado (num_ctx, gobernador de CPU en performance,
+# reducir llamados de Ollama por turno -- ver TODO-mantenimiento.md) seguía
+# tardando varios segundos por reacción, y de los ~14 LLMs chicos probados
+# como reemplazo ninguno bajaba de ahí de forma confiable. La reacción es
+# siempre la misma idea (acertaste / no, era X) así que no hacía falta
+# generarla -- una lista fija la resuelve en 0ms, sin depender de Ollama.
+RESPUESTAS_TRIVIA_ACIERTO = [
+    "¡Exacto, {esperada}!",
+    "Sí, correcto.",
+    "Así es, nada mal.",
+    "Correcto, bien ahí.",
+]
 
-    Usa TRIVIA_MODEL, no CHAT_MODEL -- Trivia tiene su propio modelo aparte
-    (lora-personalidad por default, ver Clients/Llama_Client.py).
+RESPUESTAS_TRIVIA_ERROR = [
+    "No, era {esperada}.",
+    "Nop, la correcta es {esperada}.",
+    "Incorrecto, la respuesta era {esperada}.",
+    "No es así, correcta: {esperada}.",
+]
 
-    El veredicto (acerto) ya viene resuelto por evaluar_respuesta() — acá NO
-    se le pide al modelo que vuelva a resolver la pregunta ni que compare
-    nada, solo que reaccione. Se probó (2026-08-30) sacarle el veredicto
-    y pedirle que compare `esperada` contra `respuesta_usuario` por su
-    cuenta, y salió mal: lora-trivia se entrenó ÚNICAMENTE con ejemplos
-    donde el veredicto ya venía dado (ver dataset_trivia.jsonl, formato
-    "...y ACERTÓ/SE EQUIVOCÓ..."), nunca aprendió a comparar dos textos --
-    probado en vivo contra Ollama, contestó "Sí, la respuesta correcta es
-    París" a un estudiante que había respondido "Madrid". Por eso se
-    volvió a este diseño: comparar es trabajo de Agent_Corrector
-    (evaluar_respuesta(), sin LLM, ya resuelto antes de llegar acá), el LLM
-    solo comenta el resultado ya decidido.
 
-    `pregunta=None`: para preguntas de Reconocimiento musical (y cualquier
-    otra sin texto útil fuera de contexto, ver el chequeo de `musical` en
-    manejar_trivia()) no se manda -- el texto de esas preguntas ("Escuché
-    esto, ¿qué canción es?") no aporta nada sin el audio real, y confundía
-    más que ayudaba.
-
-    max_tokens=20 (no el default de 50) y "máximo 5 palabras" en vez de
-    "frase corta" (más concreto, un modelo chico sigue mejor un número que
-    un adjetivo vago) -- esto es una reacción, no una explicación, así que
-    no hace falta más. Recorta tanto el tiempo de generación del LLM como
-    el de habla después (medido: ~1.2-1.7s de red del TTS + ~lo que dure
-    decirla en voz, que escala directo con la cantidad de palabras)."""
-    if acerto:
-        instruccion = (
-            f"El estudiante respondió '{respuesta_usuario}' y ACERTÓ (la respuesta "
-            f"correcta es {esperada}). Confírmaselo en máximo 5 palabras."
-        )
-    else:
-        instruccion = (
-            f"El estudiante respondió '{respuesta_usuario}' y SE EQUIVOCÓ. Dile en "
-            f"máximo 5 palabras que no es correcto y que la respuesta correcta era {esperada}."
-        )
-    encabezado = f"Pregunta que se hizo: {pregunta}\n\n" if pregunta else ""
-    mensajes = _mensajes_con_personalidad(persona_str, (
-        f"{encabezado}{instruccion} No vuelvas a resolver la pregunta ni expliques el cálculo: "
-        "el veredicto ya está decidido, tu única tarea es reaccionar a él. "
-        "No hagas otra pregunta."
-    ), modelo=TRIVIA_MODEL)
-    return generar_respuesta(mensajes, on_token=on_token, modelo=TRIVIA_MODEL, max_tokens=20).strip()
+def comentar_resultado(esperada, acerto):
+    """Reacción corta al veredicto de una pregunta de Trivia con respuesta
+    verificable (evaluar_respuesta(), sin LLM) -- ver la nota de
+    RESPUESTAS_TRIVIA_ACIERTO/ERROR más arriba sobre por qué esto ya no usa
+    TRIVIA_MODEL."""
+    plantilla = random.choice(RESPUESTAS_TRIVIA_ACIERTO if acerto else RESPUESTAS_TRIVIA_ERROR)
+    return plantilla.format(esperada=esperada)
 
 
 def comentar_resultado_emocion(objetivo, detectada, acerto, persona_str, on_token=None):
@@ -356,7 +343,8 @@ def _jugar_emociones(pregunta, persona_str, on_token=None):
 
     Devuelve el bool acerto/error, o None si no se pudo evaluar (cámara no
     disponible o sin cara detectada) -- en ese caso no cuenta para el
-    marcador, se reacciona igual que reaccionar_libre() (sin veredicto)."""
+    marcador y no hay reacción hablada (ver el chequeo `detectada is None`
+    más abajo)."""
     # La emoción a imitar sale de respuesta_esperada: en estas preguntas esa
     # columna NO es una respuesta de texto que se corrija con
     # Agent_Corrector (el veredicto lo da la cámara), es el enunciado del
@@ -384,13 +372,11 @@ def _jugar_emociones(pregunta, persona_str, on_token=None):
     detectada, confianza = Camara_Client.detectar_emocion()
 
     if detectada is None:
-        # Este juego (a diferencia de manejar_trivia(), que sí volvió a usar
-        # comentar_resultado()/reaccionar_libre() desde 2026-08-30) sigue
-        # sin agente de comentario a propósito: el veredicto sale de la
-        # cámara, no de texto, así que no hay nada que "explicarle" al LLM
-        # más allá de la palabra fija de abajo. No hay veredicto acá (sin
-        # cara detectada), así que no hay una cara de veredicto que mostrar
-        # (queda 'speaking').
+        # Este juego (a diferencia de manejar_trivia(), que sí usa
+        # comentar_resultado()) sigue sin agente de comentario a propósito:
+        # el veredicto sale de la cámara, no de texto. No hay veredicto acá
+        # (sin cara detectada), así que no hay una cara de veredicto que
+        # mostrar (queda 'speaking').
         display.mostrar_cara("speaking")
         time.sleep(PAUSA_ANTES_ACCION_FISICA)
         expresar_musica(pregunta)
@@ -399,13 +385,11 @@ def _jugar_emociones(pregunta, persona_str, on_token=None):
 
     acerto = detectada == objetivo
     print(f"    [cámara] pedido={objetivo} detectado={detectada} (confianza {confianza:.0%}) -> {'OK' if acerto else 'MAL'}")
-    # Veredicto hablado -- sin agente de comentario (LLM) a propósito, ver
-    # la nota más arriba: solo la palabra fija según acerto/error, no un
-    # comentario generado como en el resto de Trivia (manejar_trivia(), que
-    # sí usa comentar_resultado()/reaccionar_libre() desde 2026-08-30). Acá
-    # la voz hace falta igual, con o sin LLM: el usuario está posando frente
-    # a la cámara, no mirando la pantalla, así que no ve la cara de
-    # veredicto sin este aviso por voz.
+    # Veredicto hablado -- sin agente de comentario a propósito, ver la nota
+    # más arriba: solo la palabra fija según acerto/error, no la lista de
+    # frases de comentar_resultado(). Acá la voz hace falta igual: el
+    # usuario está posando frente a la cámara, no mirando la pantalla, así
+    # que no ve la cara de veredicto sin este aviso por voz.
     #
     # Orden a propósito: la VOZ va primero y bloquea (tiene que terminar de
     # decirse) -- recién después se disparan cara/música/desplazamiento
@@ -418,23 +402,6 @@ def _jugar_emociones(pregunta, persona_str, on_token=None):
     _reaccionar_veredicto(cara, pregunta)
     display.mostrar_cara("speaking")
     return acerto
-
-
-def reaccionar_libre(pregunta, respuesta_usuario, persona_str, on_token=None):
-    """Para preguntas sin respuesta_esperada (Reconocimiento Musical, Juego
-    de colores...): no hay nada que corregir, así que en vez de
-    evaluar_respuesta/comentar_resultado el robot solo reacciona.
-
-    Usa TRIVIA_MODEL, no CHAT_MODEL -- mismo criterio que comentar_resultado(),
-    incluido max_tokens=20 y "máximo 5 palabras" en vez de "frase corta"."""
-    mensajes = _mensajes_con_personalidad(persona_str, (
-        f"Pregunta: {pregunta}\n"
-        f"Respuesta del usuario: {respuesta_usuario}\n\n"
-        "Reacciona en máximo 5 palabras. No hay respuesta correcta acá: no "
-        "corrijas ni evalúes, solo reacciona con tu personalidad. No hagas "
-        "otra pregunta."
-    ), modelo=TRIVIA_MODEL)
-    return generar_respuesta(mensajes, on_token=on_token, modelo=TRIVIA_MODEL, max_tokens=20).strip()
 
 
 def resolver_tema(eleccion_usuario):
@@ -629,14 +596,14 @@ def enrutar_mensaje(mensaje_usuario):
 
 PREGUNTAS_POR_TANDA = 5
 PAUSA_CAMBIO_CARA = 4  # segundos en 'content' antes de pasar a la cara que sigue (habla o reacción)
-# Reacción a una respuesta: manejar_trivia() vuelve a usar comentar_resultado()/
-# reaccionar_libre() (LLM, desde 2026-08-30) ANTES de esta pausa -- la voz
-# bloquea hasta terminar de decirse, y recién ahí se mueve la cara al
-# veredicto, se espera esta pausa, y se disparan música/desplazamiento (en
-# paralelo entre sí, hilo/Popen, no bloquean). _jugar_emociones() sigue sin
-# LLM a propósito (comentar_resultado_emocion() sigue sin uso, ver la nota
-# ahí) -- el veredicto ahí sale de la cámara, con palabra fija en vez de
-# comentario generado.
+# Reacción a una respuesta: manejar_trivia() usa comentar_resultado() (frase
+# fija, sin LLM desde 2026-08-31) ANTES de esta pausa -- la voz bloquea hasta
+# terminar de decirse, y recién ahí se mueve la cara al veredicto, se espera
+# esta pausa, y se disparan música/desplazamiento (en paralelo entre sí,
+# hilo/Popen, no bloquean). _jugar_emociones() sigue sin comentario generado
+# a propósito (comentar_resultado_emocion() sigue sin uso, ver la nota ahí)
+# -- el veredicto ahí sale de la cámara, con palabra fija en vez de frase de
+# la lista de comentar_resultado().
 PAUSA_ANTES_ACCION_FISICA = 1
 
 # Cuánto esperar, como máximo, a que un teléfono se conecte y active la voz
@@ -834,7 +801,7 @@ def manejar_trivia(mensaje_usuario, estado, persona_str, on_token):
         # control hasta que se acaban. Lo que llega a esta rama es siempre
         # una respuesta de texto a corregir.
         estado["pregunta_pendiente"] = None
-        display.mostrar_cara("speaking")  # generando el comentario (LLM) -- ver la nota de orden más abajo
+        display.mostrar_cara("speaking")  # generando el comentario -- ver la nota de orden más abajo
         if pendiente["respuesta_esperada"]:
             estado["total"] += 1
             acerto = evaluar_respuesta(pendiente["respuesta_esperada"], mensaje_usuario)
@@ -843,20 +810,12 @@ def manejar_trivia(mensaje_usuario, estado, persona_str, on_token):
             # de ESTA pregunta (cara_respuesta_buena/mala del dataset, sin
             # LLM). Fallback genérico solo por si esa columna viniera vacía.
             cara = elegir_cara_pregunta(pendiente, acerto) or ("happy" if acerto else "sad")
-            # A pedido del usuario (2026-08-30): reaccion hablada de vuelta,
-            # con comentar_resultado() (LLM, TRIVIA_MODEL) -- orden: voz
-            # PRIMERO (bloquea, tiene que terminar de decirse), y recién
-            # después cara/música/desplazamiento juntos (_reaccionar_veredicto()),
-            # mismo criterio que _jugar_emociones() (el otro único caller con
-            # voz antes del veredicto visual).
-            # Sin pregunta para temas con música (Reconocimiento musical):
-            # el texto de esa pregunta ("Escuché esto, ¿qué canción es?") no
-            # aporta nada sin el audio real -- confunde más que ayuda.
-            pregunta_para_comentario = None if pendiente.get("musical") else pendiente["pregunta"]
-            comentario = comentar_resultado(
-                pregunta_para_comentario, pendiente["respuesta_esperada"], mensaje_usuario,
-                acerto, persona_str,
-            )
+            # Reacción hablada de vuelta con comentar_resultado() -- desde
+            # 2026-08-31 es una frase fija (ver la nota ahí), no un LLM, pero
+            # el orden se mantiene: voz PRIMERO (bloquea, tiene que terminar
+            # de decirse), y recién después cara/música/desplazamiento juntos
+            # (_reaccionar_veredicto()), mismo criterio que _jugar_emociones().
+            comentario = comentar_resultado(pendiente["respuesta_esperada"], acerto)
             print(f"Asistente: {comentario}\n")
             voz_output.hablar(comentario)
             _reaccionar_veredicto(cara, pendiente, estado.get("musica_ya_sonada", False))
@@ -868,13 +827,11 @@ def manejar_trivia(mensaje_usuario, estado, persona_str, on_token):
             # presentación". Reconocimiento musical NO es de este grupo --
             # tiene respuesta_esperada (el nombre de la canción) y ya cae en
             # la rama de arriba (comentar_resultado()). Acá no hay veredicto
-            # ni cara específica (queda la genérica de "hablando") -- pero sí
-            # reacción hablada con reaccionar_libre() (LLM), mismo criterio
-            # de orden que la rama de arriba: voz primero, después
-            # música/desplazamiento (que no dependen de acierto/error).
-            comentario = reaccionar_libre(pendiente["pregunta"], mensaje_usuario, persona_str)
-            print(f"Asistente: {comentario}\n")
-            voz_output.hablar(comentario)
+            # ni cara específica (queda la genérica de "hablando"), y a
+            # pedido del usuario (2026-08-31) tampoco hay reacción hablada:
+            # sin nada que corregir, se pasa directo a música/desplazamiento
+            # (antes esto llamaba a reaccionar_libre(), un LLM que reaccionaba
+            # sin evaluar nada -- se eliminó junto con la función).
             time.sleep(PAUSA_ANTES_ACCION_FISICA)
             if not estado.get("musica_ya_sonada", False):
                 expresar_musica(pendiente)

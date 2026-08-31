@@ -1,10 +1,17 @@
 # -*- coding: utf-8 -*-
 """Fine-tuning LoRA de Qwen2.5-0.5B-Instruct especializado SOLO en
-reacciones de Trivia (comentar_resultado()/reaccionar_libre() en
-Orchestrator_Management.py) -- a diferencia de personalidad_training/
-(que entrena sobre las 4 categorías: trivia + chat libre + búsqueda web),
-este solo ve los 121 ejemplos de trivia, para un modelo más especializado
-en ese rol puntual (TRIVIA_MODEL, ver Clients/Llama_Client.py).
+reacciones de Trivia -- a diferencia de personalidad_training/ (que entrena
+sobre las 4 categorías: trivia + chat libre + búsqueda web), este solo ve
+los 121 ejemplos de trivia, para un modelo más especializado en ese rol
+puntual (TRIVIA_MODEL, ver Clients/Llama_Client.py).
+
+Desde 2026-08-31 el resultado de este entrenamiento (lora-trivia) ya NO se
+usa para comentar_resultado()/reaccionar_libre() en
+Orchestrator_Management.py -- esas reacciones son frases fijas ahora, sin
+LLM (ver TODO-mantenimiento.md). El único caller que queda es
+comentar_resultado_emocion() (Juego de emociones), que a su vez ya estaba
+sin uso activo de antes -- este pipeline queda documentado por si se
+retoma, pero hoy no hay nada corriendo en producción que dependa de él.
 
 Mismo enfoque que personalidad_training/entrenar_personalidad.py (léelo
 primero si esto es lo primero que abrís): LoRA, CPU, destilación (las
