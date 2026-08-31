@@ -4,15 +4,23 @@ Busqueda en internet para la ruta BUSQUEDA_WEB.
 
 Esta ruta existio antes y se elimino en d8b092c por alcance ("el proyecto se
 queda con Trivia y Chat libre"), no porque fallara. Vuelve a pedido del
-usuario, ahora con el buscador ENCHUFABLE en vez de atado a DuckDuckGo:
+usuario, con el buscador ENCHUFABLE:
 
-    export BUSCADOR=brave       BRAVE_API_KEY=...    # ~1000 consultas/mes gratis
-    export BUSCADOR=serpapi     SERPAPI_KEY=...      # resultados de Google, 250/mes
-    export BUSCADOR=duckduckgo                       # (default) sin key, sin cuota
+    export BUSCADOR=brave     BRAVE_API_KEY=...   # (default) ~1000/mes gratis
+    export BUSCADOR=serpapi   SERPAPI_KEY=...     # resultados de Google, 250/mes
+
+LOS DOS NECESITAN API KEY. Sin key, buscar() devuelve None y el robot dice
+que no encontro nada -- no se cae, pero tampoco busca. Sacar la key es el
+primer paso para que esta ruta sirva.
 
 Por que no Google directo: la Custom Search JSON API de Google esta CERRADA a
 clientes nuevos y se discontinua el 1 de enero de 2027 (verificado en su
 documentacion). SerpAPI es la via viable para resultados de Google.
+
+Por que no DuckDuckGo: se probo (su Instant Answer API no pide key) y se
+descarto a pedido del usuario. Ademas tenia un limite serio medido aca: solo
+responde a nombres propios y en INGLES -- "Albert Einstein" y "Peru" traian
+texto, pero "fotosintesis", "dinosaurio" y "Japon" devolvian vacio.
 
 Todas las funciones devuelven None ante cualquier problema -- sin key, sin
 internet, sin resultados, timeout. El caller no distingue el motivo: le
@@ -23,7 +31,7 @@ import os
 
 import requests
 
-BUSCADOR = os.environ.get("BUSCADOR", "duckduckgo").strip().lower()
+BUSCADOR = os.environ.get("BUSCADOR", "brave").strip().lower()
 
 # 6s: por encima de esto el chico ya se aburrio. Preferimos "no encontre
 # nada" rapido a una respuesta correcta que llega tarde.
@@ -76,35 +84,11 @@ def _serpapi(consulta):
     return " ".join(t for t in trozos if t) or None
 
 
-def _duckduckgo(consulta):
-    """Instant Answer: sin key y sin cuota, pero solo responde cuando la
-    consulta matchea casi textual contra un titulo de Wikipedia. "Peru" trae
-    algo; "busca Peru" no. Por eso extraer_termino() limpia el mensaje antes
-    de llegar aca."""
-    r = requests.get(
-        "https://api.duckduckgo.com/",
-        params={"q": consulta, "format": "json", "skip_disambig": "1",
-                "no_html": "1"},
-        timeout=TIMEOUT,
-    )
-    r.raise_for_status()
-    d = r.json()
-    texto = d.get("AbstractText") or ""
-    if not texto:
-        temas = d.get("RelatedTopics") or []
-        for t in temas[:MAX_RESULTADOS]:
-            if isinstance(t, dict) and t.get("Text"):
-                texto = t["Text"]
-                break
-    return texto or None
+_BUSCADORES = {"brave": _brave, "serpapi": _serpapi}
 
-
-_BUSCADORES = {"brave": _brave, "serpapi": _serpapi, "duckduckgo": _duckduckgo}
-
-# Palabras de envoltorio conversacional que no aportan a la busqueda y que en
-# DuckDuckGo directamente la arruinan (matchea contra titulos de Wikipedia).
-# Se sacan del principio del mensaje, no del medio: "que es la fotosintesis"
-# -> "la fotosintesis", pero "quien invento el telefono" conserva "invento".
+# Palabras de envoltorio conversacional que no aportan a la busqueda. Se
+# sacan del PRINCIPIO del mensaje, no del medio: "que es la fotosintesis" ->
+# "la fotosintesis", pero "quien invento el telefono" conserva "invento".
 _PREFIJOS = [
     "busca en internet", "busca en google", "buscame", "busca", "buscá",
     "googlea", "google", "averigua", "averiguá", "investiga",
