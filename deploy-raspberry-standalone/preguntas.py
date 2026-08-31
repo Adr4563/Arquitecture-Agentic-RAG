@@ -49,7 +49,7 @@ def _formatear(p):
     ("") si la fila no las trae, nunca falta la clave."""
     return {
         "id": p["id"], "pregunta": p["pregunta"],
-        "respuesta_esperada": p.get("respuesta_esperada", ""), "cara": p.get("cara", "Neutral"),
+        "respuesta_esperada": p.get("respuesta_esperada", ""),
         "cara_respuesta_buena": p.get("cara_respuesta_buena", ""),
         "cara_respuesta_mala": p.get("cara_respuesta_mala", ""),
         "musical": p.get("musical", ""),

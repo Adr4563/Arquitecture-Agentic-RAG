@@ -369,9 +369,11 @@ def _jugar_emociones(pregunta, persona_str, on_token=None):
     # de neutral" casi siempre y el juego no tenía variedad ninguna.
     objetivo = (pregunta.get("respuesta_esperada") or "").strip()
     if not objetivo:
-        # Fallback al comportamiento viejo para filas sin la columna cargada.
-        opciones = [o.strip() for o in pregunta["cara"].split("/") if o.strip()]
-        objetivo = random.choice(opciones) if opciones else "Feliz"
+        # Sin respuesta_esperada no hay emocion que pedir. Antes se caia a
+        # la columna 'cara' del dataset, que ya no existe (se elimino del
+        # Excel por no controlar nada). "Feliz" es el default seguro: es la
+        # unica de las cuatro que no le pide a un chico poner mala cara.
+        objetivo = "Feliz"
     # El robot presenta la cara que hay que imitar ANTES de pedirla por voz --
     # referencia visual, no solo el nombre hablado. Se mantiene en pantalla
     # mientras el usuario posa (ver display.mostrar_cara() más abajo, recién
@@ -690,7 +692,7 @@ def _preguntar_siguiente(estado):
     actual = estado["cola_preguntas"].pop(0)
     estado["pregunta_pendiente"] = actual
     display.mostrar_cara("speaking")  # se lanza una pregunta: la LCD "habla"
-    print(f"Asistente [{actual['cara']}]: {actual['pregunta']}\n")
+    print(f"Asistente: {actual['pregunta']}\n")
     voz_output.hablar(actual["pregunta"])  # bloquea hasta que termina de decirla
 
     # Reconocimiento Musical: la canción ES el enunciado, no un adorno. Va
@@ -891,7 +893,7 @@ def _reanudar_trivia(estado):
     else:
         pendiente = estado["pregunta_pendiente"]
         print("Asistente: Retomamos donde quedamos.")
-        print(f"Asistente [{pendiente['cara']}]: {pendiente['pregunta']}\n")
+        print(f"Asistente: {pendiente['pregunta']}\n")
         voz_output.hablar(f"Retomamos donde quedamos. {pendiente['pregunta']}")
     time.sleep(PAUSA_CAMBIO_CARA)
     display.mostrar_cara("content")

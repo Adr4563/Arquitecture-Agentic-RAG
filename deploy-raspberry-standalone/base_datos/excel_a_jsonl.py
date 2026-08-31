@@ -28,19 +28,22 @@ HOJA = "Preguntas Ereberus"
 
 # Indice de columna en el Excel -> campo del jsonl. Si se agrega o mueve una
 # columna en el Excel, actualizar esto (y verificar con --dry-run).
+# Indices 0-based de la hoja. Se corrieron uno a la izquierda respecto de
+# antes porque se elimino la columna G ("Cara / emocion del robot al
+# responder el usuario"), que no controlaba nada: la cara de la LCD sale de
+# cara_respuesta_buena/mala, y de valores fijos como "speaking"/"content".
 COLUMNAS = {
     "pregunta": 4,
     "respuesta_esperada": 5,
-    "cara": 6,
-    "tema": 9,
-    "cara_respuesta_buena": 11,
-    "cara_respuesta_mala": 12,
-    "musical": 13,
-    "desplazamiento": 14,
+    "tema": 8,
+    "cara_respuesta_buena": 10,
+    "cara_respuesta_mala": 11,
+    "musical": 12,
+    "desplazamiento": 13,
 }
 # Orden de las claves en cada linea del jsonl (para que el diff de git quede
 # legible y estable entre corridas).
-ORDEN = ["id", "pregunta", "cara", "respuesta_esperada", "tema",
+ORDEN = ["id", "pregunta", "respuesta_esperada", "tema",
          "cara_respuesta_buena", "cara_respuesta_mala", "musical",
          "desplazamiento"]
 
