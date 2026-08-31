@@ -512,10 +512,16 @@ RUTAS = ["TRIVIA", "CHAT_LIBRE", "BUSQUEDA_WEB"]
 # hablar() bloquea hasta terminar, asi que el largo se paga en segundos de
 # silencio: un parrafo entero son ~40s de audio.
 #
-# 160 caracteres son ~12s, una o dos frases. A pedido del usuario: la
-# respuesta de una busqueda tiene que ser CORTA. Un chico no se queda
-# escuchando un parrafo de enciclopedia.
-LARGO_MAX_BUSQUEDA = int(os.environ.get("BUSQUEDA_LARGO_MAX", "160"))
+# 120 caracteres: una frase, ~5-9s hablando. A pedido del usuario la
+# respuesta tiene que ser CORTA -- un chico no escucha un parrafo de
+# enciclopedia.
+#
+# Por que 120 y no menos: es el limite mas chico donde las respuestas
+# todavia terminan en punto. Probado con 80, los snippets sin punto temprano
+# caen al recorte por palabra y quedan "...emergen el magma en forma de...",
+# que leido en voz alta suena cortado a la mitad. Con 160 algunas se van a
+# dos frases (~11s).
+LARGO_MAX_BUSQUEDA = int(os.environ.get("BUSQUEDA_LARGO_MAX", "120"))
 
 # Frases que, dichas A MITAD de una tanda de trivia (respondiendo una
 # pregunta o eligiendo tema), señalan que el usuario se quiere ir a otra
