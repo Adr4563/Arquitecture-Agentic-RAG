@@ -1,7 +1,13 @@
 """
 Controla la carita que se muestra en pantalla (faces/{happy,sad,angry,
-content,speaking}.{mp4,gif} — mp4 para el backend DRM, con hwdec por
-hardware; gif para el backend Tkinter, que no lee mp4. Ver mostrar_cara()).
+content,speaking,countdown}.{mp4,gif} — mp4 para el backend DRM, con hwdec
+por hardware; gif para el backend Tkinter, que no lee mp4. Ver
+mostrar_cara()). "countdown" no es una emoción -- es el countdown visual
+que se muestra mientras suena una canción de Reconocimiento musical (ver
+_preguntar_siguiente() en Orchestrator_Management.py), agregado al mismo
+diccionario de caras por simplicidad: mostrar_cara() no distingue entre
+"emoción" y "animación de fondo", cualquier nombre en CARAS_VALIDAS
+funciona igual.
 
 La pantalla es "hardware conectado a la máquina donde corre chat.py" (el
 Manager), por eso vive junto a él en vez de junto a preguntas.py.
@@ -49,7 +55,7 @@ VIEWER = os.path.join(HERE, "face_viewer.py")
 ARCHIVO_SENAL = os.path.join(HERE, ".current_face")
 MPV_SOCKET = "/tmp/arquitecture_rag_face.sock"
 
-CARAS_VALIDAS = {"happy", "sad", "angry", "content", "speaking"}
+CARAS_VALIDAS = {"happy", "sad", "angry", "content", "speaking", "countdown"}
 
 # Headless en Linux (sin sesión gráfica) == pantalla conectada directo por
 # HDMI/LCD a la Pi, sin X11/Wayland de por medio -> DRM. Con $DISPLAY seteado

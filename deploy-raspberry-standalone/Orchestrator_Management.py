@@ -702,7 +702,19 @@ def _preguntar_siguiente(estado):
     #
     # Se recuerda en el estado para que la reacción de después no la repita
     # (serían 20s de la misma canción dos veces en el mismo turno).
+    #
+    # Mientras suena, la LCD muestra un countdown visual (faces/countdown.*,
+    # ver display.py) en vez de quedarse en "speaking" sin moverse -- a
+    # pedido del usuario (2026-08-30), le da al usuario una señal de que
+    # el tiempo sigue corriendo mientras escucha. Vuelve a "speaking" apenas
+    # termina, antes de la pausa/`content` de más abajo (mismo criterio que
+    # el resto de la función: no se toca nada si la pregunta no trae música).
+    es_musical = bool(actual.get("musical"))
+    if es_musical:
+        display.mostrar_cara("countdown")
     estado["musica_ya_sonada"] = bool(expresar_musica(actual, esperar=True))
+    if es_musical:
+        display.mostrar_cara("speaking")
 
     # La pregunta se imprime de una (no hay streaming que marque cuándo
     # "termina de hablar"), así que se le da un tiempo fijo en 'speaking'
