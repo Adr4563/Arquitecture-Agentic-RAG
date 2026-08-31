@@ -226,27 +226,36 @@ def hablar(texto):
     termina. No hace nada si texto viene vacio. Ante cualquier fallo del
     motor loguea y sigue: el chat nunca se cae por un problema de audio.
 
-    Se mide por motor (voz:edge / voz:piper / voz:telefono), no en un
-    "voz" genérico -- son costos bien distintos (edge-tts hace red, piper
-    es CPU local, telefono no gasta nada de esta Pi), ver la tabla de
-    latencias arriba en este archivo."""
+    Se mide por motor REAL, no por el configurado -- bug encontrado
+    2026-08-30 con perf_report.py: antes un solo medir_bloque(f"voz:{MOTOR}")
+    envolvía toda la función, así que un llamado que caía al respaldo
+    (MOTOR="telefono" pero nadie conectado, se habla por edge) quedaba
+    igual etiquetado "voz:telefono" en logs/tiempos.csv -- mezclando dos
+    costos bien distintos (edge-tts hace red, telefono no gasta nada de la
+    Pi) bajo la misma etiqueta, y haciendo parecer "telefono" mucho más
+    lento de lo que en realidad es. Ahora cada camino que de verdad se
+    ejecuta tiene su propio medir_bloque()."""
     if not texto or not texto.strip():
         return
 
-    with perf_monitor.medir_bloque(f"voz:{MOTOR}"):
-        if MOTOR == "telefono":
-            import voz_server
-            if voz_server.hablar_telefono(texto):
-                return
-            # Nadie con la pagina abierta y la voz activada, o no aviso a
-            # tiempo (ver voz_server.hablar_telefono) -- se degrada a edge en
-            # vez de dejar mudo al robot, mismo criterio que piper.
-            print("[voz] ningun telefono conectado/activo, se usa "
-                  f"{_MOTOR_RESPALDO} como respaldo")
-            _hablar_edge(texto)
+    if MOTOR == "telefono":
+        import voz_server
+        with perf_monitor.medir_bloque("voz:telefono"):
+            exito = voz_server.hablar_telefono(texto)
+        if exito:
             return
+        # Nadie con la pagina abierta y la voz activada, o no aviso a
+        # tiempo (ver voz_server.hablar_telefono) -- se degrada a edge en
+        # vez de dejar mudo al robot, mismo criterio que piper. Cuenta como
+        # "voz:edge" en las métricas -- es lo que de verdad se ejecutó.
+        print("[voz] ningun telefono conectado/activo, se usa "
+              f"{_MOTOR_RESPALDO} como respaldo")
+        with perf_monitor.medir_bloque("voz:edge"):
+            _hablar_edge(texto)
+        return
 
-        if MOTOR == "piper":
+    if MOTOR == "piper":
+        with perf_monitor.medir_bloque("voz:piper"):
             if _voz_piper is None:
                 print("[voz] piper no esta cargado (ver cargar()), no se habla")
                 return
@@ -256,7 +265,8 @@ def hablar(texto):
                 print(f"[voz] falta un binario ({e}) -- no se puede hablar")
             except Exception as e:
                 print(f"[voz] error al hablar con piper ({e})")
-            return
+        return
 
-        # Solo llega edge-tts aca.
+    # Solo llega edge-tts aca (MOTOR="edge", el default explícito).
+    with perf_monitor.medir_bloque("voz:edge"):
         _hablar_edge(texto)
