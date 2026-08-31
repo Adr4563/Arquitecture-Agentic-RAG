@@ -36,6 +36,26 @@ import registro_chat
 
 _MAXIMO_EPISODIOS = 300  # últimos N turnos considerados, no todo el historial
 _OVERLAP_MINIMO = 2  # palabras de contenido en común mínimas para "recordar"
+# ...salvo que la palabra compartida sea RARA. "Fano se escapo ayer" comparte
+# una sola palabra de contenido con "tengo un perrito que se llama Fano"
+# ("fano"), asi que con el umbral de 2 no recordaba nada -- el caso exacto
+# que reporto el usuario. Pero "fano" aparece en 3 de 3 episodios sobre el
+# perro y en ninguno mas: es un nombre propio, mucho mas informativo que dos
+# palabras comunes en comun.
+#
+# Se cuenta en cuantos episodios aparece cada palabra: si la compartida es
+# lo bastante rara, alcanza con UNA para recordar.
+#
+# Umbral ABSOLUTO, no relativo al corpus. Se probo relativo (25% de los
+# episodios) y fallaba justo en el caso que importa: el chico habla varias
+# veces de su perro, asi que "fano" aparecia en 3 de 8 episodios (37%) y
+# dejaba de contar como raro -- perdiendo exactamente el recuerdo mas util.
+# En una memoria personal, lo que se repite es lo que MAS importa.
+#
+# Lo que evita los falsos positivos no es el umbral sino las stopwords: los
+# que aparecian ("quiero jugar" -> "jugar", "tengo hambre" -> "tengo") eran
+# verbos comunes, ahora filtrados antes de contar.
+_TOPE_RARA = 8
 _MAX_CHARS_SNIPPET = 140  # tope aprox. para que el recuerdo inyectado quede en ~40 tokens
 
 # Lista corta y práctica, no exhaustiva -- alcanza para filtrar las palabras
@@ -47,6 +67,21 @@ _STOPWORDS_ES = {
     "estos", "estas", "ese", "esa", "esos", "esas", "sí", "si", "porque",
     "entre", "cuando", "muy", "sin", "sobre", "también", "tambien", "me",
     "hasta", "hay", "donde", "quien", "quién", "desde", "todo", "toda",
+    # Verbos y muletillas que aparecen en casi cualquier frase de un chico y
+    # no identifican un tema. Sin esto "tengo hambre" recordaba "tengo un
+    # perrito" por compartir "tengo".
+    "tengo", "tienes", "tenes", "tenés", "tiene", "quiero", "quieres",
+    "queres", "querés", "gusta", "gustan", "gusto", "puedo", "puedes",
+    "podes", "podés", "hacer", "hago", "haces", "estoy", "estas", "estás",
+    "soy", "eres", "sos", "voy", "vas", "fui", "era", "ser", "estar",
+    "mucho", "mucha", "poco", "algo", "nada", "bien", "mal", "hoy", "ayer",
+    # Verbos de actividad genericos: aparecen en cualquier frase y no
+    # identifican de QUE se hablaba. "quiero jugar" no deberia recordar
+    # "me gusta jugar con Fano".
+    "jugar", "juego", "juegas", "jugas", "jugás", "juegan", "jugamos",
+    "ver", "veo", "ves", "mirar", "miro", "decir", "digo", "dice",
+    "contar", "cuento", "cuentas", "saber", "sabes", "sabe", "ir", "voy",
+    "venir", "vengo", "dar", "doy", "poner", "pongo", "llamar", "llama",
     "todos", "todas", "nos", "durante", "uno", "ni", "contra", "otro",
     "otra", "otros", "otras", "ante", "ellos", "ellas", "e", "esto", "eso",
     "mi", "mis", "tu", "tus", "él", "ella", "nosotros", "nosotras",
@@ -70,7 +105,22 @@ def _tokenizar(texto):
     """minúsculas, sin puntuación, sin stopwords -- lo que queda son
     palabras "de contenido" (nombres, modelos, temas)."""
     crudo = _TOKEN_RE.findall(texto.lower())
-    return [t for t in crudo if t not in _STOPWORDS_ES and len(t) > 2]
+    return [_singular(t) for t in crudo
+            if t not in _STOPWORDS_ES and len(t) > 2]
+
+
+def _singular(palabra):
+    """Normaliza plurales simples para que "dinosaurio" matchee
+    "dinosaurios". Sin esto el recuerdo se perdia por una sola letra.
+
+    Deliberadamente tosco (no es un lematizador): recorta "es"/"s" finales
+    en palabras largas. Alcanza para nombres y sustantivos, que es lo que
+    queda despues de sacar stopwords."""
+    if len(palabra) > 4 and palabra.endswith("es"):
+        return palabra[:-2]
+    if len(palabra) > 3 and palabra.endswith("s"):
+        return palabra[:-1]
+    return palabra
 
 
 def _cargar_episodios():
@@ -144,17 +194,49 @@ def buscar_relevante(mensaje_usuario):
     if bm25 is None or not episodios:
         return None
 
-    scores = bm25.get_scores(list(query_tok))
-    mejor_idx, mejor_overlap, mejor_score = None, 0, None
-    for i, tokens in enumerate(corpus_tok):
-        overlap = len(query_tok & set(tokens))
-        if overlap > mejor_overlap or (overlap == mejor_overlap and overlap > 0 and scores[i] > mejor_score):
-            mejor_idx, mejor_overlap, mejor_score = i, overlap, scores[i]
+    # Documento-frecuencia: en cuantos episodios aparece cada palabra. Una
+    # palabra que sale en 1-2 episodios es distintiva (un nombre propio);
+    # una que sale en 20 no dice nada.
+    df = {}
+    for tokens in corpus_tok:
+        for t in set(tokens):
+            df[t] = df.get(t, 0) + 1
 
-    if mejor_idx is None or mejor_overlap < _OVERLAP_MINIMO:
+    scores = bm25.get_scores(list(query_tok))
+    # Un episodio cuyo mensaje es (casi) el mismo que el actual no es un
+    # recuerdo: es el eco del propio mensaje. Pasa siempre, porque
+    # registro_chat.py guarda cada turno y el usuario repite frases. Se
+    # descartan los que comparten TODAS las palabras de contenido -- de esos
+    # no hay nada nuevo que aportarle al modelo.
+    # Se compara contra lo que dijo EL USUARIO, no contra corpus_tok: ese
+    # indexa mensaje + respuesta juntos, asi que un episodio nunca es
+    # exactamente igual a la consulta aunque el mensaje si lo sea (los
+    # tokens de la respuesta de Lora sobran).
+    ecos = {i for i, ep in enumerate(episodios)
+            if query_tok and query_tok == set(_tokenizar(ep.get("usuario", "")))}
+    mejor_idx, mejor_overlap, mejor_score, mejor_raras = None, 0, None, 0
+    for i, tokens in enumerate(corpus_tok):
+        if i in ecos:
+            continue
+        comunes = query_tok & set(tokens)
+        overlap = len(comunes)
+        raras = sum(1 for t in comunes if df.get(t, 0) <= _TOPE_RARA)
+        # Gana el que tenga mas palabras RARAS en comun; a igualdad, mas
+        # overlap total; a igualdad, mejor score de BM25.
+        clave = (raras, overlap, scores[i])
+        if mejor_idx is None or clave > (mejor_raras, mejor_overlap, mejor_score):
+            mejor_idx, mejor_overlap, mejor_score, mejor_raras = i, overlap, scores[i], raras
+
+    # Alcanza con UNA palabra rara, o con _OVERLAP_MINIMO comunes.
+    if mejor_idx is None or (mejor_raras < 1 and mejor_overlap < _OVERLAP_MINIMO):
         return None
 
-    respuesta = episodios[mejor_idx]["respuesta"]
-    if len(respuesta) > _MAX_CHARS_SNIPPET:
-        respuesta = respuesta[:_MAX_CHARS_SNIPPET].rsplit(" ", 1)[0] + "..."
-    return f"(Ya hablamos de esto antes: {respuesta})"
+    # Se inyecta lo que dijo EL USUARIO, no lo que contesto Lora. El dato
+    # esta del lado del usuario: ante "que raza es Fano" el recuerdo util es
+    # "Fano es un caniche chiquito", no la pregunta "de que raza es?" que
+    # Lora habia hecho -- ese era el segundo bug reportado.
+    ep = episodios[mejor_idx]
+    recuerdo = ep.get("usuario", "").strip()
+    if len(recuerdo) > _MAX_CHARS_SNIPPET:
+        recuerdo = recuerdo[:_MAX_CHARS_SNIPPET].rsplit(" ", 1)[0] + "..."
+    return f"(Antes me contaste: {recuerdo})"
