@@ -3,6 +3,47 @@
 Pendientes detectados en una revisión (2026-08-26) que no se resolvieron
 solos por ser cambios de comportamiento, no de documentación:
 
+## Gobernador de CPU fijado en `performance` (2026-08-30)
+
+Medido con `perf_report.py`: el comentario de Trivia (`comentar_resultado()`,
+`llama_generar:lora-trivia`) tardaba ~10.5s con el gobernador default
+(`ondemand`), corriendo a 1.2GHz de un máximo de 1.8GHz. Cambiando a
+`performance` (siempre al máximo, sin rampa de subida) bajó a ~8.4s
+(~20%) en la misma prueba, misma pregunta, Pi por lo demás en reposo.
+
+Se probó primero reentrenar/recuantizar el modelo esperando una mejora de
+velocidad -- no sirvió para eso (ver más abajo esta misma sección de
+decisiones de 2026-08-30 sobre `lora-trivia`): la CPU, no el tamaño del
+modelo, era el cuello de botella real.
+
+Aplicado con un servicio systemd (no viene con el repo, hay que
+reaplicarlo si se reinstala la Pi):
+
+```bash
+sudo tee /etc/systemd/system/cpu-performance.service <<'EOF'
+[Unit]
+Description=Fijar el gobernador de CPU en 'performance' (menos latencia para Ollama)
+After=multi-user.target
+
+[Service]
+Type=oneshot
+ExecStart=/bin/sh -c 'echo performance | tee /sys/devices/system/cpu/cpu*/cpufreq/scaling_governor'
+
+[Install]
+WantedBy=multi-user.target
+EOF
+sudo systemctl daemon-reload
+sudo systemctl enable --now cpu-performance.service
+```
+
+Costo: más consumo/calor en reposo (la CPU ya no baja de frecuencia sola).
+Temperatura medida tras el cambio: 63°C, lejos del umbral de throttling —
+no es un problema hoy, pero vale la pena revisarla si la Pi queda en un
+lugar con poca ventilación.
+
+Verificar: `cat /sys/devices/system/cpu/cpu*/cpufreq/scaling_governor`
+(debería decir `performance` en las 4 líneas).
+
 ## `router_modelo.joblib` serializado con una versión vieja de scikit-learn
 
 `Agents/router_modelo.joblib` fue guardado con scikit-learn 1.8.0. El
