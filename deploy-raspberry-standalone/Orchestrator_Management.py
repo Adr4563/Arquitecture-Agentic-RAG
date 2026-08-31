@@ -989,12 +989,24 @@ def main():
         display.detener()
 
 
+# 4 variantes del saludo de apertura, a pedido del usuario (2026-08-30) --
+# antes era un único texto fijo, siempre igual sesión tras sesión. Las 4
+# terminan pidiendo el nombre (necesario para el resto de _main_loop()), y
+# se elige una al azar por sesión con random.choice(), no rotando en orden.
+SALUDOS_APERTURA = [
+    "Hola, mi nombre es Lora, ¿cuál es tu nombre?",
+    "¡Hola! Soy Lora. ¿Y vos cómo te llamás?",
+    "Hola, hola. Soy Lora, tu robot. ¿Quién sos vos?",
+    "¡Buenas! Me llamo Lora. Contame tu nombre.",
+]
+
+
 def _main_loop():
     _esperar_telefono_si_corresponde()  # ver la nota ahí -- evita que el saludo caiga siempre a edge-tts
     display.mostrar_cara("content")  # arranca en reposo...
     time.sleep(PAUSA_CAMBIO_CARA)
     display.mostrar_cara("speaking")  # ...y recién ahora la IA "habla" (saluda, por defecto)
-    saludo = "Hola, mi nombre es Lora, ¿cuál es tu nombre?"
+    saludo = random.choice(SALUDOS_APERTURA)
     print(f"Asistente: {saludo}")
     voz_output.hablar(saludo)
     # Vuelve a 'content' ANTES de esperar el input, no después — igual que en
@@ -1004,9 +1016,13 @@ def _main_loop():
     time.sleep(PAUSA_CAMBIO_CARA)
     display.mostrar_cara("content")
     nombre = _leer_entrada() or "amigo"
-    bienvenida = (f"Mucho gusto en conocerte, {nombre}. Puedo hacerte trivia, buscarte algo "
-                  "de actualidad, o simplemente conversar — voy cambiando de modo según lo "
-                  "que me pidas.")
+    # "buscarte algo de actualidad" se sacó (2026-08-30): mencionaba la
+    # búsqueda web (DuckDuckGo), eliminada del proyecto hace tiempo -- este
+    # texto había quedado desactualizado. Ahora presenta explícitamente las
+    # dos opciones reales (Trivia / Chat libre) en vez de una mención vaga
+    # a "cambiar de modo según lo que pidas".
+    bienvenida = (f"Mucho gusto, {nombre}. Podemos jugar Trivia o simplemente charlar "
+                  "-- vos decidís, decime qué querés hacer.")
     print(f"Asistente: {bienvenida} Escribe 'salir' para terminar.\n")
     voz_output.hablar(bienvenida)
     display.mostrar_cara("content")  # cara de reposo mientras espera el primer mensaje
