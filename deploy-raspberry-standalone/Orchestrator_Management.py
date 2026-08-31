@@ -39,6 +39,7 @@ from Agents.Agent_Behavior import (
     expresar_musica,
 )
 from Agents.Agent_Corrector import evaluar_respuesta
+from Agents.Agent_Busqueda import buscar as buscar_en_internet
 from Agents.Agent_Router import enrutar  # router sin LLM (TF-IDF + regresión logística)
 from Clients import Camara_Client
 from Clients import Voice_Output_Client as voz_output  # Lora habla en voz alta (edge-tts + mpv)
@@ -124,6 +125,40 @@ def generar_apertura(persona_str, on_token=None):
     # Sin streaming a propósito: hay que ver el texto completo para poder recortar
     # una pregunta final, y eso no se puede hacer si ya se imprimió token a token.
     return _quitar_pregunta_final(generar_respuesta(mensajes, on_token=on_token))
+
+
+def manejar_busqueda_web(mensaje_usuario):
+    """Ruta BUSQUEDA_WEB: busca en internet y LEE EL RESULTADO TAL CUAL.
+
+    A proposito NO pasa por el LLM. Se probo lo contrario en este proyecto y
+    fallo: cuando Chat libre inyectaba contexto recuperado en el prompt, el
+    modelo chico lo deformaba con total seguridad -- a "que tiempo hace"
+    respondia "3", tomandolo de una pregunta de trivia que habia enganchado
+    por la palabra "hace". Un resultado de busqueda es exactamente esa clase
+    de contexto inyectado, y el modelo que corre hoy es un 0.5B.
+
+    Con el dato crudo el robot suena mas seco, pero NUNCA inventa: dice
+    literalmente lo que devolvio el buscador. Para un robot que le habla a
+    chicos, eso es preferible a una respuesta natural e inventada.
+
+    Si no hay resultado se nombra el termino buscado: "no encontre nada sobre
+    X" le permite al usuario ver que se busco otra cosa y reformular."""
+    display.mostrar_cara("speaking")
+    texto, termino = buscar_en_internet(mensaje_usuario)
+    if texto:
+        respuesta = texto.strip()
+        if len(respuesta) > LARGO_MAX_BUSQUEDA:
+            respuesta = respuesta[:LARGO_MAX_BUSQUEDA].rsplit(" ", 1)[0] + "..."
+        cara = "happy"
+    else:
+        respuesta = f"No encontré nada sobre {termino}."
+        cara = "sad"
+    print(f"Asistente: {respuesta}\n")
+    voz_output.hablar(respuesta)
+    display.mostrar_cara(cara)
+    time.sleep(PAUSA_CAMBIO_CARA)
+    display.mostrar_cara("content")
+    return respuesta
 
 
 def responder(mensaje_usuario, persona_str):
@@ -455,7 +490,13 @@ def resolver_tema(eleccion_usuario):
 # Router + loop de conversación
 # ══════════════════════════════════════════════════════════════════════
 
-RUTAS = ["TRIVIA", "CHAT_LIBRE"]
+RUTAS = ["TRIVIA", "CHAT_LIBRE", "BUSQUEDA_WEB"]
+
+# Recorte del texto que devuelve el buscador. El robot lo lee en voz alta y
+# hablar() bloquea hasta terminar: un parrafo entero de Wikipedia son ~40s de
+# audio. 280 caracteres son ~20s, suficiente para decir algo util sin que el
+# chico se vaya.
+LARGO_MAX_BUSQUEDA = int(os.environ.get("BUSQUEDA_LARGO_MAX", "280"))
 
 # Frases que, dichas A MITAD de una tanda de trivia (respondiendo una
 # pregunta o eligiendo tema), señalan que el usuario se quiere ir a otra
@@ -1097,7 +1138,9 @@ def _main_loop():
             continue
 
         ruta = enrutar_mensaje(entrada)
-        if ruta == "TRIVIA":
+        if ruta == "BUSQUEDA_WEB":
+            manejar_busqueda_web(entrada)
+        elif ruta == "TRIVIA":
             estado["en_trivia"] = True
             # Si queda una pregunta o un tema pendiente de una tanda pausada,
             # se retoma tal cual en vez de arrancar una tanda nueva.

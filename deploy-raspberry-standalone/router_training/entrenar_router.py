@@ -35,13 +35,23 @@ _PARAMS_CLASIFICADOR = dict(max_iter=2000, C=5.0, class_weight="balanced")
 # sirven para chequear generalización real, no solo el held-out split (que
 # tiene fugas: variantes casuales de la misma frase pueden caer una en train
 # y otra en test, e inflar la métrica artificialmente).
+# Las dos ultimas esperaban CHAT_LIBRE cuando el proyecto tenia solo 2 rutas
+# y todo lo que no era Trivia caia ahi. Al volver BUSQUEDA_WEB, la respuesta
+# correcta cambio: preguntar por el ultimo presidente electo o si esta
+# lloviendo ES una busqueda. El modelo las clasificaba bien y el test estaba
+# desactualizado.
 _PRUEBAS_MANUALES = [
     ("hazme jugar algo de imitar animales", "TRIVIA"),
     ("contame un cuento", "CHAT_LIBRE"),
     ("quiero retomar donde estabamos", "TRIVIA"),
     ("sabes tocar algun instrumento", "CHAT_LIBRE"),
-    ("quien fue el ultimo presidente electo", "CHAT_LIBRE"),
-    ("esta lloviendo afuera ahora mismo", "CHAT_LIBRE"),
+    ("quien fue el ultimo presidente electo", "BUSQUEDA_WEB"),
+    ("esta lloviendo afuera ahora mismo", "BUSQUEDA_WEB"),
+    # Nuevas, para cubrir las 3 rutas y el borde entre charla y busqueda:
+    ("cuanto sale un pasaje a bariloche", "BUSQUEDA_WEB"),
+    ("a que hora juega la seleccion manana", "BUSQUEDA_WEB"),
+    ("me gusta mucho el helado de chocolate", "CHAT_LIBRE"),
+    ("dale jugamos a las preguntas", "TRIVIA"),
 ]
 
 
