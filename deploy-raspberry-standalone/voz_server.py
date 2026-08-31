@@ -61,10 +61,15 @@ PORT = int(os.environ.get("VOZ_PORT", "8081"))
 # chrome://flags/#unsafely-treat-insecure-origin-as-secure en CADA telefono.
 # Con el certificado alcanza con aceptar el aviso una vez por dispositivo.
 #
-# VOZ_HTTPS=0 vuelve a HTTP plano (util si algo del certificado molesta y se
-# prefiere el hack de chrome://flags).
+# Default APAGADO, a pedido del usuario: solo se quiere VER la pagina, no
+# usar el microfono. Sin HTTPS la pagina carga directo, sin el aviso de
+# "conexion no privada" que Chrome muestra por el certificado propio -- y que
+# en Android a veces ni siquiera deja continuar (no aparece "Avanzado").
+#
+# VOZ_HTTPS=1 lo enciende. Solo hace falta para el boton "Hablar":
+# SpeechRecognition exige contexto seguro (HTTPS o localhost).
 CERT_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), ".certs")
-HTTPS = os.environ.get("VOZ_HTTPS", "1") not in ("0", "false", "False")
+HTTPS = os.environ.get("VOZ_HTTPS", "0") not in ("0", "false", "False")
 
 app = Flask(__name__)
 _entrada_queue = None  # se inyecta desde chat.py al arrancar (ver iniciar())
@@ -435,5 +440,6 @@ def iniciar(entrada_queue):
         print("[voz] HTTPS con certificado propio: el teléfono va a avisar que no es de confianza.")
         print("[voz] Aceptalo una vez ('Avanzado' -> 'Continuar') y el micrófono queda habilitado.")
     else:
-        print("[voz] Sin HTTPS: el micrófono NO va a funcionar desde el teléfono (ver README).")
+        print("[voz] Sin HTTPS (VOZ_HTTPS=1 para activarlo). El botón 'Hablar' no")
+        print("[voz] va a funcionar desde el teléfono; ver la página sí.")
     print("[voz] Para que el teléfono hable las respuestas de Lora: abrí la página, tocá 'Activar voz de Lora' y export VOZ_MOTOR=telefono")
