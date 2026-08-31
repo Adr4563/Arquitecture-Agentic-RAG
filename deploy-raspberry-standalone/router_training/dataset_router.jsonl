@@ -731,3 +731,28 @@
 {"frase": "busca cuantos habitantes tiene brasil", "ruta": "BUSQUEDA_WEB"}
 {"frase": "quiero que busques sobre el amazonas", "ruta": "BUSQUEDA_WEB"}
 {"frase": "necesito que busques sobre marte", "ruta": "BUSQUEDA_WEB"}
+{"frase": "cuantos dias tiene una semana", "ruta": "CHAT_LIBRE"}
+{"frase": "quien pinto la mona lisa", "ruta": "CHAT_LIBRE"}
+{"frase": "cuanto es diez por diez", "ruta": "CHAT_LIBRE"}
+{"frase": "cual es la capital de francia", "ruta": "CHAT_LIBRE"}
+{"frase": "quien invento el telefono", "ruta": "CHAT_LIBRE"}
+{"frase": "que comen las vacas", "ruta": "CHAT_LIBRE"}
+{"frase": "cual es la capital de japon", "ruta": "CHAT_LIBRE"}
+{"frase": "cuanto es siete por ocho", "ruta": "CHAT_LIBRE"}
+{"frase": "quien escribio don quijote", "ruta": "CHAT_LIBRE"}
+{"frase": "en que ano llego colon a america", "ruta": "CHAT_LIBRE"}
+{"frase": "cuantos planetas hay", "ruta": "CHAT_LIBRE"}
+{"frase": "que gas respiramos", "ruta": "CHAT_LIBRE"}
+{"frase": "a que temperatura hierve el agua", "ruta": "CHAT_LIBRE"}
+{"frase": "cual es el rio mas largo", "ruta": "CHAT_LIBRE"}
+{"frase": "quien fue albert einstein", "ruta": "CHAT_LIBRE"}
+{"frase": "cuanto es la mitad de veinte", "ruta": "CHAT_LIBRE"}
+{"frase": "cuantas horas tiene un dia", "ruta": "CHAT_LIBRE"}
+{"frase": "de que color es la nieve", "ruta": "CHAT_LIBRE"}
+{"frase": "en que continente esta egipto", "ruta": "CHAT_LIBRE"}
+{"frase": "que planeta esta mas cerca del sol", "ruta": "CHAT_LIBRE"}
+{"frase": "cuanto es cinco por cinco", "ruta": "CHAT_LIBRE"}
+{"frase": "quien descubrio america", "ruta": "CHAT_LIBRE"}
+{"frase": "cuantas patas tiene un gato", "ruta": "CHAT_LIBRE"}
+{"frase": "que idioma se habla en brasil", "ruta": "CHAT_LIBRE"}
+{"frase": "cual es el animal mas grande del mundo", "ruta": "CHAT_LIBRE"}
