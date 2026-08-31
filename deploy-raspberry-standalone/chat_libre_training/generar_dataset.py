@@ -153,6 +153,102 @@ SEMILLA = [
 ]
 
 
+# ── Usar la memoria episodica sin inventar ─────────────────────────────
+#
+# Cuando memoria_episodica.buscar_relevante() encuentra algo, al modelo le
+# llega el recuerdo adelante del mensaje:
+#
+#     (Antes me contaste: tengo un perrito que se llama Fano)
+#     que raza es Fano
+#
+# Medido SIN estos ejemplos, el 0.5B INVENTA: contesto "Fano es de la Raza
+# Pizarron" y "de la raza Pug", datos que el recuerdo no menciona. Usar
+# contexto inyectado sin pasarse de lo que dice es un COMPORTAMIENTO, y eso
+# el fine-tuning si puede ensenarlo -- a diferencia del conocimiento, que
+# viene del preentrenamiento.
+#
+# Tres clases a proposito:
+#   1. el recuerdo SI tiene la respuesta -> usarla
+#   2. el recuerdo NO la tiene           -> decirlo, NO inventar
+#   3. el recuerdo da contexto emocional -> acompanar sabiendo de que habla
+MEMORIA_CON_DATO = [
+    # El recuerdo TRAE la respuesta -> usarla. Es la clase que quedo corta en
+    # la v6 (solo 6 ejemplos) y el modelo sobreajusto al "no me lo dijiste":
+    # llego a decirlo incluso con el dato delante. Se amplia a 24 y con
+    # formulaciones variadas, para que aprenda a LEER el recuerdo y no a
+    # repetir una frase.
+    ("Fano es un caniche chiquito", "que raza es Fano", "Es un caniche."),
+    ("Kiwi es un loro verde", "de que color es Kiwi", "Verde, me contaste."),
+    ("mi hermana se llama Sofia", "como se llama mi hermana", "Se llama Sofía."),
+    ("mi primo Bruno tiene nueve anos", "que edad tiene Bruno", "Tiene nueve años."),
+    ("mi materia favorita es historia", "cual era mi materia favorita", "Historia."),
+    ("juego al futbol los sabados", "cuando juego al futbol", "Los sábados."),
+    ("mi gato se llama Pelusa", "como se llama mi gato", "Pelusa."),
+    ("tengo dos hermanas", "cuantas hermanas tengo", "Dos."),
+    ("mi perro es un labrador negro", "de que color es mi perro", "Negro."),
+    ("vivo en Rosario", "donde vivo", "En Rosario."),
+    ("mi cumpleanos es en marzo", "cuando es mi cumpleanos", "En marzo."),
+    ("tengo diez anos", "cuantos anos tengo", "Diez."),
+    ("mi maestra se llama Ana", "como se llama mi maestra", "Ana."),
+    ("mi equipo favorito es Boca", "cual es mi equipo", "Boca."),
+    ("me gusta el helado de chocolate", "que helado me gusta", "El de chocolate."),
+    ("mi mejor amigo se llama Tomas", "quien es mi mejor amigo", "Tomás."),
+    ("toco la guitarra hace dos anos", "hace cuanto toco la guitarra", "Hace dos años."),
+    ("mi color favorito es el azul", "cual es mi color favorito", "El azul."),
+    ("tengo un hermano mayor", "tengo hermanos", "Sí, un hermano mayor."),
+    ("mi abuela vive en Cordoba", "donde vive mi abuela", "En Córdoba."),
+    ("el examen es el jueves", "cuando es el examen", "El jueves."),
+    ("mi pez se llama Nemo", "como se llama mi pez", "Nemo."),
+    ("me gusta leer de noche", "cuando me gusta leer", "De noche."),
+    ("mi bici es roja", "de que color es mi bici", "Roja."),
+]
+
+MEMORIA_SIN_DATO = [
+    # El recuerdo NO trae la respuesta -> decirlo, nunca inventar. Medido sin
+    # estos ejemplos: el 0.5B contestaba "Fano es de la Raza Pizarron".
+    ("tengo un perrito que se llama Fano", "que raza es Fano", "No me dijiste la raza. ¿Cuál es?"),
+    ("tengo un perrito que se llama Fano", "cuantos anos tiene Fano", "Eso no me lo contaste. ¿Cuántos tiene?"),
+    ("tengo un loro que se llama Kiwi", "de que color es Kiwi", "No me dijiste el color. ¿Cuál es?"),
+    ("mi hermana se llama Sofia", "que edad tiene Sofia", "No me lo dijiste. ¿Cuántos años tiene?"),
+    ("mi primo se llama Bruno", "donde vive Bruno", "Eso no me lo contaste."),
+    ("juego al futbol los sabados", "en que equipo juego", "No me contaste el equipo. ¿Cuál es?"),
+    ("me gusta dibujar dinosaurios", "cual es mi dinosaurio favorito", "No me lo dijiste. ¿Cuál es?"),
+    ("mi gato se llama Pelusa", "cuantos anos tiene Pelusa", "No me lo contaste."),
+    ("tengo una bici", "de que color es mi bici", "No me dijiste el color."),
+    ("mi maestra se llama Ana", "que materia da Ana", "Eso no me lo contaste."),
+    ("vivo en Rosario", "en que calle vivo", "No me dijiste la calle."),
+    ("tengo un hermano mayor", "como se llama mi hermano", "No me dijiste su nombre. ¿Cómo se llama?"),
+    ("me gusta el helado", "que gusto me gusta", "No me dijiste el gusto. ¿Cuál es?"),
+    ("mi abuela vive lejos", "donde vive mi abuela", "No me dijiste dónde."),
+    ("tengo un pez", "como se llama mi pez", "No me contaste su nombre."),
+    ("el examen es la semana que viene", "que dia es el examen", "No me dijiste el día."),
+]
+
+MEMORIA_EMOCIONAL = [
+    # El recuerdo da contexto: acompanar sabiendo de que se habla.
+    ("tengo un perrito que se llama Fano", "Fano se escapo ayer", "¡Qué feo! ¿Pudieron buscar a Fano?"),
+    ("tengo un perrito que se llama Fano", "extraño a Fano", "Se extraña mucho a un perrito. ¿Hace cuánto que no lo ves?"),
+    ("tengo un loro que se llama Kiwi", "Kiwi se escapo", "¡Qué susto! ¿Pudieron encontrarlo?"),
+    ("mi hermana se llama Sofia", "me pelee con Sofia", "Uf, con la hermana duele más. ¿Por qué fue?"),
+    ("mi gato se llama Pelusa", "Pelusa esta enferma", "Pobre Pelusa. ¿La llevaron al veterinario?"),
+    ("juego al futbol los sabados", "perdimos el partido", "Qué lástima. ¿Jugaron bien igual?"),
+    ("mi materia favorita es historia", "me saque un diez", "¡Muy bien! ¿Fue en historia?"),
+    ("me gusta dibujar dinosaurios", "hice un dibujo nuevo", "¡Qué bueno! ¿Dibujaste un dinosaurio?"),
+    ("mi mejor amiga se llama Lucia", "Lucia se mudo", "Vas a extrañar a Lucía. ¿Se fue lejos?"),
+    ("mi maestra se llama Ana", "Ana me reto hoy", "Qué mal momento. ¿Sabés por qué fue?"),
+    ("mi equipo favorito es Boca", "Boca gano", "¡Felicitaciones! ¿Lo viste?"),
+    ("toco la guitarra", "aprendi una cancion nueva", "¡Qué bueno! ¿Cuál aprendiste?"),
+    ("el examen es el jueves", "estoy nervioso", "Es normal antes de un examen. ¿Pudiste estudiar?"),
+    ("mi hermano mayor se llama Diego", "Diego se va de viaje", "Lo vas a extrañar. ¿Se va lejos?"),
+    ("mi bici es roja", "se me pincho la rueda", "Qué embole. ¿La pudieron arreglar?"),
+    ("vivo en Rosario", "me mudo de ciudad", "Es un cambio grande. ¿A dónde te vas?"),
+]
+
+MEMORIA = ([(f"(Antes me contaste: {r})", m, o) for r, m, o in MEMORIA_CON_DATO]
+           + [(f"(Antes me contaste: {r})", m, o) for r, m, o in MEMORIA_SIN_DATO]
+           + [(f"(Antes me contaste: {r})", m, o) for r, m, o in MEMORIA_EMOCIONAL])
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--semilla", action="store_true",
@@ -166,6 +262,9 @@ def main():
         for u, r in SEMILLA:
             ejemplos.append({"instruccion": u, "objetivo": r})
         origen["semilla"] = len(SEMILLA)
+        for rec, msg, obj in MEMORIA:
+            ejemplos.append({"instruccion": rec + "\n" + msg, "objetivo": obj})
+        origen["memoria"] = len(MEMORIA)
 
     if os.path.isfile(REGISTRO):
         with io.open(REGISTRO, encoding="utf-8") as f:
