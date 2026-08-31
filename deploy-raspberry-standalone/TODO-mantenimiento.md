@@ -23,16 +23,28 @@ de bajo riesgo sobre el propio `lora-trivia`, ver
    del contexto reservado), pero baja el uso de RAM del KV-cache, así que
    se dejó aplicado en producción (`ollama create lora-trivia -f
    Modelfile`).
-2. **Reordenar el prompt** (pendiente): mover el texto fijo/boilerplate al
-   principio y el contenido variable (pregunta, respuesta del usuario) al
-   final, para que Ollama pueda reusar el KV-cache entre turnos (LCP —
-   longest common prefix — visible en el log nativo como `checking sim =
-   X (N/M) > 0.100`). Requiere retestear con los mismos 4 casos antes de
-   aplicar: `lora-trivia` se entrenó con el orden actual, así que es
-   sensible a cambios de forma del prompt (ver la nota de
-   `comentar_resultado()` sobre el intento fallido de pedirle comparar
-   `esperada` vs `respuesta_usuario` en vez de pasarle el veredicto ya
-   resuelto).
+2. **Reordenar el prompt (probado 2026-08-31, DESCARTADO)**: la idea era
+   mover el texto fijo/boilerplate al principio y el contenido variable
+   (pregunta, respuesta del usuario, veredicto) al final, para que Ollama
+   reuse el KV-cache entre turnos seguidos de Trivia (LCP — longest common
+   prefix — visible en el log nativo como `checking sim = X (N/M) >
+   0.100`). Se implementó en `comentar_resultado()`/`reaccionar_libre()` y
+   se probó ANTES de commitear/desplegar (como con el cambio de `num_ctx`),
+   con los mismos 4 casos estándar contra el `lora-trivia` de producción
+   (ya con ctx 512): resultado, **regresión de calidad clara** — con el
+   veredicto (ACERTÓ/SE EQUIVOCÓ) movido de su posición original a mitad
+   del mensaje, el modelo contestó "incorrecta" en 3 de 4 casos que en
+   realidad eran aciertos (p.ej. student respondió "1969" correctamente y
+   el modelo dijo "la Luna se estrelló en 1959"). Confirma lo que ya se
+   había visto una vez (ver la nota en `comentar_resultado()` sobre el
+   intento de pedirle comparar `esperada` vs `respuesta_usuario` por su
+   cuenta): `lora-trivia` es un modelo de 397MB fine-tuneado con UN formato
+   de prompt fijo (`dataset_trivia.jsonl`), y no generaliza a reordenamientos
+   aunque el contenido semántico sea idéntico. Revertido sin commitear ni
+   desplegar a la Pi. Para aprovechar el LCP de Ollama sin este riesgo
+   habría que reentrenar el dataset con el nuevo orden -- no vale la pena
+   por la ganancia esperada (ver el punto 1: el cuello de botella real es
+   `prompt_eval` bajo contención de CPU, no la falta de cache-hit).
 
 ## Gobernador de CPU fijado en `performance` (2026-08-30)
 
