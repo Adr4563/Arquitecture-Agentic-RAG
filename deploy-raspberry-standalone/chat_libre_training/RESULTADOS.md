@@ -79,3 +79,70 @@ Cuando entrenes una versión nueva, comparala contra estas mismas cifras **en
 la Pi**. Si no supera a `qwen2.5:0.5b` (8/12), el fine-tuning empeoró al
 modelo en vez de mejorarlo — que pasa, y es justo lo que este paso existe
 para detectar.
+
+---
+
+## v5 — 2026-08-31 — cambio de modelo base
+
+**Base**: `llama3.2:1b` (1.2B) en vez de `qwen2.5:0.5b` (494M).
+Mismos 105 ejemplos, mismo entrenamiento. `eval_loss` 2.058 → 1.673 → 1.633
+(no comparable con las versiones anteriores: otro tokenizador).
+
+### Memoria semántica
+
+30 preguntas de conocimiento general (naturaleza, geografía, ciencia,
+historia, básico, matemática), medidas en la PC:
+
+| Modelo | Aciertos | |
+|---|---|---|
+| `lora-chat-libre-v4` (0.5B) | **57%** | el desplegado |
+| `qwen2.5:0.5b` | 53% | base del v4 |
+| `llama3.2:1b` | **83%** | base del v5 |
+| `llama3.2:3b` | 87% | referencia |
+| **`lora-chat-libre-v5`** | **77%** | |
+
+Dos conclusiones:
+
+1. **El fine-tuning no agrega conocimiento.** Sobre 0.5B sumó 4 puntos
+   (53 → 57). Lo que mueve el número es el tamaño del base.
+2. **El fine-tuning lo degrada un poco.** 83 → 77 al entrenar sobre el 1b.
+   Es la misma degradación que llevó a `lora-chat` de "la araña tiene 8
+   patas" a "una sola pata", acá mucho más leve.
+
+⚠️ **Cuidado al reproducir esto**: la primera versión del test comparaba sin
+normalizar acentos y marcaba como incorrecta *"La capital de Francia es
+París"*. Con ese bug `llama3.2:3b` daba 70% en vez de 87%. Normalizar antes
+de comparar.
+
+### Largo y velocidad
+
+| Modelo | Palabras (mediana) | Total |
+|---|---|---|
+| `llama3.2:1b` (base) | **72** | 0.5 s |
+| `lora-chat-libre-v5` | **4** | 0.2 s |
+| `lora-chat-libre-v4` | 6 | 0.2 s |
+
+Ese es el aporte real del fine-tuning acá: el 1b **ya sabía**, pero escribía
+párrafos. En la Pi eso eran 11-19 s por respuesta. Con 4 palabras de
+mediana, el conocimiento del 1b entra en el presupuesto de tiempo.
+
+### Conversación
+
+**Arreglado** — el peor error, que arrastraban todas las versiones:
+
+```
+"mi amigo se rio de mi"   v4 -> "¡Qué bueno!"          (festeja una burla)
+                          v5 -> "¿Y cómo reaccionaste?"
+```
+
+**Sin resolver**, dos defectos nuevos por sobreajuste con 105 ejemplos:
+
+- Dice **"¡Qué lora!"**, usando su propio nombre como exclamación
+- Repite **"¿Y cómo te...?"** para casi cualquier mensaje
+
+Se arreglan con más ejemplos curados (`curar.py`), no con otro modelo.
+
+### Estado
+
+**No desplegada.** `CHAT_MODEL` sigue en v4 hasta poder probar la v5 en la
+Raspberry Pi. Pesa 770 MB contra 379 MB del v4.
