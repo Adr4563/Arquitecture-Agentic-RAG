@@ -127,6 +127,24 @@ def generar_apertura(persona_str, on_token=None):
     return _quitar_pregunta_final(generar_respuesta(mensajes, on_token=on_token))
 
 
+def _recortar_busqueda(texto):
+    """Deja el resultado en una o dos frases, cortando en un punto y no a
+    mitad de palabra.
+
+    El corte por caracteres a secas ("...los primeros 160 y puntos
+    suspensivos") suena mal leido en voz alta: la frase queda colgada. Se
+    busca el ultimo punto dentro del limite y se corta ahi; solo si no hay
+    ninguno se recorta por palabra."""
+    texto = " ".join(texto.split())          # colapsa saltos y espacios dobles
+    if len(texto) <= LARGO_MAX_BUSQUEDA:
+        return texto
+    corte = texto[:LARGO_MAX_BUSQUEDA]
+    punto = max(corte.rfind(". "), corte.rfind("? "), corte.rfind("! "))
+    if punto > LARGO_MAX_BUSQUEDA // 3:      # hay una frase completa util
+        return corte[:punto + 1]
+    return corte.rsplit(" ", 1)[0] + "..."
+
+
 def manejar_busqueda_web(mensaje_usuario):
     """Ruta BUSQUEDA_WEB: busca en internet y LEE EL RESULTADO TAL CUAL.
 
@@ -146,9 +164,7 @@ def manejar_busqueda_web(mensaje_usuario):
     display.mostrar_cara("speaking")
     texto, termino = buscar_en_internet(mensaje_usuario)
     if texto:
-        respuesta = texto.strip()
-        if len(respuesta) > LARGO_MAX_BUSQUEDA:
-            respuesta = respuesta[:LARGO_MAX_BUSQUEDA].rsplit(" ", 1)[0] + "..."
+        respuesta = _recortar_busqueda(texto)
         cara = "happy"
     else:
         respuesta = f"No encontré nada sobre {termino}."
@@ -493,10 +509,13 @@ def resolver_tema(eleccion_usuario):
 RUTAS = ["TRIVIA", "CHAT_LIBRE", "BUSQUEDA_WEB"]
 
 # Recorte del texto que devuelve el buscador. El robot lo lee en voz alta y
-# hablar() bloquea hasta terminar: un parrafo entero de Wikipedia son ~40s de
-# audio. 280 caracteres son ~20s, suficiente para decir algo util sin que el
-# chico se vaya.
-LARGO_MAX_BUSQUEDA = int(os.environ.get("BUSQUEDA_LARGO_MAX", "280"))
+# hablar() bloquea hasta terminar, asi que el largo se paga en segundos de
+# silencio: un parrafo entero son ~40s de audio.
+#
+# 160 caracteres son ~12s, una o dos frases. A pedido del usuario: la
+# respuesta de una busqueda tiene que ser CORTA. Un chico no se queda
+# escuchando un parrafo de enciclopedia.
+LARGO_MAX_BUSQUEDA = int(os.environ.get("BUSQUEDA_LARGO_MAX", "160"))
 
 # Frases que, dichas A MITAD de una tanda de trivia (respondiendo una
 # pregunta o eligiendo tema), señalan que el usuario se quiere ir a otra
