@@ -24,7 +24,7 @@ fondo. Se descartó ese camino en vez de arreglarlo: en lugar de pelear ese
 bug de threading y sumar un cuarto modelo pesado compitiendo por los 4
 núcleos de la Pi (que ya comparten CHAT_MODEL/TRIVIA_MODEL/
 SALIDA_TRIVIA_MODEL), la transcripción se hace en el propio navegador con
-`SpeechRecognition` (Web Speech API, botón "🎤 Hablar" en la página) --
+`SpeechRecognition` (Web Speech API, botón redondo "Hablar" en la página) --
 mismo mecanismo que la síntesis de salida, pero al revés, y sin agregar
 nada de carga a la Pi. El costo: manda tu audio a un servicio en la nube
 (Google en Chrome/Android) para reconocerlo -- mismo trade-off ya aceptado
@@ -88,6 +88,29 @@ _PAGINA = """<!doctype html>
   form { margin-top: 1.5rem; display: flex; gap: 0.5rem; justify-content: center; }
   input[type=text] { font-size: 1rem; padding: 0.6rem; flex: 1; max-width: 20rem; }
   button[type=submit] { font-size: 1rem; padding: 0.6rem 1.2rem; }
+
+  /* Botones redondos con icono SVG en vez de emoji -- a pedido del
+     usuario (2026-08-31): los emoji se ven distinto (o directamente
+     "cuadradito sin glifo") según el teléfono/fuente instalada; un SVG
+     dibujado a mano se ve igual en cualquier lado, sin depender de fuente
+     de emoji del sistema. */
+  .fila-botones-circulares { display: flex; flex-direction: column; align-items: center; gap: 0.4rem; margin-top: 1.5rem; }
+  .btn-circular {
+    width: 4rem; height: 4rem; border-radius: 50%;
+    border: none; background: #2563eb; color: #fff;
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer; box-shadow: 0 2px 6px rgba(0,0,0,0.25);
+    transition: background 0.15s, transform 0.1s;
+  }
+  .btn-circular:active { transform: scale(0.94); }
+  .btn-circular:disabled { background: #aaa; cursor: not-allowed; }
+  .btn-circular.escuchando { background: #dc2626; animation: pulso 1s infinite; }
+  .btn-circular svg { width: 1.8rem; height: 1.8rem; fill: currentColor; }
+  .etiqueta-boton { font-size: 0.85rem; color: #666; }
+  @keyframes pulso {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(220,38,38,0.5); }
+    50% { box-shadow: 0 0 0 10px rgba(220,38,38,0); }
+  }
 </style>
 </head>
 <body>
@@ -100,13 +123,19 @@ _PAGINA = """<!doctype html>
     <button type="submit">Enviar</button>
   </form>
 
-  <p style="margin-top: 1rem;">
-    <button id="btn-mic" type="button">🎤 Hablar</button>
-  </p>
+  <div class="fila-botones-circulares">
+    <button id="btn-mic" class="btn-circular" type="button" aria-label="Hablar" title="Hablar">
+      <svg viewBox="0 0 24 24"><path d="M12 14a3 3 0 0 0 3-3V6a3 3 0 0 0-6 0v5a3 3 0 0 0 3 3zm5-3a5 5 0 0 1-10 0H5a7 7 0 0 0 6 6.92V21h2v-3.08A7 7 0 0 0 19 11h-2z"/></svg>
+    </button>
+    <span class="etiqueta-boton" id="etiqueta-mic">Hablar</span>
+  </div>
 
-  <p style="margin-top: 2rem;">
-    <button id="btn-voz" type="button">🔊 Activar voz de Lora</button>
-  </p>
+  <div class="fila-botones-circulares" style="margin-top: 1.5rem;">
+    <button id="btn-voz" class="btn-circular" type="button" aria-label="Activar voz de Lora" title="Activar voz de Lora">
+      <svg viewBox="0 0 24 24"><path d="M4 9v6h4l5 5V4L8 9H4zm11.5 3a4.5 4.5 0 0 0-2.5-4.03v8.06A4.5 4.5 0 0 0 15.5 12z"/></svg>
+    </button>
+    <span class="etiqueta-boton">Activar voz de Lora</span>
+  </div>
   <p id="estado-voz" style="color: #666;"></p>
 
 <script>
@@ -153,10 +182,11 @@ _PAGINA = """<!doctype html>
   // teléfono (ver README) para que funcione.
   const ReconocedorVoz = window.SpeechRecognition || window.webkitSpeechRecognition;
   const btnMic = document.getElementById('btn-mic');
+  const etiquetaMic = document.getElementById('etiqueta-mic');
 
   if (!ReconocedorVoz) {
     btnMic.disabled = true;
-    btnMic.textContent = '🎤 No disponible en este navegador';
+    etiquetaMic.textContent = 'No disponible en este navegador';
   } else {
     const reconocedor = new ReconocedorVoz();
     reconocedor.lang = 'es-AR';       // mismo idioma que la voz de salida (ver elegirVoz() más abajo)
@@ -177,13 +207,15 @@ _PAGINA = """<!doctype html>
     };
     reconocedor.onend = () => {
       escuchando = false;
-      btnMic.textContent = '🎤 Hablar';
+      btnMic.classList.remove('escuchando');
+      etiquetaMic.textContent = 'Hablar';
     };
 
     btnMic.addEventListener('click', () => {
       if (escuchando) return;  // evita doble-toque mientras ya está escuchando
       escuchando = true;
-      btnMic.textContent = '🎙️ Escuchando...';
+      btnMic.classList.add('escuchando');
+      etiquetaMic.textContent = 'Escuchando...';
       document.getElementById('estado').textContent = 'Hablá ahora...';
       reconocedor.start();
     });

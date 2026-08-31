@@ -264,7 +264,7 @@ Con esta variable, cuando Lora contesta la Pi no sintetiza nada: le manda el
 texto a la misma página de arriba (`http://<ip-de-la-pi>:8081/`), y el
 teléfono lo dice con la síntesis de voz nativa del navegador (Web Speech
 API) — usa el procesador y el parlante del teléfono, no los de la Pi. Hay
-que abrir la página y tocar **"🔊 Activar voz de Lora"** una vez (los
+que abrir la página y tocar el botón redondo **"Activar voz de Lora"** una vez (los
 navegadores móviles exigen un toque del usuario antes de dejar sonar
 síntesis de voz por primera vez); de ahí en más queda escuchando sola.
 
@@ -281,7 +281,7 @@ ESP32 del carrito.
 
 ### Hablarle a Lora en vez de escribir (entrada por voz)
 
-El botón **"🎤 Hablar"** de la misma página transcribe lo que decís con la
+El botón redondo **"Hablar"** de la misma página transcribe lo que decís con la
 Web Speech API del navegador (`SpeechRecognition`) y lo manda como si lo
 hubieras tipeado — sin instalar nada en la Pi. Solo funciona bien en
 **Chrome/Android**; Safari/iOS no la soporta (ningún navegador ahí, todos
