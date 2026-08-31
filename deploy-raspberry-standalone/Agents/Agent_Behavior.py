@@ -34,7 +34,6 @@ gracioso — log, no excepción — y el resto del turno de trivia sigue normal.
 Si una columna viene vacía, no se hace nada con esa parte — ni log, ni acción.
 """
 
-import threading
 
 import perf_monitor
 from Clients import Carrito_Client, Musica_Client
@@ -95,22 +94,19 @@ def expresar_musica(pregunta, esperar=False):
 @perf_monitor.medir("desplazamiento")
 def expresar_desplazamiento(pregunta):
     """Si la pregunta trae algo en 'desplazamiento', se lo manda de verdad al
-    carrito mecanum (Carrito_Client.py) — 'Girar 360°' usa mover_360()
-    (varios pulsos de rotación seguidos, sin comando único en el firmware);
-    el resto (Adelante/Atrás/Izquierda/Derecha) es un solo mover(). Vacío/
-    ausente -> no hace nada, devuelve None. Si el carrito no responde (no
-    configurado, apagado, fuera de red), no corta el turno de trivia — solo
-    queda logueado por Carrito_Client."""
+    carrito mecanum (Carrito_Client.py) con un solo mover(). Vacío/ausente
+    -> no hace nada, devuelve None.
+
+    Si el carrito no responde (no configurado, apagado, fuera de red), no
+    corta el turno de trivia -- solo queda logueado por Carrito_Client.
+
+    El dataset solo trae Adelante/Atrás: se sacaron 'Girar 360°',
+    Izquierda y Derecha del Excel a pedido del usuario, asi que la rama que
+    llamaba a mover_360() quedo sin datos que la disparen y se elimino junto
+    con esa funcion."""
     desplazamiento = (pregunta.get("desplazamiento") or "").strip()
     if not desplazamiento:
         return None
     print(f"    [desplazamiento: {desplazamiento}]")
-    if desplazamiento.lower().startswith("girar"):
-        # mover_360() bloquea ~2.4s (6 pulsos con pausa entre cada uno, ver
-        # Carrito_Client.py) -- se lanza en un hilo aparte, fire-and-forget,
-        # igual que Musica_Client.reproducir() ya hace con mpv (Popen), para
-        # no sumarle ese tiempo al turno de trivia.
-        threading.Thread(target=Carrito_Client.mover_360, daemon=True).start()
-    else:
-        Carrito_Client.mover(desplazamiento)  # un solo write serial, ya casi instantáneo
+    Carrito_Client.mover(desplazamiento)  # un solo write serial, ya casi instantáneo
     return desplazamiento

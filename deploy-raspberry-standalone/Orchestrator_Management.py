@@ -659,7 +659,7 @@ def _reaccionar_veredicto(cara, pregunta, musica_ya_sonada=False):
     """Cara + música + desplazamiento del veredicto, EN PARALELO entre sí --
     se disparan los tres seguidos, sin esperas entre uno y otro: música
     (Popen) y desplazamiento (escritura serial ~instantánea, o hilo aparte
-    para 'Girar 360°') ya son fire-and-forget, y mostrar_cara() es un
+    ya son fire-and-forget, y mostrar_cara() es un
     request IPC corto a mpv, así que ninguno bloquea a los demás.
 
     El único bloqueo real de esta función es el sleep del final -- no es

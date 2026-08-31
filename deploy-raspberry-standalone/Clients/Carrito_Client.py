@@ -14,7 +14,7 @@ CARRITO_PORT configurable por env var si el puerto no es el default:
     export CARRITO_PORT=/dev/ttyUSB0
 
 Sin el puerto disponible (cable desconectado, ESP32 apagado, etc.),
-mover()/mover_360() no lanzan excepción — solo loguean y no hacen nada, para
+mover() no lanza excepción — solo loguean y no hacen nada, para
 no cortar el flujo de trivia por un carrito que no está conectado.
 """
 
@@ -95,19 +95,8 @@ def mover(direccion):
     return True
 
 
-def mover_360(repeticiones=6, pausa=0.4):
-    """'Girar 360°' no es un comando único en el firmware (solo RL/RR
-    puntuales) — se aproxima mandando 'rotar' varias veces seguidas.
-
-    ⚠️ repeticiones/pausa son un punto de partida SIN CALIBRAR contra el
-    carrito real: no hay forma de saber cuántos grados gira por pulso sin
-    probarlo con el hardware delante. Ajustalos viendo el carrito girar.
-    """
-    ok = True
-    for _ in range(repeticiones):
-        if not _mandar("RR"):
-            print("    [carrito] no se pudo mandar 'Girar 360°'")
-            ok = False
-            break
-        time.sleep(pausa)
-    return ok
+# mover_360() se elimino junto con 'Girar 360°' del dataset. Aproximaba el
+# giro con 6 pulsos de "RR" espaciados 0.4s, valores que nunca se calibraron
+# contra el carrito real -- no habia forma de saber cuantos grados giraba por
+# pulso sin el hardware delante. Sin filas que lo disparen, era codigo muerto
+# y sin verificar.
