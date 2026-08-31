@@ -1000,6 +1000,17 @@ SALUDOS_APERTURA = [
     "¡Buenas! Me llamo Lora. Contame tu nombre.",
 ]
 
+# 4 variantes de despedida, mismo criterio que SALUDOS_APERTURA -- se eligen
+# al azar al cerrar la sesión (ver el final de _main_loop()). "{nombre}" se
+# completa con estado["nombre"] (el que contestó al arrancar, o "amigo" si
+# no dijo nada).
+DESPEDIDAS = [
+    "¡Hasta luego, {nombre}! Que te vaya bien.",
+    "Nos vemos, {nombre}. ¡Fue un gusto!",
+    "Listo por hoy, {nombre}. ¡Cuidate!",
+    "¡Chau, {nombre}! Volvé cuando quieras.",
+]
+
 
 def _main_loop():
     _esperar_telefono_si_corresponde()  # ver la nota ahí -- evita que el saludo caiga siempre a edge-tts
@@ -1096,7 +1107,7 @@ def _main_loop():
         voz_output.hablar(resumen)
         time.sleep(PAUSA_CAMBIO_CARA)
         display.mostrar_cara("speaking")
-    despedida = f"¡Hasta luego, {estado['nombre']}! Que te vaya bien."
+    despedida = random.choice(DESPEDIDAS).format(nombre=estado["nombre"])
     print(f"Asistente: {despedida}")
     voz_output.hablar(despedida)
     display.mostrar_cara("happy")
