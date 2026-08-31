@@ -21,3 +21,6 @@ deploy-raspberry-standalone/logs/
 deploy-raspberry-standalone/chat_libre_training/conversaciones.jsonl
 deploy-raspberry-standalone/chat_libre_training/dataset_chat_libre.jsonl
 deploy-raspberry-standalone/chat_libre_training/versiones.json
+
+# Certificado autofirmado de voz_server.py (se regenera solo al arrancar)
+deploy-raspberry-standalone/.certs/

@@ -287,16 +287,30 @@ hubieras tipeado — sin instalar nada en la Pi. Solo funciona bien en
 **Chrome/Android**; Safari/iOS no la soporta (ningún navegador ahí, todos
 usan el motor de Safari por dentro).
 
-`SpeechRecognition` exige "contexto seguro" (HTTPS o `localhost`) — la
-página de esta Pi se sirve en HTTP plano sobre una IP de LAN
-(`http://192.168.x.x:8081/`), así que Chrome bloquea el micrófono ahí por
-default. Para habilitarlo en el teléfono, **una sola vez**:
+`SpeechRecognition` exige "contexto seguro": **HTTPS o `localhost`**. Sobre
+una IP de LAN por HTTP plano, Chrome bloquea el micrófono y el botón
+"Hablar" no funciona.
+
+Por eso `voz_server.py` **sirve HTTPS por defecto**, con un certificado
+propio que genera solo la primera vez (queda en `.certs/`, ignorado por
+git). La página pasa a ser `https://192.168.x.x:8081/`.
+
+Como el certificado no lo firma ninguna autoridad, el teléfono va a avisar
+que el sitio no es de confianza. **Una sola vez por dispositivo**: tocá
+"Avanzado" → "Continuar de todos modos". Después el micrófono funciona.
+
+El certificado se emite para la IP de LAN que la Pi tenga al generarlo. Si
+la Pi cambia de IP (DHCP), borrá `.certs/` y se regenera al arrancar.
+
+Si preferís el método viejo (HTTP plano + flag del navegador), se apaga el
+HTTPS con `export VOZ_HTTPS=0` y se habilita en el teléfono así:
 
 1. Abrí `chrome://flags/#unsafely-treat-insecure-origin-as-secure` en Chrome.
-2. Pegá la URL completa de la página (ej. `http://192.168.1.38:8081`) en el
-   campo de texto que aparece.
+2. Pegá la URL completa de la página (ej. `http://192.168.1.38:8081`).
 3. Cambiá el flag de "Default" a "Enabled".
 4. Reiniciá Chrome (el botón "Relaunch" que aparece abajo).
+
+La ventaja del HTTPS es que no hay que tocar flags en cada teléfono nuevo.
 
 Después de eso, el botón de micrófono pide permiso de audio la primera vez
 (como cualquier sitio) y ya queda andando en ese teléfono.

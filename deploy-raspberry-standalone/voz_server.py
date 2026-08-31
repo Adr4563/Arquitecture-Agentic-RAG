@@ -52,6 +52,20 @@ from flask import Flask, Response, jsonify, request
 
 PORT = int(os.environ.get("VOZ_PORT", "8081"))
 
+# Certificado propio para servir HTTPS. Hace falta porque SpeechRecognition
+# (el botón "Hablar") exige "contexto seguro": HTTPS o localhost. Sobre una
+# IP de LAN por HTTP plano, Chrome bloquea el micrófono y el boton no
+# funciona -- que es el sintoma que se venia arrastrando.
+#
+# Antes la unica salida documentada era agregar la URL a
+# chrome://flags/#unsafely-treat-insecure-origin-as-secure en CADA telefono.
+# Con el certificado alcanza con aceptar el aviso una vez por dispositivo.
+#
+# VOZ_HTTPS=0 vuelve a HTTP plano (util si algo del certificado molesta y se
+# prefiere el hack de chrome://flags).
+CERT_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), ".certs")
+HTTPS = os.environ.get("VOZ_HTTPS", "1") not in ("0", "false", "False")
+
 app = Flask(__name__)
 _entrada_queue = None  # se inyecta desde chat.py al arrancar (ver iniciar())
 
@@ -334,6 +348,72 @@ def hablar_telefono(texto, timeout=20):
     return _listo_evento.wait(timeout)
 
 
+def _contexto_ssl():
+    """Devuelve (cert, key) para app.run(ssl_context=...), generando un
+    certificado autofirmado la primera vez. None si HTTPS esta apagado o si
+    falta `cryptography` -- en ese caso se sirve HTTP plano y el micrófono no
+    va a andar desde el teléfono, pero el resto de la página sí."""
+    if not HTTPS:
+        return None
+    cert = os.path.join(CERT_DIR, "voz.crt")
+    key = os.path.join(CERT_DIR, "voz.key")
+    if os.path.isfile(cert) and os.path.isfile(key):
+        return (cert, key)
+    try:
+        import datetime
+        import ipaddress
+        from cryptography import x509
+        from cryptography.hazmat.primitives import hashes, serialization
+        from cryptography.hazmat.primitives.asymmetric import rsa
+        from cryptography.x509.oid import NameOID
+    except ImportError:
+        print("[voz] falta `cryptography` (pip install cryptography): se sirve HTTP plano")
+        return None
+
+    # El certificado tiene que cubrir la IP con la que se entra desde el
+    # telefono, no solo el hostname: se entra por IP en la LAN.
+    ips = set()
+    try:
+        import socket
+        s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        s.connect(("8.8.8.8", 80))          # no manda nada, solo resuelve la IP local
+        ips.add(s.getsockname()[0])
+        s.close()
+    except OSError:
+        pass
+    ips.add("127.0.0.1")
+
+    clave = rsa.generate_private_key(public_exponent=65537, key_size=2048)
+    nombre = x509.Name([x509.NameAttribute(NameOID.COMMON_NAME, "lora-voz")])
+    alt = [x509.DNSName("localhost")] + [
+        x509.IPAddress(ipaddress.ip_address(i)) for i in sorted(ips)
+    ]
+    ahora = datetime.datetime.now(datetime.timezone.utc)
+    certificado = (
+        x509.CertificateBuilder()
+        .subject_name(nombre).issuer_name(nombre)
+        .public_key(clave.public_key())
+        .serial_number(x509.random_serial_number())
+        # Un dia antes por si el reloj de la Pi esta atrasado -- paso: sin
+        # NTP la fecha quedaba un mes atras y los certificados se rechazaban
+        # por "not yet valid".
+        .not_valid_before(ahora - datetime.timedelta(days=1))
+        .not_valid_after(ahora + datetime.timedelta(days=3650))
+        .add_extension(x509.SubjectAlternativeName(alt), critical=False)
+        .sign(clave, hashes.SHA256())
+    )
+    os.makedirs(CERT_DIR, exist_ok=True)
+    with open(key, "wb") as f:
+        f.write(clave.private_bytes(
+            serialization.Encoding.PEM,
+            serialization.PrivateFormat.TraditionalOpenSSL,
+            serialization.NoEncryption()))
+    with open(cert, "wb") as f:
+        f.write(certificado.public_bytes(serialization.Encoding.PEM))
+    print(f"[voz] certificado generado para {', '.join(sorted(ips))} en {CERT_DIR}")
+    return (cert, key)
+
+
 def iniciar(entrada_queue):
     """Levanta Flask en un hilo de fondo — no bloquea a quien lo llama,
     chat.py sigue con su propio loop enseguida (sin modelo que cargar por
@@ -341,11 +421,19 @@ def iniciar(entrada_queue):
     global _entrada_queue
     _entrada_queue = entrada_queue
 
+    contexto = _contexto_ssl()
+    esquema = "https" if contexto else "http"
     hilo = threading.Thread(
         target=lambda: app.run(host="0.0.0.0", port=PORT, debug=False,
-                                use_reloader=False, threaded=True),
+                                use_reloader=False, threaded=True,
+                                ssl_context=contexto),
         daemon=True,
     )
     hilo.start()
-    print(f"[voz] Página de texto/voz en http://0.0.0.0:{PORT}/ (o http://<ip-de-esta-máquina>:{PORT}/ desde otro dispositivo en la LAN)")
+    print(f"[voz] Página de texto/voz en {esquema}://0.0.0.0:{PORT}/ (o {esquema}://<ip-de-esta-máquina>:{PORT}/ desde otro dispositivo en la LAN)")
+    if contexto:
+        print("[voz] HTTPS con certificado propio: el teléfono va a avisar que no es de confianza.")
+        print("[voz] Aceptalo una vez ('Avanzado' -> 'Continuar') y el micrófono queda habilitado.")
+    else:
+        print("[voz] Sin HTTPS: el micrófono NO va a funcionar desde el teléfono (ver README).")
     print("[voz] Para que el teléfono hable las respuestas de Lora: abrí la página, tocá 'Activar voz de Lora' y export VOZ_MOTOR=telefono")

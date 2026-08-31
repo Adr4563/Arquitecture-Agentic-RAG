@@ -6,3 +6,4 @@ pyserial
 scikit-learn==1.9.0
 joblib
 psutil
+cryptography
