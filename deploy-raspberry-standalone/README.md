@@ -96,6 +96,29 @@ responde directo. De paso esto habilitó streaming real en Chat libre (antes
 estaba apagado porque el verificador necesitaba el texto completo antes de
 mostrarlo).
 
+### Memoria episódica de Chat libre (BM25, sin embeddings)
+
+Desde 2026-08-31, Chat libre recuerda intercambios pasados: antes de
+generar una respuesta, `memoria_episodica.py` busca con BM25 puro (sin
+embeddings ni vector DB, ver el docstring del módulo para el porqué) sobre
+los últimos 300 turnos que ya guarda `registro_chat.py` en
+`chat_libre_training/conversaciones.jsonl` -- no hay un almacén nuevo, se
+reusa lo que ya se registraba para el pipeline de curación.
+
+Si un mensaje nuevo comparte al menos 2 palabras de contenido (sin
+stopwords) con un turno pasado, se le inyecta un recordatorio corto (≤140
+caracteres) al prompt de `CHAT_MODEL`. Si no hay overlap suficiente, no se
+inyecta nada -- se prefiere no recordar antes que inventar una conexión
+que no existe (la primera versión del RAG de Chat libre, ya eliminada,
+fallaba justo por esto: un umbral de "una palabra en común alcanza"
+enganchaba temas sin relación, ver `responder()`).
+
+Limitaciones conocidas de esta v1, a propósito (medir antes de complicar):
+sin normalización de palabras (stemming), así que "conecto"/"conectaba" no
+matchean aunque compartan raíz; y la memoria es compartida entre todos los
+que usaron el robot, no por persona (no hay nada que la limite a
+`estado["nombre"]` todavía).
+
 ### Personalidad horneada en el modelo (opcional)
 
 La generación de texto en sí (`responder()`, `comentar_resultado_emocion()`,

@@ -46,6 +46,7 @@ from Clients.Llama_Client import (
     CHAT_MODEL, SALIDA_TRIVIA_MODEL, TRIVIA_MODEL, clasificar_salida_trivia, generar_respuesta,
 )
 import registro_chat  # registro_chat.py: guarda los turnos de Chat libre para el pipeline de mejora
+import memoria_episodica  # BM25 sobre esos mismos turnos -- recordar Chat libre entre sesiones, ver el módulo
 from personalidad import construir_personalidad, obtener_system_prompt
 from preguntas import pregunta_aleatoria as _pregunta_aleatoria
 from preguntas import pregunta_por_tema as _pregunta_por_tema
@@ -161,15 +162,26 @@ def responder(mensaje_usuario, persona_str):
     pedido del usuario (2026-08-30) -- Chat libre se queda en "speaking"
     durante toda la respuesta, sin cambiar de cara al terminar. Si más
     adelante hace falta esa señal de nuevo, tiene que salir de algo real
-    (un verificador, un score), no de la ausencia de contexto."""
+    (un verificador, un score), no de la ausencia de contexto.
+
+    Memoria episódica (2026-08-31, ver memoria_episodica.py): antes de
+    generar, se busca con BM25 un turno pasado de Chat libre relevante para
+    ESTE mensaje. A diferencia del RAG viejo de más arriba, acá el gate no
+    es "score > 0" sino overlap real de palabras de contenido, así que no
+    debería repetir ese bug -- igual, si un recuerdo se cuela sin venir al
+    caso, es el primer sospechoso a revisar."""
     # Sin system prompt, a pedido del usuario: se manda SOLO el mensaje.
     # El comportamiento (frases cortas, no decir que es una IA) tiene que
     # venir del fine-tuning, no de una instruccion en cada turno -- una regla
     # de prompt es un pedido que un modelo chico incumple bajo presion, como
     # se vio en la v1 ("eres inteligencia artificial" -> "Si, soy
     # inteligencia artificial", teniendo la regla que lo prohibia).
-    mensajes = [{"role": "user", "content": mensaje_usuario}]
+    recuerdo = memoria_episodica.buscar_relevante(mensaje_usuario)
+    contenido = f"{recuerdo}\n{mensaje_usuario}" if recuerdo else mensaje_usuario
+    mensajes = [{"role": "user", "content": contenido}]
     texto_final = generar_respuesta(mensajes).strip()
+    # Se registra el mensaje ORIGINAL (sin el recuerdo inyectado) -- lo que
+    # revisa curar.py es lo que dijo el usuario, no el prompt armado.
     # Se registra DESPUES de tener la respuesta completa, no token a token:
     # lo que se revisa en curar.py es el turno entero. Ver
     # chat_libre_training/README.md.
