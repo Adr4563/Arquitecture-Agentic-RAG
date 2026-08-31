@@ -3,6 +3,37 @@
 Pendientes detectados en una revisión (2026-08-26) que no se resolvieron
 solos por ser cambios de comportamiento, no de documentación:
 
+## `num_ctx` de `lora-trivia` bajado de 4096 a 512 (2026-08-31)
+
+Búsqueda de un LLM más rápido para reemplazar a `lora-trivia` (~14
+candidatos, incluyendo Granite, Qwen2.5-0.5B fine-tuneado, SmolLM2-135M
+reentrenado con el dataset propio, y offload a ESP32-S3): ninguno superó a
+`lora-trivia` en velocidad+calidad combinadas. De ahí quedaron dos palancas
+de bajo riesgo sobre el propio `lora-trivia`, ver
+`trivia_training/Modelfile`:
+
+1. **`num_ctx` 4096 → 512** (este cambio): el prompt real de
+   `comentar_resultado()`/`reaccionar_libre()` mide ~120-140 tokens
+   (`prompt_eval_count` de `/api/chat`), 512 alcanza de sobra. Probado antes
+   de aplicar con 4 casos estándar (acierto, error, respuesta vaga,
+   musical) contra el modelo viejo (ctx 4096) y el nuevo (ctx 512) en la
+   Raspberry, secuencial, uno a la vez: misma calidad de respuesta en los 4,
+   sin regresión. La velocidad no cambió de forma medible (el cuello de
+   botella real es el `prompt_eval` bajo contención de CPU, no el tamaño
+   del contexto reservado), pero baja el uso de RAM del KV-cache, así que
+   se dejó aplicado en producción (`ollama create lora-trivia -f
+   Modelfile`).
+2. **Reordenar el prompt** (pendiente): mover el texto fijo/boilerplate al
+   principio y el contenido variable (pregunta, respuesta del usuario) al
+   final, para que Ollama pueda reusar el KV-cache entre turnos (LCP —
+   longest common prefix — visible en el log nativo como `checking sim =
+   X (N/M) > 0.100`). Requiere retestear con los mismos 4 casos antes de
+   aplicar: `lora-trivia` se entrenó con el orden actual, así que es
+   sensible a cambios de forma del prompt (ver la nota de
+   `comentar_resultado()` sobre el intento fallido de pedirle comparar
+   `esperada` vs `respuesta_usuario` en vez de pasarle el veredicto ya
+   resuelto).
+
 ## Gobernador de CPU fijado en `performance` (2026-08-30)
 
 Medido con `perf_report.py`: el comentario de Trivia (`comentar_resultado()`,
